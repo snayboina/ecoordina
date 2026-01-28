@@ -872,8 +872,16 @@ const LiberationView: React.FC = () => {
   }, []);
 
   const loadAllData = async () => {
-    const data = await fetchLiberationData();
-    setAllData(data);
+    setLoading(true);
+    try {
+      const data = await fetchLiberationData();
+      console.log('Dados carregados do Supabase:', data);
+      setAllData(data);
+    } catch (err) {
+      console.error('Erro ao carregar dados:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleClear = () => {
@@ -947,7 +955,9 @@ const LiberationView: React.FC = () => {
 
   const filteredList = allData.filter(item => {
     if (!item.data_liberacao_ecoordin) return false;
-    const date = dayjs(item.data_liberacao_ecoordin, 'DD/MM/YYYY');
+    // Tenta limpar espaços extras que o n8n/Sheets podem ter enviado
+    const dateStr = item.data_liberacao_ecoordin.trim();
+    const date = dayjs(dateStr, 'DD/MM/YYYY');
     if (!date.isValid()) return false;
 
     const isAfterStart = date.isAfter(START_FILTER_DATE) || date.isSame(START_FILTER_DATE, 'day');
@@ -1118,8 +1128,13 @@ const LiberationView: React.FC = () => {
               <div className={`absolute -right-20 -bottom-20 w-64 h-64 blur-[80px] rounded-full opacity-20 ${isReleased(result.data_liberacao_ecoordin) ? 'bg-emerald-500' : 'bg-red-500'}`} />
             </div>
           </motion.div>
+        ) : loading ? (
+          <div className="flex flex-col items-center justify-center py-20 gap-4">
+            <div className="w-8 h-8 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin" />
+            <span className="text-xs font-bold text-app-secondary uppercase tracking-widest animate-pulse">Buscando dados no Supabase...</span>
+          </div>
         ) : (
-          !loading && (
+          (
             <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3 px-1">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-[10px] font-black text-app-text/40 uppercase tracking-widest">Liberados no Período</span>
