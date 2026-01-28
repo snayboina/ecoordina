@@ -87,40 +87,40 @@ const ModernMobileSimulator: React.FC<{ children: React.ReactNode, header?: Reac
 
 const WelcomeView: React.FC<{ onNext: () => void }> = ({ onNext }) => (
   <div className="relative h-full flex flex-col overflow-hidden">
-    <div className="flex-1 flex flex-col items-center justify-center text-center p-8 md:p-16 max-w-4xl mx-auto w-full">
-      <div className="w-full flex flex-col items-center mb-12">
-        <div className="flex items-center gap-2 mb-8">
-          <div className="w-12 h-12 bg-brand-primary rounded-2xl flex items-center justify-center shadow-xl shadow-orange-500/20">
-            <Zap className="text-white" size={24} fill="currentColor" />
+    <div className="flex-1 flex flex-col items-center justify-center text-center p-6 md:p-10 max-w-4xl mx-auto w-full">
+      <div className="w-full flex flex-col items-center mb-8">
+        <div className="flex items-center gap-2 mb-6">
+          <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20">
+            <Zap className="text-white" size={20} fill="currentColor" />
           </div>
-          <span className="font-black text-base uppercase tracking-wider text-app-text">
+          <span className="font-black text-sm uppercase tracking-wider text-app-text">
             Ecoordina<span className="text-brand-primary">Smart</span>
           </span>
         </div>
 
-        <div className="space-y-6">
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-app-text tracking-tighter leading-[0.95]">
+        <div className="space-y-4">
+          <h1 className="text-4xl md:text-5xl font-black text-app-text tracking-tighter leading-[0.95]">
             Sua jornada <br />
             operacional <br />
             começa <span className="text-brand-primary">aqui.</span>
           </h1>
-          <p className="text-app-text-secondary text-lg md:text-xl leading-relaxed max-w-xl mx-auto font-medium opacity-80">
+          <p className="text-app-text-secondary text-base md:text-lg leading-relaxed max-w-xs mx-auto font-medium opacity-80">
             Bora saber se está liberado para as suas atividades!
           </p>
         </div>
       </div>
 
-      <div className="relative w-full max-w-lg aspect-square mb-12 flex items-center justify-center">
+      <div className="relative w-full max-w-[280px] aspect-square mb-8 flex items-center justify-center">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="absolute w-full h-full bg-brand-primary/5 rounded-full blur-[100px]"
+          className="absolute w-full h-full bg-brand-primary/5 rounded-full blur-[80px]"
         />
         <motion.img
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           src="https://res.cloudinary.com/duyb5dsw0/image/upload/v1769556456/Whisk_d93805c8624cb73b747439948d305d92eg_plg0wt.png"
-          className="relative z-10 w-full h-full object-cover rounded-[40px] border-4 border-white shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)]"
+          className="relative z-10 w-full h-full object-cover rounded-[32px] border-2 border-white shadow-[0_20px_40px_-12px_rgba(0,0,0,0.15)]"
         />
       </div>
     </div>
@@ -162,20 +162,20 @@ const LoginView: React.FC<{ onLogin: (session: RequesterSession) => void, onBack
   };
 
   return (
-    <div className="flex-1 flex flex-col justify-center items-center px-6 md:px-12 bg-white relative overflow-hidden min-h-[80dvh]">
-      <div className="w-full max-w-xl space-y-12 relative z-10 py-12">
-        <div className="flex flex-col items-center text-center space-y-6">
+    <div className="flex-1 flex flex-col justify-center items-center px-6 md:px-8 bg-white relative overflow-hidden min-h-[80dvh]">
+      <div className="w-full max-w-md space-y-8 relative z-10 py-8">
+        <div className="flex flex-col items-center text-center space-y-4">
           <div className="flex items-center gap-3">
-            <div className="w-14 h-14 bg-brand-primary rounded-2xl flex items-center justify-center shadow-2xl shadow-orange-500/20">
-              <Zap className="text-white" size={28} fill="currentColor" />
+            <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center shadow-xl shadow-orange-500/20">
+              <Zap className="text-white" size={20} fill="currentColor" />
             </div>
-            <span className="font-black text-xl uppercase tracking-wider text-app-text">
+            <span className="font-black text-base uppercase tracking-wider text-app-text">
               Ecoordina<span className="text-brand-primary">Smart</span>
             </span>
           </div>
-          <div className="space-y-2">
-            <h2 className="text-4xl md:text-5xl font-black text-app-text tracking-tighter">Login</h2>
-            <p className="text-app-text-secondary text-sm md:text-base font-medium opacity-60">Acesse sua conta para continuar</p>
+          <div className="space-y-1">
+            <h2 className="text-3xl md:text-4xl font-black text-app-text tracking-tighter">Login</h2>
+            <p className="text-app-text-secondary text-xs md:text-sm font-medium opacity-60">Acesse sua conta para continuar</p>
           </div>
         </div>
 
