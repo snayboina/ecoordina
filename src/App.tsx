@@ -136,8 +136,8 @@ const LoginView: React.FC<{ onLogin: (session: RequesterSession) => void, onBack
   };
 
   return (
-    <div className="flex flex-col h-full px-6 md:px-12 justify-center items-center bg-white relative overflow-hidden">
-      <div className="w-full max-w-xl space-y-12 relative z-10">
+    <div className="flex-1 flex flex-col justify-center items-center px-6 md:px-12 bg-white relative overflow-hidden min-h-[80dvh]">
+      <div className="w-full max-w-xl space-y-12 relative z-10 py-12">
         <div className="flex flex-col items-center text-center space-y-6">
           <div className="flex items-center gap-3">
             <div className="w-14 h-14 bg-brand-primary rounded-2xl flex items-center justify-center shadow-2xl shadow-orange-500/20">
