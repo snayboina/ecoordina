@@ -6,9 +6,9 @@ import type { Collaborator, LiberationData } from '../types';
 
 dayjs.extend(customParseFormat);
 
-const CSV_URL = import.meta.env.VITE_SPREADSHEET_URL || 'https://docs.google.com/spreadsheets/d/1yLnwKTo1yM-fmlzX5cDzrIlbg2-BjbME/export?format=csv';
+const CSV_URL = (import.meta.env.VITE_SPREADSHEET_URL || 'https://docs.google.com/spreadsheets/d/1yLnwKTo1yM-fmlzX5cDzrIlbg2-BjbME/export?format=csv').trim();
 
-const LIBERATION_CSV_URL = import.meta.env.VITE_LIBERATION_SPREADSHEET_URL || 'https://docs.google.com/spreadsheets/d/1zYOgUNgNkUA5C5N2pLZ-0ub5Um_uZ2inCh0YDi1JDSo/export?format=csv&gid=0';
+const LIBERATION_CSV_URL = (import.meta.env.VITE_LIBERATION_SPREADSHEET_URL || 'https://docs.google.com/spreadsheets/d/1zYOgUNgNkUA5C5N2pLZ-0ub5Um_uZ2inCh0YDi1JDSo/export?format=csv&gid=0').trim();
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -16,7 +16,8 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export const fetchCollaborators = async (): Promise<Collaborator[]> => {
     try {
-        const response = await fetch(CSV_URL, { cache: 'no-store' });
+        console.log('Fetching Collaborators from:', CSV_URL);
+        const response = await fetch(CSV_URL);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const csvRawText = await response.text();
 
@@ -167,7 +168,8 @@ export const calculateLeadTime = (collab: Collaborator) => {
 
 export const fetchLiberationData = async (): Promise<LiberationData[]> => {
     try {
-        const response = await fetch(LIBERATION_CSV_URL, { cache: 'no-store' });
+        console.log('Fetching Liberation Data from:', LIBERATION_CSV_URL);
+        const response = await fetch(LIBERATION_CSV_URL);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const csvRawText = await response.text();
 
