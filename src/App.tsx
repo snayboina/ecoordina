@@ -130,19 +130,24 @@ const WelcomeView: React.FC<{ onNext: () => void }> = ({ onNext }) => (
         </div>
       </div>
 
-      <div className="relative w-full max-w-[240px] aspect-square mb-6 flex items-center justify-center">
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={onNext}
+        className="relative w-full max-w-[240px] aspect-square mb-6 flex items-center justify-center cursor-pointer outline-none bg-transparent border-none p-0 group"
+      >
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="absolute w-full h-full bg-brand-primary/5 rounded-full blur-[80px]"
+          className="absolute w-full h-full bg-brand-primary/10 rounded-full blur-[80px] group-hover:bg-brand-primary/20 transition-colors"
         />
         <motion.img
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           src="https://res.cloudinary.com/duyb5dsw0/image/upload/v1769556456/Whisk_d93805c8624cb73b747439948d305d92eg_plg0wt.png"
-          className="relative z-10 w-full h-full object-cover rounded-[32px] border-2 border-white shadow-[0_20px_40px_-12px_rgba(0,0,0,0.15)]"
+          className="relative z-10 w-full h-full object-cover rounded-[32px] border-2 border-white shadow-[0_20px_40px_-12px_rgba(0,0,0,0.15)] group-hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] transition-all"
         />
-      </div>
+      </motion.button>
     </div>
 
     <div className="p-6 md:p-10 w-full max-w-2xl mx-auto pb-10">
