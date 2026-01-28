@@ -136,67 +136,80 @@ const LoginView: React.FC<{ onLogin: (session: RequesterSession) => void, onBack
   };
 
   return (
-    <div className="flex flex-col h-full px-8 justify-start pt-16 bg-white">
-      <div className="mb-12 flex flex-col items-center text-center">
-        <div className="flex items-center gap-2 mb-6">
-          <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center">
-            <Zap className="text-white" size={20} fill="currentColor" />
+    <div className="flex flex-col h-full px-6 md:px-12 justify-center items-center bg-white relative overflow-hidden">
+      <div className="w-full max-w-xl space-y-12 relative z-10">
+        <div className="flex flex-col items-center text-center space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="w-14 h-14 bg-brand-primary rounded-2xl flex items-center justify-center shadow-2xl shadow-orange-500/20">
+              <Zap className="text-white" size={28} fill="currentColor" />
+            </div>
+            <span className="font-black text-xl uppercase tracking-wider text-app-text">
+              Ecoordina<span className="text-brand-primary">Smart</span>
+            </span>
           </div>
-          <span className="font-black text-sm uppercase tracking-tight text-app-text">Ecoordina<span className="text-brand-primary">Smart</span></span>
-        </div>
-        <h2 className="text-3xl font-black text-app-text tracking-tight mt-2">Login</h2>
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-2">
-          <div className="flex justify-between items-center px-1">
-            <label className="text-[11px] uppercase tracking-widest text-app-text font-black opacity-40">E-mail Corporativo</label>
+          <div className="space-y-2">
+            <h2 className="text-4xl md:text-5xl font-black text-app-text tracking-tighter">Login</h2>
+            <p className="text-app-text-secondary text-sm md:text-base font-medium opacity-60">Acesse sua conta para continuar</p>
           </div>
-          <input
-            type="email"
-            required
-            className="w-full bg-ice-white border border-slate-200 rounded-2xl py-4 px-5 outline-none focus:border-brand-primary transition-all text-sm text-app-text"
-            placeholder="francis.rosa@elecnor.es"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
         </div>
 
-        <div className="space-y-2">
-          <div className="flex justify-between items-center px-1">
-            <label className="text-[11px] uppercase tracking-widest text-app-text font-black opacity-40">Senha de Acesso</label>
-          </div>
-          <div className="relative">
-            <input
-              type="password"
-              required
-              className="w-full bg-ice-white border border-slate-200 rounded-2xl py-4 px-5 outline-none focus:border-brand-primary transition-all text-sm text-app-text"
-              placeholder="Digite sua senha"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white flex items-center justify-center text-slate-300">
-              <Search size={16} />
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="space-y-3">
+            <label className="text-[11px] md:text-xs uppercase tracking-[0.2em] text-app-text font-black opacity-40 ml-1">E-mail Corporativo</label>
+            <div className="relative group">
+              <input
+                type="email"
+                required
+                className="w-full bg-ice-white border-2 border-slate-100 rounded-2xl py-5 px-6 outline-none focus:border-brand-primary focus:bg-white transition-all text-base text-app-text font-medium shadow-sm"
+                placeholder="francis.rosa@elecnor.es"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
           </div>
 
-        </div>
+          <div className="space-y-3">
+            <label className="text-[11px] md:text-xs uppercase tracking-[0.2em] text-app-text font-black opacity-40 ml-1">Senha de Acesso</label>
+            <div className="relative group">
+              <input
+                type="password"
+                required
+                className="w-full bg-ice-white border-2 border-slate-100 rounded-2xl py-5 px-6 outline-none focus:border-brand-primary focus:bg-white transition-all text-base text-app-text font-medium shadow-sm"
+                placeholder="Digite sua senha"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <div className="absolute right-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-white/80 border border-slate-100 flex items-center justify-center text-slate-400 group-focus-within:text-brand-primary transition-colors">
+                <Lock size={18} />
+              </div>
+            </div>
+          </div>
 
-        {error && (
-          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="p-4 bg-orange-50 text-orange-600 text-xs rounded-2xl border border-orange-100 font-bold text-center">
-            {error}
-          </motion.div>
-        )}
+          {error && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-5 bg-orange-50 text-orange-600 text-sm rounded-2xl border-2 border-orange-100/50 font-bold text-center">
+              {error}
+            </motion.div>
+          )}
 
-        <div className="pt-12 flex flex-col gap-5">
-          <button type="submit" disabled={loading} className="btn-primary w-full h-15">
-            {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : "Iniciar Sessão"}
-          </button>
-          <button type="button" onClick={onBack} className="text-xs uppercase tracking-widest text-slate-400 font-black self-center">
-            Voltar ao Início
-          </button>
-        </div>
-      </form>
+          <div className="pt-8 flex flex-col gap-6">
+            <motion.button
+              whileTap={{ scale: 0.98 }}
+              type="submit"
+              disabled={loading}
+              className="btn-primary w-full h-16 md:h-20 text-lg shadow-2xl shadow-orange-500/30 rounded-[2rem]"
+            >
+              {loading ? <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin" /> : "Iniciar Sessão"}
+            </motion.button>
+            <button type="button" onClick={onBack} className="text-[10px] md:text-xs uppercase tracking-widest text-slate-400 font-extrabold self-center hover:text-brand-primary transition-colors">
+              Voltar ao Início
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Decorative Blur */}
+      <div className="absolute -top-24 -right-24 w-96 h-96 bg-brand-primary/5 blur-[120px] rounded-full" />
+      <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-brand-primary/5 blur-[120px] rounded-full" />
     </div>
   );
 };
