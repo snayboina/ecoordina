@@ -1088,7 +1088,7 @@ const LiberationView: React.FC = () => {
               <div className="relative z-10 flex flex-col gap-8">
                 <div>
                   <span className="text-[11px] font-black text-app-secondary uppercase tracking-widest bg-app-card px-3 py-1.5 rounded-lg border border-app-border">MAT: {result.mat}</span>
-                  <h2 className="text-2xl font-black text-app-text mt-4 uppercase tracking-tighter leading-tight">{result.mat} - {result.nome}</h2>
+                  <h2 className={`text-2xl font-black mt-4 uppercase tracking-tighter leading-tight ${isReleased(result.data_liberacao_ecoordin) ? 'text-app-text' : 'text-red-500'}`}>{result.mat} - {result.nome}</h2>
                   <p className="text-app-secondary text-base font-bold mt-1 uppercase tracking-tight">{result.funcao}</p>
                 </div>
 
@@ -1166,7 +1166,7 @@ const LiberationView: React.FC = () => {
                       className="w-full bg-app-card border border-app-border p-5 rounded-2xl flex justify-between items-center active:scale-95 transition-all text-left group hover:border-brand-primary/30"
                     >
                       <div className="flex flex-col gap-1 max-w-[70%]">
-                        <span className="text-sm font-bold text-app-text truncate group-hover:text-brand-primary transition-colors">{item.mat} - {item.nome}</span>
+                        <span className={`text-sm font-bold truncate group-hover:text-brand-primary transition-colors ${isReleased(item.data_liberacao_ecoordin) ? 'text-app-text' : 'text-red-500'}`}>{item.mat} - {item.nome}</span>
                         <span className="text-[10px] text-app-secondary truncate opacity-60 uppercase font-black">{item.funcao}</span>
                       </div>
                       <div className="flex flex-col items-end gap-1.5">
