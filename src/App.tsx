@@ -38,21 +38,21 @@ const ModernMobileSimulator: React.FC<{
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-0 sm:p-4 md:p-10 font-sans overflow-hidden">
       {/* Device Frame */}
-      <div className={`relative w-full h-[100dvh] sm:w-[400px] sm:h-[820px] sm:rounded-[4rem] sm:p-3.5 sm:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] flex flex-col transition-all duration-700 sm:border-[10px] relative
+      <div className={`relative w-full h-[100dvh] lg:w-[400px] lg:h-[820px] lg:rounded-[4rem] lg:p-3.5 lg:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] flex flex-col transition-all duration-700 lg:border-[10px] relative
         ${isMidnight ? 'bg-slate-900 border-slate-800 shadow-slate-900/20' : ''}
         ${isSilver ? 'bg-slate-300 border-slate-200 shadow-slate-400/20' : ''}
         ${isGold ? 'bg-[#c5a059] border-[#b48d4a] shadow-amber-900/10' : ''}
       `}>
 
         {/* Physical Buttons Simulation */}
-        <div className={`hidden sm:block absolute -left-[14px] top-32 w-[4px] h-12 rounded-l-md border-y border-white/5 shadow-inner transition-colors duration-700 ${isSilver ? 'bg-slate-400' : isGold ? 'bg-[#b48d4a]' : 'bg-slate-800'}`} /> {/* Action Button / Mute */}
-        <div className={`hidden sm:block absolute -left-[14px] top-48 w-[4px] h-16 rounded-l-md border-y border-white/5 shadow-inner transition-colors duration-700 ${isSilver ? 'bg-slate-400' : isGold ? 'bg-[#b48d4a]' : 'bg-slate-800'}`} /> {/* Vol Up */}
-        <div className={`hidden sm:block absolute -left-[14px] top-68 w-[4px] h-16 rounded-l-md border-y border-white/5 shadow-inner transition-colors duration-700 ${isSilver ? 'bg-slate-400' : isGold ? 'bg-[#b48d4a]' : 'bg-slate-800'}`} /> {/* Vol Down */}
-        <div className={`hidden sm:block absolute -right-[14px] top-44 w-[4px] h-24 rounded-r-md border-y border-white/5 shadow-inner transition-colors duration-700 ${isSilver ? 'bg-slate-400' : isGold ? 'bg-[#b48d4a]' : 'bg-slate-800'}`} /> {/* Power Button */}
+        <div className={`hidden lg:block absolute -left-[14px] top-32 w-[4px] h-12 rounded-l-md border-y border-white/5 shadow-inner transition-colors duration-700 ${isSilver ? 'bg-slate-400' : isGold ? 'bg-[#b48d4a]' : 'bg-slate-800'}`} /> {/* Action Button / Mute */}
+        <div className={`hidden lg:block absolute -left-[14px] top-48 w-[4px] h-16 rounded-l-md border-y border-white/5 shadow-inner transition-colors duration-700 ${isSilver ? 'bg-slate-400' : isGold ? 'bg-[#b48d4a]' : 'bg-slate-800'}`} /> {/* Vol Up */}
+        <div className={`hidden lg:block absolute -left-[14px] top-68 w-[4px] h-16 rounded-l-md border-y border-white/5 shadow-inner transition-colors duration-700 ${isSilver ? 'bg-slate-400' : isGold ? 'bg-[#b48d4a]' : 'bg-slate-800'}`} /> {/* Vol Down */}
+        <div className={`hidden lg:block absolute -right-[14px] top-44 w-[4px] h-24 rounded-r-md border-y border-white/5 shadow-inner transition-colors duration-700 ${isSilver ? 'bg-slate-400' : isGold ? 'bg-[#b48d4a]' : 'bg-slate-800'}`} /> {/* Power Button */}
 
         {/* Camera / Notch Variation */}
         {isMidnight && (
-          <div className="hidden sm:flex absolute top-6 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-full z-[100] items-center justify-center border border-white/5 shadow-xl transition-all duration-700">
+          <div className="hidden lg:flex absolute top-6 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-full z-[100] items-center justify-center border border-white/5 shadow-xl transition-all duration-700">
             <div className="w-1.5 h-1.5 bg-slate-900/50 rounded-full ml-auto mr-4 border border-white/5" />
             <div className="w-2.5 h-2.5 bg-[#0a0a0a] rounded-full mr-2 flex items-center justify-center">
               <div className="w-1 h-1 bg-indigo-500/20 rounded-full blur-[1px]" />
@@ -60,13 +60,13 @@ const ModernMobileSimulator: React.FC<{
           </div>
         )}
         {(isSilver || isGold) && (
-          <div className="hidden sm:flex absolute top-7 left-1/2 -translate-x-1/2 w-4 h-4 bg-black rounded-full z-[100] items-center justify-center border border-white/10 shadow-inner transition-all duration-700">
+          <div className="hidden lg:flex absolute top-7 left-1/2 -translate-x-1/2 w-4 h-4 bg-black rounded-full z-[100] items-center justify-center border border-white/10 shadow-inner transition-all duration-700">
             <div className="w-1 h-1 bg-indigo-500/40 rounded-full blur-[0.5px]" />
           </div>
         )}
 
         {/* Screen Content Wrapper */}
-        <div className="flex-1 w-full bg-app-bg overflow-hidden sm:rounded-[3.2rem] relative flex flex-col shadow-inner sm:pt-20 transition-all duration-700">
+        <div className="flex-1 w-full bg-app-bg overflow-hidden lg:rounded-[3.2rem] relative flex flex-col shadow-inner lg:pt-20 transition-all duration-700">
           {/* Fixed Header Area */}
           {header && (
             <header className="flex-none w-full bg-app-bg/80 backdrop-blur-md border-b border-app-border z-50">
@@ -93,7 +93,7 @@ const ModernMobileSimulator: React.FC<{
           )}
 
           {/* Home Indicator - Only on larger screens */}
-          <div className="hidden sm:flex flex-none h-6 items-center justify-center pb-2 bg-app-bg">
+          <div className="hidden lg:flex flex-none h-6 items-center justify-center pb-2 bg-app-bg">
             <div className={`w-32 h-1 rounded-full transition-colors duration-700 ${isSilver ? 'bg-slate-200' : isGold ? 'bg-amber-100' : 'bg-app-indicator/10'}`} />
           </div>
         </div>
@@ -107,18 +107,18 @@ const ModernMobileSimulator: React.FC<{
 
 const WelcomeView: React.FC<{ onNext: () => void }> = ({ onNext }) => (
   <div className="relative h-full flex flex-col overflow-hidden">
-    <div className="flex-1 flex flex-col items-center justify-start sm:justify-center text-center p-6 md:p-10 max-w-4xl mx-auto w-full pt-12 sm:pt-6">
-      <div className="w-full flex flex-col items-center mb-8">
-        <div className="flex items-center gap-2 mb-6">
-          <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20">
-            <Zap className="text-white" size={20} fill="currentColor" />
-          </div>
-          <span className="font-black text-sm uppercase tracking-wider text-app-text">
-            Ecoordina<span className="text-brand-primary">Smart</span>
-          </span>
+    <div className="flex-1 flex flex-col items-center text-center px-6 md:px-10 max-w-4xl mx-auto w-full">
+      <div className="flex items-center gap-2 mb-4 mt-2 sm:mt-12">
+        <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20">
+          <Zap className="text-white" size={20} fill="currentColor" />
         </div>
+        <span className="font-black text-sm uppercase tracking-wider text-app-text">
+          Ecoordina<span className="text-brand-primary">Smart</span>
+        </span>
+      </div>
 
-        <div className="space-y-4">
+      <div className="w-full flex flex-col items-center mb-6">
+        <div className="space-y-3">
           <h1 className="text-4xl md:text-5xl font-black text-app-text tracking-tighter leading-[0.95]">
             Sua jornada <br />
             operacional <br />
@@ -130,7 +130,7 @@ const WelcomeView: React.FC<{ onNext: () => void }> = ({ onNext }) => (
         </div>
       </div>
 
-      <div className="relative w-full max-w-[280px] aspect-square mb-8 flex items-center justify-center">
+      <div className="relative w-full max-w-[240px] aspect-square mb-6 flex items-center justify-center">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -145,7 +145,7 @@ const WelcomeView: React.FC<{ onNext: () => void }> = ({ onNext }) => (
       </div>
     </div>
 
-    <div className="p-8 md:p-12 w-full max-w-2xl mx-auto">
+    <div className="p-6 md:p-10 w-full max-w-2xl mx-auto pb-10">
       <motion.button
         whileTap={{ scale: 0.95 }}
         onClick={onNext}
@@ -153,7 +153,7 @@ const WelcomeView: React.FC<{ onNext: () => void }> = ({ onNext }) => (
       >
         Acessar Plataforma
       </motion.button>
-      <div className="mt-8 flex justify-center items-center gap-3 opacity-30 grayscale saturate-0">
+      <div className="mt-6 flex justify-center items-center gap-3 opacity-30 grayscale saturate-0">
         <div className="h-px w-8 bg-current" />
         <span className="text-[10px] font-black uppercase tracking-[0.2em]">Logística Integrada</span>
         <div className="h-px w-8 bg-current" />
@@ -953,6 +953,7 @@ const LiberationView: React.FC = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [monthFilter, setMonthFilter] = useState('ALL');
   const [roleFilter, setRoleFilter] = useState('ALL');
+  const [statusFilter, setStatusFilter] = useState('ALL');
 
   const START_FILTER_DATE = dayjs('2025-12-09');
 
@@ -1043,9 +1044,39 @@ const LiberationView: React.FC = () => {
   };
 
   const filteredList = allData.filter(item => {
+    // Filtro de status de liberação
+    const itemIsReleased = isReleased(item.data_liberacao_ecoordin);
+
+    // Se filtrar por LIBERADO, só mostra quem tem data válida
+    if (statusFilter === 'LIBERADO' && !itemIsReleased) return false;
+
+    // Se filtrar por NÃO LIBERADO, só mostra quem NÃO tem data válida
+    if (statusFilter === 'NAO_LIBERADO' && itemIsReleased) return false;
+
+    // Para "Não Liberados", permitir registros sem data
+    if (statusFilter === 'NAO_LIBERADO') {
+      // Se não tem data ou data inválida, é "Não Liberado" - incluir na lista
+      if (!item.data_liberacao_ecoordin || item.data_liberacao_ecoordin.trim().length === 0) {
+        // Aplicar filtros de função se houver
+        const matchesRole = roleFilter === 'ALL' || item.funcao === roleFilter;
+        return matchesRole;
+      }
+    }
+
+    // Para outros filtros, exigir data válida
     if (!item.data_liberacao_ecoordin) return false;
+
     // Tenta limpar espaços extras que o n8n/Sheets podem ter enviado
     const dateStr = item.data_liberacao_ecoordin.trim();
+    if (dateStr.length === 0) {
+      // Célula vazia - só incluir se filtro for "Não Liberados"
+      if (statusFilter === 'NAO_LIBERADO') {
+        const matchesRole = roleFilter === 'ALL' || item.funcao === roleFilter;
+        return matchesRole;
+      }
+      return false;
+    }
+
     const date = dayjs(dateStr, 'DD/MM/YYYY');
     if (!date.isValid()) return false;
 
@@ -1067,19 +1098,27 @@ const LiberationView: React.FC = () => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6 pt-4 pb-24">
       <div className="bg-app-card border border-app-border p-6 rounded-[2.5rem] space-y-4">
-        <div className="flex justify-between items-start">
+        <div className="flex flex-col gap-4">
           <div className="space-y-1">
             <h3 className="text-base font-black flex items-center gap-3">
               <Lock className="text-brand-primary" size={20} />
               Check de Liberação
             </h3>
-            <p className="text-[11px] text-app-secondary font-medium uppercase tracking-tight">Consulte o status de acesso ao projeto.</p>
           </div>
-          <div className="flex flex-col gap-2 min-w-[120px]">
+          <div className="flex flex-row flex-wrap gap-2 w-full">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="flex-1 bg-ice-white border border-slate-100 rounded-xl px-3 py-2 text-[10px] font-bold text-app-text outline-none focus:border-brand-primary/50 transition-all min-w-[120px]"
+            >
+              <option value="ALL">📊 Todos Status</option>
+              <option value="LIBERADO">✅ Liberados</option>
+              <option value="NAO_LIBERADO">🔒 Não Liberados</option>
+            </select>
             <select
               value={monthFilter}
               onChange={(e) => setMonthFilter(e.target.value)}
-              className="bg-ice-white border border-slate-100 rounded-xl px-3 py-2 text-[10px] font-bold text-app-text outline-none focus:border-brand-primary/50 transition-all"
+              className="flex-1 bg-ice-white border border-slate-100 rounded-xl px-3 py-2 text-[10px] font-bold text-app-text outline-none focus:border-brand-primary/50 transition-all min-w-[120px]"
             >
               <option value="ALL">🗓️ Todos os Meses</option>
               <option value="DEC">📅 Dezembro</option>
@@ -1088,7 +1127,7 @@ const LiberationView: React.FC = () => {
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="bg-ice-white border border-slate-100 rounded-xl px-3 py-2 text-[10px] font-bold text-app-text outline-none focus:border-brand-primary/50 transition-all max-w-[150px]"
+              className="flex-1 bg-ice-white border border-slate-100 rounded-xl px-3 py-2 text-[10px] font-bold text-app-text outline-none focus:border-brand-primary/50 transition-all min-w-[120px]"
             >
               <option value="ALL">🛠️ Todas Funções</option>
               {uniqueRoles.map(role => (
