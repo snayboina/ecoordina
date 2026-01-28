@@ -6,9 +6,26 @@ import type { Collaborator, LiberationData } from '../types';
 
 dayjs.extend(customParseFormat);
 
-const CSV_URL = (import.meta.env.VITE_SPREADSHEET_URL || 'https://docs.google.com/spreadsheets/d/1yLnwKTo1yM-fmlzX5cDzrIlbg2-BjbME/export?format=csv').trim();
+const getStableGoogleCsvUrl = (url: string) => {
+    const trimmed = url.trim();
+    if (!trimmed.includes('docs.google.com/spreadsheets/d/')) return trimmed;
 
-const LIBERATION_CSV_URL = (import.meta.env.VITE_LIBERATION_SPREADSHEET_URL || 'https://docs.google.com/spreadsheets/d/1zYOgUNgNkUA5C5N2pLZ-0ub5Um_uZ2inCh0YDi1JDSo/export?format=csv&gid=0').trim();
+    // Extrai o ID da planilha e o GID
+    const idMatch = trimmed.match(/\/d\/([^/]+)/);
+    const gidMatch = trimmed.match(/gid=([^&]+)/);
+
+    if (idMatch) {
+        const id = idMatch[1];
+        const gid = gidMatch ? gidMatch[1] : '0';
+        // Endpoint gviz/tq é muito mais estável para fetch direto (CORS friendly)
+        return `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv&gid=${gid}`;
+    }
+    return trimmed;
+};
+
+const CSV_URL = getStableGoogleCsvUrl(import.meta.env.VITE_SPREADSHEET_URL || 'https://docs.google.com/spreadsheets/d/1yLnwKTo1yM-fmlzX5cDzrIlbg2-BjbME/export?format=csv');
+
+const LIBERATION_CSV_URL = getStableGoogleCsvUrl(import.meta.env.VITE_LIBERATION_SPREADSHEET_URL || 'https://docs.google.com/spreadsheets/d/1zYOgUNgNkUA5C5N2pLZ-0ub5Um_uZ2inCh0YDi1JDSo/export?format=csv&gid=0');
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
