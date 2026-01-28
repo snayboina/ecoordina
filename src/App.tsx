@@ -1114,7 +1114,9 @@ const LiberationView: React.FC = () => {
                   <StatusItem label="SAÚDE" value={result.saude} />
                   <StatusItem label="SEGURANÇA" value={result.seguranca} />
                   <StatusItem label="GRD" value={result.grd} />
-                  <StatusItem label="ÁREA" value={result.area} />
+                  <div className="col-span-full">
+                    <StatusItem label="ÁREA" value={result.area} />
+                  </div>
                 </div>
 
                 {result.obs_grd && (
