@@ -66,7 +66,7 @@ const ModernMobileSimulator: React.FC<{
         )}
 
         {/* Screen Content Wrapper */}
-        <div className="flex-1 w-full bg-app-bg overflow-hidden sm:rounded-[3.2rem] relative flex flex-col shadow-inner">
+        <div className="flex-1 w-full bg-app-bg overflow-hidden sm:rounded-[3.2rem] relative flex flex-col shadow-inner sm:pt-20 transition-all duration-700">
           {/* Fixed Header Area */}
           {header && (
             <header className="flex-none w-full bg-app-bg/80 backdrop-blur-md border-b border-app-border z-50">
@@ -107,7 +107,7 @@ const ModernMobileSimulator: React.FC<{
 
 const WelcomeView: React.FC<{ onNext: () => void }> = ({ onNext }) => (
   <div className="relative h-full flex flex-col overflow-hidden">
-    <div className="flex-1 flex flex-col items-center justify-center text-center p-6 md:p-10 max-w-4xl mx-auto w-full">
+    <div className="flex-1 flex flex-col items-center justify-start sm:justify-center text-center p-6 md:p-10 max-w-4xl mx-auto w-full pt-12 sm:pt-6">
       <div className="w-full flex flex-col items-center mb-8">
         <div className="flex items-center gap-2 mb-6">
           <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20">
