@@ -16,8 +16,8 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export const fetchCollaborators = async (): Promise<Collaborator[]> => {
     try {
-        const freshUrl = `${CSV_URL}&t=${Date.now()}`;
-        const response = await fetch(freshUrl, { cache: 'no-store' });
+        const response = await fetch(CSV_URL, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const csvRawText = await response.text();
 
         const normalizeKey = (str: any) => {
@@ -167,8 +167,8 @@ export const calculateLeadTime = (collab: Collaborator) => {
 
 export const fetchLiberationData = async (): Promise<LiberationData[]> => {
     try {
-        const freshUrl = `${LIBERATION_CSV_URL}&t=${Date.now()}`;
-        const response = await fetch(freshUrl, { cache: 'no-store' });
+        const response = await fetch(LIBERATION_CSV_URL, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const csvRawText = await response.text();
 
         return new Promise<LiberationData[]>((resolve, reject) => {

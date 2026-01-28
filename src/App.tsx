@@ -961,7 +961,9 @@ const LiberationView: React.FC = () => {
     if (!date.isValid()) return false;
 
     const isAfterStart = date.isAfter(START_FILTER_DATE) || date.isSame(START_FILTER_DATE, 'day');
-    const isBeforeToday = date.isBefore(dayjs(), 'day') || date.isSame(dayjs(), 'day');
+
+    // Se um mês específico estiver selecionado, não trava na data de hoje
+    const isBeforeToday = monthFilter !== 'ALL' || date.isBefore(dayjs(), 'day') || date.isSame(dayjs(), 'day');
 
     if (!isAfterStart || !isBeforeToday) return false;
 
