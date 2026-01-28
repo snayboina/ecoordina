@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+@theme {
+  /* Vibrant Ice Palette */
+  --color-ice-white: #F2F5F7;
+  --color-vibrant-orange: #FF5C00;
+  --color-vibrant-coral: #FF7A45;
+  --color-deep-charcoal: #1A1A1A;
+  --color-soft-gray: #94A3B8;
+  --color-peach-puff: #FFF5ED;
+
+  /* Brand Bindings */
+  --color-brand-primary: var(--color-vibrant-orange);
+  --color-brand-secondary: var(--color-vibrant-coral);
+  --color-bg-dark: var(--color-deep-charcoal);
+
+  /* App Semantic Colors (Vibrant Ice Mode) */
+  --color-app-bg: var(--color-ice-white);
+  --color-app-card: #ffffff;
+  --color-app-border: #E2E8F0;
+  --color-app-text: var(--color-deep-charcoal);
+  --color-app-text-secondary: var(--color-soft-gray);
+  --color-app-notch: #000000;
+  --color-app-indicator: var(--color-deep-charcoal);
+  --color-app-glow: rgba(255, 92, 0, 0.1);
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+:root {
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light;
+  background-color: var(--color-ice-white);
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #e2e8f0;
+}
+
+#root {
+  width: 100%;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-brand-primary text-white font-black py-4 px-8 rounded-[1.5rem] shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 hover:scale-[1.02] transition-all active:scale-95 uppercase tracking-wide text-sm flex items-center justify-center gap-2;
+  }
+
+  .nav-input {
+    @apply bg-white border border-app-border rounded-xl py-4 px-5 outline-none focus:border-brand-primary transition-all text-sm text-app-text font-sans;
+  }
+
+  .menu-block {
+    @apply bg-app-card border border-app-border p-6 rounded-[2rem] flex flex-col justify-between aspect-square transition-all active:scale-95 hover:border-brand-primary/40 hover:shadow-2xl hover:shadow-orange-500/5;
+  }
+}
+
+/* Scrollbar Tweaks */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Simple Animations */
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-pop {
+  animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
