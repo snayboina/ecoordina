@@ -25,36 +25,62 @@ dayjs.extend(customParseFormat);
 const START_DATE = dayjs('2026-01-01');
 const END_DATE = dayjs('2026-03-31');
 
-const AppContainer: React.FC<{ children: React.ReactNode, header?: React.ReactNode, footer?: React.ReactNode }> = ({ children, header, footer }) => {
+const ModernMobileSimulator: React.FC<{ children: React.ReactNode, header?: React.ReactNode, footer?: React.ReactNode }> = ({ children, header, footer }) => {
   return (
-    <div className="min-h-[100dvh] bg-app-bg flex flex-col font-sans overflow-x-hidden">
-      {/* Fixed Header Area */}
-      {header && (
-        <header className="flex-none w-full bg-app-bg/80 backdrop-blur-md border-b border-app-border sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto">
-            {header}
-          </div>
-        </header>
-      )}
+    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-0 sm:p-4 md:p-10 font-sans overflow-hidden">
+      {/* Device Frame */}
+      <div className="relative w-full h-[100dvh] sm:w-[400px] sm:h-[820px] bg-slate-900 sm:rounded-[4rem] sm:p-3.5 sm:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] flex flex-col transition-all duration-500 border-slate-800 sm:border-[10px] relative">
 
-      {/* Screen Content */}
-      <main className="flex-1 w-full max-w-7xl mx-auto relative flex flex-col">
-        <div className="flex-1 w-full bg-app-bg overflow-y-auto overflow-x-hidden scrollbar-hide text-app-text">
-          {children}
+        {/* Physical Buttons Simulation - Only on larger screens */}
+        <div className="hidden sm:block absolute -left-[14px] top-32 w-[4px] h-12 bg-slate-800 rounded-l-md border-y border-white/5 shadow-inner" /> {/* Action Button / Mute */}
+        <div className="hidden sm:block absolute -left-[14px] top-48 w-[4px] h-16 bg-slate-800 rounded-l-md border-y border-white/5 shadow-inner" /> {/* Vol Up */}
+        <div className="hidden sm:block absolute -left-[14px] top-68 w-[4px] h-16 bg-slate-800 rounded-l-md border-y border-white/5 shadow-inner" /> {/* Vol Down */}
+        <div className="hidden sm:block absolute -right-[14px] top-44 w-[4px] h-24 bg-slate-800 rounded-r-md border-y border-white/5 shadow-inner" /> {/* Power Button */}
+
+        {/* Dynamic Island Style Notch - Only on larger screens */}
+        <div className="hidden sm:flex absolute top-6 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-full z-[100] items-center justify-center border border-white/5 shadow-xl">
+          <div className="w-1.5 h-1.5 bg-slate-900/50 rounded-full ml-auto mr-4 border border-white/5" />
+          <div className="w-2.5 h-2.5 bg-[#0a0a0a] rounded-full mr-2 flex items-center justify-center">
+            <div className="w-1 h-1 bg-indigo-500/20 rounded-full blur-[1px]" />
+          </div>
         </div>
-      </main>
 
-      {/* Fixed Footer Area */}
-      {footer && (
-        <footer className="flex-none w-full bg-app-bg border-t border-app-border sticky bottom-0 z-50">
-          <div className="max-w-7xl mx-auto">
-            {footer}
+        {/* Screen Content Wrapper */}
+        <div className="flex-1 w-full bg-app-bg overflow-hidden sm:rounded-[3.2rem] relative flex flex-col shadow-inner">
+          {/* Fixed Header Area */}
+          {header && (
+            <header className="flex-none w-full bg-app-bg/80 backdrop-blur-md border-b border-app-border z-50">
+              <div className="max-w-7xl mx-auto">
+                {header}
+              </div>
+            </header>
+          )}
+
+          {/* Screen Content */}
+          <main className="flex-1 w-full max-w-7xl mx-auto relative flex flex-col overflow-hidden">
+            <div className="flex-1 w-full bg-app-bg overflow-y-auto overflow-x-hidden scrollbar-hide text-app-text">
+              {children}
+            </div>
+          </main>
+
+          {/* Fixed Footer Area */}
+          {footer && (
+            <footer className="flex-none w-full bg-app-bg border-t border-app-border z-50">
+              <div className="max-w-7xl mx-auto">
+                {footer}
+              </div>
+            </footer>
+          )}
+
+          {/* Home Indicator - Only on larger screens */}
+          <div className="hidden sm:flex flex-none h-6 items-center justify-center pb-2 bg-app-bg">
+            <div className="w-32 h-1 bg-app-indicator/10 rounded-full" />
           </div>
-        </footer>
-      )}
+        </div>
+      </div>
 
       {/* Decorative Glow */}
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-app-glow blur-[120px] rounded-full pointer-events-none -z-10" />
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-app-glow blur-[120px] rounded-full pointer-events-none -z-10 opacity-30" />
     </div>
   );
 };
@@ -399,7 +425,7 @@ const App: React.FC = () => {
 
   if (view === 'welcome') {
     return (
-      <AppContainer>
+      <ModernMobileSimulator>
         <WelcomeView onNext={() => {
           if (session) {
             setView('content');
@@ -408,21 +434,21 @@ const App: React.FC = () => {
             setView('login');
           }
         }} />
-      </AppContainer>
+      </ModernMobileSimulator>
     );
   }
 
   if (view === 'login' || !session) {
     return (
-      <AppContainer>
+      <ModernMobileSimulator>
         <LoginView onLogin={handleLogin} onBack={() => setView('welcome')} />
-      </AppContainer>
+      </ModernMobileSimulator>
     );
   }
 
 
   return (
-    <AppContainer header={headerBar}>
+    <ModernMobileSimulator header={headerBar}>
       {loading ? (
         <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
           <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin" />
@@ -622,7 +648,7 @@ const App: React.FC = () => {
           </AnimatePresence>
         </div>
       )}
-    </AppContainer>
+    </ModernMobileSimulator>
   );
 };
 
