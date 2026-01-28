@@ -8,6 +8,8 @@ dayjs.extend(customParseFormat);
 
 const CSV_URL = import.meta.env.VITE_SPREADSHEET_URL || 'https://docs.google.com/spreadsheets/d/1yLnwKTo1yM-fmlzX5cDzrIlbg2-BjbME/export?format=csv';
 
+const LIBERATION_CSV_URL = import.meta.env.VITE_LIBERATION_SPREADSHEET_URL || 'https://docs.google.com/spreadsheets/d/1zYOgUNgNkUA5C5N2pLZ-0ub5Um_uZ2inCh0YDi1JDSo/export?format=csv&gid=0';
+
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -123,7 +125,6 @@ export const login = async (email: string, password: string): Promise<{ name: st
 
         if (error || !data) return null;
 
-        // Simple string comparison as requested
         if (data.password === password) {
             return { name: data.name, email: data.email };
         }
@@ -166,68 +167,53 @@ export const calculateLeadTime = (collab: Collaborator) => {
 
 export const fetchLiberationData = async (): Promise<LiberationData[]> => {
     try {
-        const { data, error } = await supabase
-            .from('liberation_data')
-            .select('*')
-            .order('nome');
+        const freshUrl = `${LIBERATION_CSV_URL}&t=${Date.now()}`;
+        const response = await fetch(freshUrl, { cache: 'no-store' });
+        const csvRawText = await response.text();
 
-        if (error) throw error;
-
-        return (data || []).map(row => ({
-            mat: row.chapa, // Mapeia CHAPA para MAT para manter compatibilidade
-            nome: row.nome,
-            funcao: row.funcao,
-            area: row.area,
-            cid: row.cid,
-            rh: row.rh,
-            saude: row.saude,
-            seguranca: row.seguranca,
-            grd: row.grd,
-            obs_grd: row.obs_grd,
-            data_admissao: row.data_admissao,
-            data_liberacao_ecoordin: row.liberacao_ecoordin,
-            envio_cliente: row.envio_cliente,
-            updated_at: row.updated_at
-        }));
+        return new Promise<LiberationData[]>((resolve, reject) => {
+            Papa.parse(csvRawText, {
+                header: true,
+                skipEmptyLines: true,
+                complete: (results: Papa.ParseResult<any>) => {
+                    const mapped = results.data
+                        .filter((row: any) => row.MAT || row.NOME)
+                        .map((row: any) => ({
+                            mat: String(row.MAT || row.CHAPA || '').trim(),
+                            nome: String(row.NOME || '').trim(),
+                            funcao: row['FUNÇÃO RM ATUALIZADA'] || row['FUNCAO'] || row['FUNÇÃO'],
+                            area: row['AREA DE NEGOCIO'] || row['AREA'],
+                            cid: row['CIP DE LIBERAÇÃO'] || row['CID'],
+                            rh: row.RH,
+                            saude: row.SAÚDE || row.SAUDE,
+                            seguranca: row.SEGURANÇA || row.SEGURANCA,
+                            grd: row.GRD,
+                            obs_grd: row['OBSERVAÇÃO GRD'] || row['OBSERVACAO GRD'],
+                            data_admissao: row['DATA ADMISSÃO'] || row['DATA_ADMISSAO'] || row['DATA ADMISSAO'],
+                            data_liberacao_ecoordin: row['DATA DE LIBERAÇÃO E-COORDINA'] || row['DATA DE LIBERERAÇÃO'] || row['LiberaçãoEcoordina'],
+                            envio_cliente: row['ENVIO PARA O CLIENTE'] || row['Envio para o cliente'],
+                            updated_at: new Date().toISOString()
+                        }));
+                    resolve(mapped);
+                },
+                error: (error: any) => reject(error)
+            });
+        });
     } catch (error) {
-        console.error('Error fetching liberation data from Supabase:', error);
+        console.error('Error fetching liberation data:', error);
         return [];
     }
 };
 
 export const fetchLiberationByMat = async (search: string): Promise<LiberationData | null> => {
     try {
-        const term = search.trim();
-        const isNumeric = /^\d+$/.test(term);
+        const allData = await fetchLiberationData();
+        const term = search.trim().toLowerCase();
 
-        let query = supabase.from('liberation_data').select('*');
-
-        if (isNumeric) {
-            query = query.eq('chapa', term);
-        } else {
-            query = query.ilike('nome', `%${term}%`);
-        }
-
-        const { data, error } = await query.limit(1).single();
-
-        if (error || !data) return null;
-
-        return {
-            mat: data.chapa,
-            nome: data.nome,
-            funcao: data.funcao,
-            area: data.area,
-            cid: data.cid,
-            rh: data.rh,
-            saude: data.saude,
-            seguranca: data.seguranca,
-            grd: data.grd,
-            obs_grd: data.obs_grd,
-            data_admissao: data.data_admissao,
-            data_liberacao_ecoordin: data.liberacao_ecoordin,
-            envio_cliente: data.envio_cliente,
-            updated_at: data.updated_at
-        };
+        return allData.find(d =>
+            d.mat.toLowerCase() === term ||
+            d.nome.toLowerCase().includes(term)
+        ) || null;
     } catch (err) {
         console.error('Liberation fetch error:', err);
         return null;

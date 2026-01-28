@@ -875,7 +875,7 @@ const LiberationView: React.FC = () => {
     setLoading(true);
     try {
       const data = await fetchLiberationData();
-      console.log('Dados carregados do Supabase:', data);
+      console.log('Dados de liberação carregados:', data);
       setAllData(data);
     } catch (err) {
       console.error('Erro ao carregar dados:', err);
@@ -1131,7 +1131,7 @@ const LiberationView: React.FC = () => {
         ) : loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4">
             <div className="w-8 h-8 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin" />
-            <span className="text-xs font-bold text-app-secondary uppercase tracking-widest animate-pulse">Buscando dados no Supabase...</span>
+            <span className="text-xs font-bold text-app-secondary uppercase tracking-widest animate-pulse">Sincronizando dados com a planilha...</span>
           </div>
         ) : (
           (
