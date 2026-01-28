@@ -282,7 +282,7 @@ const DashboardCard: React.FC<{ title: string, value: string | number, icon: Rea
 
 const App: React.FC = () => {
   const [view, setView] = useState<'welcome' | 'login' | 'content'>('welcome');
-  const [activeTab, setActiveTab] = useState<'lib' | 'lead'>('lib');
+  const [activeTab, setActiveTab] = useState<'lib' | 'lead' | 'list' | 'dash'>('lib');
   const [frameStyle, setFrameStyle] = useState<'midnight' | 'silver' | 'gold'>('midnight');
   const [data, setData] = useState<Collaborator[]>([]);
   const [loading, setLoading] = useState(false);
