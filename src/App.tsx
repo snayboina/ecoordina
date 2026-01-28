@@ -27,16 +27,23 @@ const END_DATE = dayjs('2026-03-31');
 
 const MobileSimulator: React.FC<{ children: React.ReactNode, header?: React.ReactNode, footer?: React.ReactNode }> = ({ children, header, footer }) => {
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center sm:p-4 gap-4 sm:gap-8 overflow-hidden h-screen sm:h-auto">
-      <div className="relative overflow-hidden bg-app-bg sm:bg-white sm:border-[10px] sm:border-slate-200 sm:rounded-[4rem] sm:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.06)] w-full sm:w-[375px] h-[100dvh] sm:h-[812px] flex flex-col">
-        {/* Notch */}
-        <div className="hidden sm:flex absolute top-0 left-1/2 -translate-x-1/2 w-40 h-8 bg-slate-900 rounded-b-[2rem] z-50 items-center justify-center">
-          <div className="w-12 h-1 bg-black rounded-full mb-1" />
+    <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center p-0 sm:p-4 md:p-8 gap-4 overflow-hidden h-screen sm:h-auto font-sans">
+      <div className="relative overflow-hidden bg-app-bg 
+        sm:border-[8px] sm:border-slate-200 sm:rounded-[3rem] 
+        md:rounded-[4rem] md:border-[12px]
+        sm:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.06)] 
+        w-full sm:max-w-md md:max-w-2xl lg:max-w-4xl
+        h-[100dvh] sm:h-[85vh] md:h-[90vh] lg:h-[812px]
+        flex flex-col transition-all duration-500 ease-in-out">
+
+        {/* Notch - Only on small mobile simulation views */}
+        <div className="hidden sm:max-md:flex absolute top-0 left-1/2 -translate-x-1/2 w-40 h-7 bg-slate-900 rounded-b-[2rem] z-50 items-center justify-center">
+          <div className="w-12 h-1 bg-black/40 rounded-full mb-1" />
         </div>
 
         {/* Fixed Header Area */}
         {header && (
-          <div className="flex-none w-full bg-app-bg border-b border-app-border z-50 pt-8 sm:pt-8">
+          <div className="flex-none w-full bg-app-bg border-b border-app-border z-50 pt-4 sm:pt-6 md:pt-8 bg-white/80 backdrop-blur-md">
             {header}
           </div>
         )}
@@ -53,9 +60,9 @@ const MobileSimulator: React.FC<{ children: React.ReactNode, header?: React.Reac
           </div>
         )}
 
-        {/* Home Indicator */}
-        <div className="hidden sm:flex w-full h-6 bg-app-bg items-center justify-center pb-2">
-          <div className="w-32 h-1 bg-app-indicator rounded-full" />
+        {/* Home Indicator - Bottom bar style */}
+        <div className="hidden sm:flex w-full h-8 bg-app-bg items-center justify-center pb-2">
+          <div className="w-32 h-1.5 bg-app-indicator/10 rounded-full" />
         </div>
       </div>
 
@@ -66,8 +73,8 @@ const MobileSimulator: React.FC<{ children: React.ReactNode, header?: React.Reac
 
 const WelcomeView: React.FC<{ onNext: () => void }> = ({ onNext }) => (
   <div className="relative h-full flex flex-col overflow-hidden">
-    <div className="flex-1 flex flex-col">
-      <div className="p-8 pb-4">
+    <div className="flex-1 flex flex-col md:flex-row md:items-center">
+      <div className="p-8 pb-4 md:flex-1">
         <div className="flex items-center gap-2 mb-8">
           <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20">
             <Zap className="text-white" size={20} fill="currentColor" />
@@ -78,28 +85,28 @@ const WelcomeView: React.FC<{ onNext: () => void }> = ({ onNext }) => (
         </div>
 
         <div className="space-y-4">
-          <h1 className="text-4xl font-black text-app-text tracking-tighter leading-[1.05]">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-app-text tracking-tighter leading-[1.05]">
             Sua jornada <br />
             operacional <br />
             começa <span className="text-brand-primary">aqui.</span>
           </h1>
-          <p className="text-app-text-secondary text-base leading-relaxed pr-6 font-medium">
+          <p className="text-app-text-secondary text-base md:text-lg leading-relaxed pr-6 font-medium">
             Bora saber se esta liberado para as suas atividades!
           </p>
         </div>
       </div>
 
-      <div className="flex-1 relative flex items-center justify-center p-6">
+      <div className="flex-1 relative flex items-center justify-center p-6 md:p-12">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="absolute w-72 h-72 bg-brand-primary/5 rounded-full blur-3xl"
+          className="absolute w-72 h-72 md:w-96 md:h-96 bg-brand-primary/5 rounded-full blur-3xl"
         />
         <motion.img
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           src="https://res.cloudinary.com/duyb5dsw0/image/upload/v1769556456/Whisk_d93805c8624cb73b747439948d305d92eg_plg0wt.png"
-          className="relative z-10 w-full h-full object-cover rounded-[24px] border border-white/20 shadow-2xl"
+          className="relative z-10 w-full h-full md:max-h-[400px] object-cover rounded-[24px] border border-white/20 shadow-2xl"
         />
       </div>
     </div>
@@ -1102,7 +1109,7 @@ const LiberationView: React.FC = () => {
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   <StatusItem label="RH" value={result.rh} />
                   <StatusItem label="SAÚDE" value={result.saude} />
                   <StatusItem label="SEGURANÇA" value={result.seguranca} />
@@ -1147,27 +1154,29 @@ const LiberationView: React.FC = () => {
                   <span className="text-sm text-app-secondary">Nenhum registro para este filtro.</span>
                 </div>
               ) : (
-                filteredList.map((item, i) => (
-                  <motion.button
-                    key={i}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.03 }}
-                    onClick={() => handleSelectSuggestion(item)}
-                    className="w-full bg-app-card border border-app-border p-4 rounded-2xl flex justify-between items-center active:scale-95 transition-all text-left"
-                  >
-                    <div className="flex flex-col gap-0.5 max-w-[70%]">
-                      <span className="text-[11px] font-bold text-app-text truncate">{item.mat} - {item.nome}</span>
-                      <span className="text-[9px] text-app-secondary truncate opacity-60 uppercase font-medium">{item.funcao}</span>
-                    </div>
-                    <div className="flex flex-col items-end gap-1">
-                      <span className="text-[9px] font-mono text-brand-primary bg-brand-primary/10 px-1.5 py-0.5 rounded">
-                        {item.data_liberacao_ecoordin}
-                      </span>
-                      <ChevronRight size={14} className="text-app-text/20" />
-                    </div>
-                  </motion.button>
-                ))
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pb-8">
+                  {filteredList.map((item, i) => (
+                    <motion.button
+                      key={i}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.03 }}
+                      onClick={() => handleSelectSuggestion(item)}
+                      className="w-full bg-app-card border border-app-border p-5 rounded-2xl flex justify-between items-center active:scale-95 transition-all text-left group hover:border-brand-primary/30"
+                    >
+                      <div className="flex flex-col gap-1 max-w-[70%]">
+                        <span className="text-sm font-bold text-app-text truncate group-hover:text-brand-primary transition-colors">{item.mat} - {item.nome}</span>
+                        <span className="text-[10px] text-app-secondary truncate opacity-60 uppercase font-black">{item.funcao}</span>
+                      </div>
+                      <div className="flex flex-col items-end gap-1.5">
+                        <span className="text-[10px] font-mono text-brand-primary bg-brand-primary/10 px-2 py-0.5 rounded-lg border border-brand-primary/10">
+                          {item.data_liberacao_ecoordin}
+                        </span>
+                        <ChevronRight size={16} className="text-app-text/20 group-hover:text-brand-primary/40 transition-all" />
+                      </div>
+                    </motion.button>
+                  ))}
+                </div>
               )}
             </motion.div>
           )
