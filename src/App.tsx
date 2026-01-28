@@ -25,47 +25,35 @@ dayjs.extend(customParseFormat);
 const START_DATE = dayjs('2026-01-01');
 const END_DATE = dayjs('2026-03-31');
 
-const MobileSimulator: React.FC<{ children: React.ReactNode, header?: React.ReactNode, footer?: React.ReactNode }> = ({ children, header, footer }) => {
+const AppContainer: React.FC<{ children: React.ReactNode, header?: React.ReactNode, footer?: React.ReactNode }> = ({ children, header, footer }) => {
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center p-0 sm:p-4 md:p-8 gap-4 overflow-hidden h-screen sm:h-auto font-sans">
-      <div className="relative overflow-hidden bg-app-bg 
-        sm:border-[8px] sm:border-slate-200 sm:rounded-[3rem] 
-        md:rounded-[4rem] md:border-[12px]
-        sm:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.06)] 
-        w-full sm:max-w-md md:max-w-2xl lg:max-w-4xl
-        h-[100dvh] sm:h-[85vh] md:h-[90vh] lg:h-[812px]
-        flex flex-col transition-all duration-500 ease-in-out">
-
-        {/* Notch - Only on small mobile simulation views */}
-        <div className="hidden sm:max-md:flex absolute top-0 left-1/2 -translate-x-1/2 w-40 h-7 bg-slate-900 rounded-b-[2rem] z-50 items-center justify-center">
-          <div className="w-12 h-1 bg-black/40 rounded-full mb-1" />
-        </div>
-
-        {/* Fixed Header Area */}
-        {header && (
-          <div className="flex-none w-full bg-app-bg border-b border-app-border z-50 pt-4 sm:pt-6 md:pt-8 bg-white/80 backdrop-blur-md">
+    <div className="min-h-[100dvh] bg-app-bg flex flex-col font-sans overflow-x-hidden">
+      {/* Fixed Header Area */}
+      {header && (
+        <header className="flex-none w-full bg-app-bg/80 backdrop-blur-md border-b border-app-border sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto">
             {header}
           </div>
-        )}
+        </header>
+      )}
 
-        {/* Screen Content */}
-        <div className="flex-1 w-full bg-app-bg overflow-y-auto overflow-x-hidden scrollbar-hide text-app-text relative">
+      {/* Screen Content */}
+      <main className="flex-1 w-full max-w-7xl mx-auto relative flex flex-col">
+        <div className="flex-1 w-full bg-app-bg overflow-y-auto overflow-x-hidden scrollbar-hide text-app-text">
           {children}
         </div>
+      </main>
 
-        {/* Fixed Footer Area */}
-        {footer && (
-          <div className="flex-none w-full bg-app-bg border-t border-app-border z-50">
+      {/* Fixed Footer Area */}
+      {footer && (
+        <footer className="flex-none w-full bg-app-bg border-t border-app-border sticky bottom-0 z-50">
+          <div className="max-w-7xl mx-auto">
             {footer}
           </div>
-        )}
+        </footer>
+      )}
 
-        {/* Home Indicator - Bottom bar style */}
-        <div className="hidden sm:flex w-full h-8 bg-app-bg items-center justify-center pb-2">
-          <div className="w-32 h-1.5 bg-app-indicator/10 rounded-full" />
-        </div>
-      </div>
-
+      {/* Decorative Glow */}
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-app-glow blur-[120px] rounded-full pointer-events-none -z-10" />
     </div>
   );
@@ -340,7 +328,7 @@ const App: React.FC = () => {
 
   const headerBar = (
     <div className="flex flex-col bg-white border-b border-app-border">
-      <div className="px-6 py-4 flex justify-between items-center relative z-10">
+      <div className="px-6 py-4 flex justify-between items-center relative z-10 max-w-7xl mx-auto w-full">
         <button
           onClick={() => setView('welcome')}
           className="w-10 h-10 rounded-[1rem] bg-orange-50 flex items-center justify-center text-brand-primary active:scale-90 transition-all shadow-sm"
@@ -349,10 +337,9 @@ const App: React.FC = () => {
         </button>
 
         <div className="flex flex-col items-center">
-          <span className="text-[10px] font-black text-brand-primary uppercase tracking-widest leading-none mb-1 text-center">
+          <span className="text-[10px] sm:text-xs font-black text-brand-primary uppercase tracking-widest leading-none mb-1 text-center">
             Seja bem-vindo: {session?.name?.split(' ')[0]}
           </span>
-
         </div>
 
         <button
@@ -399,7 +386,7 @@ const App: React.FC = () => {
 
   if (view === 'welcome') {
     return (
-      <MobileSimulator>
+      <AppContainer>
         <WelcomeView onNext={() => {
           if (session) {
             setView('content');
@@ -408,21 +395,21 @@ const App: React.FC = () => {
             setView('login');
           }
         }} />
-      </MobileSimulator>
+      </AppContainer>
     );
   }
 
   if (view === 'login' || !session) {
     return (
-      <MobileSimulator>
+      <AppContainer>
         <LoginView onLogin={handleLogin} onBack={() => setView('welcome')} />
-      </MobileSimulator>
+      </AppContainer>
     );
   }
 
 
   return (
-    <MobileSimulator header={headerBar}>
+    <AppContainer header={headerBar}>
       {loading ? (
         <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
           <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin" />
@@ -622,7 +609,7 @@ const App: React.FC = () => {
           </AnimatePresence>
         </div>
       )}
-    </MobileSimulator>
+    </AppContainer>
   );
 };
 
