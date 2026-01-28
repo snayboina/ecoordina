@@ -66,7 +66,7 @@ export interface LiberationData {
     grd?: string;
     obs_grd?: string;
     data_admissao?: string;
-    liberacao_ecoordin?: string;
+    data_liberacao_ecoordin?: string;
     envio_cliente?: string;
     updated_at?: string;
 }

@@ -7,7 +7,6 @@ import type { Collaborator, LiberationData } from '../types';
 dayjs.extend(customParseFormat);
 
 const CSV_URL = import.meta.env.VITE_SPREADSHEET_URL || 'https://docs.google.com/spreadsheets/d/1yLnwKTo1yM-fmlzX5cDzrIlbg2-BjbME/export?format=csv';
-const LIBERATION_CSV_URL = import.meta.env.VITE_LIBERATION_SPREADSHEET_URL || 'https://docs.google.com/spreadsheets/d/1zYOgUNgNkUA5C5N2pLZ-0ub5Um_uZ2inCh0YDi1JDSo/export?format=csv&gid=0';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -186,7 +185,7 @@ export const fetchLiberationData = async (): Promise<LiberationData[]> => {
             grd: row.grd,
             obs_grd: row.obs_grd,
             data_admissao: row.data_admissao,
-            liberacao_ecoordin: row.liberacao_ecoordin,
+            data_liberacao_ecoordin: row.liberacao_ecoordin,
             envio_cliente: row.envio_cliente,
             updated_at: row.updated_at
         }));
@@ -225,7 +224,7 @@ export const fetchLiberationByMat = async (search: string): Promise<LiberationDa
             grd: data.grd,
             obs_grd: data.obs_grd,
             data_admissao: data.data_admissao,
-            liberacao_ecoordin: data.liberacao_ecoordin,
+            data_liberacao_ecoordin: data.liberacao_ecoordin,
             envio_cliente: data.envio_cliente,
             updated_at: data.updated_at
         };
