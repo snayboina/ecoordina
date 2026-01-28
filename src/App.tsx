@@ -25,25 +25,45 @@ dayjs.extend(customParseFormat);
 const START_DATE = dayjs('2026-01-01');
 const END_DATE = dayjs('2026-03-31');
 
-const ModernMobileSimulator: React.FC<{ children: React.ReactNode, header?: React.ReactNode, footer?: React.ReactNode }> = ({ children, header, footer }) => {
+const ModernMobileSimulator: React.FC<{
+  children: React.ReactNode,
+  header?: React.ReactNode,
+  footer?: React.ReactNode,
+  variant?: 'midnight' | 'silver' | 'gold'
+}> = ({ children, header, footer, variant = 'midnight' }) => {
+  const isMidnight = variant === 'midnight';
+  const isSilver = variant === 'silver';
+  const isGold = variant === 'gold';
+
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-0 sm:p-4 md:p-10 font-sans overflow-hidden">
       {/* Device Frame */}
-      <div className="relative w-full h-[100dvh] sm:w-[400px] sm:h-[820px] bg-slate-900 sm:rounded-[4rem] sm:p-3.5 sm:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] flex flex-col transition-all duration-500 border-slate-800 sm:border-[10px] relative">
+      <div className={`relative w-full h-[100dvh] sm:w-[400px] sm:h-[820px] sm:rounded-[4rem] sm:p-3.5 sm:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] flex flex-col transition-all duration-700 sm:border-[10px] relative
+        ${isMidnight ? 'bg-slate-900 border-slate-800 shadow-slate-900/20' : ''}
+        ${isSilver ? 'bg-slate-300 border-slate-200 shadow-slate-400/20' : ''}
+        ${isGold ? 'bg-[#c5a059] border-[#b48d4a] shadow-amber-900/10' : ''}
+      `}>
 
-        {/* Physical Buttons Simulation - Only on larger screens */}
-        <div className="hidden sm:block absolute -left-[14px] top-32 w-[4px] h-12 bg-slate-800 rounded-l-md border-y border-white/5 shadow-inner" /> {/* Action Button / Mute */}
-        <div className="hidden sm:block absolute -left-[14px] top-48 w-[4px] h-16 bg-slate-800 rounded-l-md border-y border-white/5 shadow-inner" /> {/* Vol Up */}
-        <div className="hidden sm:block absolute -left-[14px] top-68 w-[4px] h-16 bg-slate-800 rounded-l-md border-y border-white/5 shadow-inner" /> {/* Vol Down */}
-        <div className="hidden sm:block absolute -right-[14px] top-44 w-[4px] h-24 bg-slate-800 rounded-r-md border-y border-white/5 shadow-inner" /> {/* Power Button */}
+        {/* Physical Buttons Simulation */}
+        <div className={`hidden sm:block absolute -left-[14px] top-32 w-[4px] h-12 rounded-l-md border-y border-white/5 shadow-inner transition-colors duration-700 ${isSilver ? 'bg-slate-400' : isGold ? 'bg-[#b48d4a]' : 'bg-slate-800'}`} /> {/* Action Button / Mute */}
+        <div className={`hidden sm:block absolute -left-[14px] top-48 w-[4px] h-16 rounded-l-md border-y border-white/5 shadow-inner transition-colors duration-700 ${isSilver ? 'bg-slate-400' : isGold ? 'bg-[#b48d4a]' : 'bg-slate-800'}`} /> {/* Vol Up */}
+        <div className={`hidden sm:block absolute -left-[14px] top-68 w-[4px] h-16 rounded-l-md border-y border-white/5 shadow-inner transition-colors duration-700 ${isSilver ? 'bg-slate-400' : isGold ? 'bg-[#b48d4a]' : 'bg-slate-800'}`} /> {/* Vol Down */}
+        <div className={`hidden sm:block absolute -right-[14px] top-44 w-[4px] h-24 rounded-r-md border-y border-white/5 shadow-inner transition-colors duration-700 ${isSilver ? 'bg-slate-400' : isGold ? 'bg-[#b48d4a]' : 'bg-slate-800'}`} /> {/* Power Button */}
 
-        {/* Dynamic Island Style Notch - Only on larger screens */}
-        <div className="hidden sm:flex absolute top-6 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-full z-[100] items-center justify-center border border-white/5 shadow-xl">
-          <div className="w-1.5 h-1.5 bg-slate-900/50 rounded-full ml-auto mr-4 border border-white/5" />
-          <div className="w-2.5 h-2.5 bg-[#0a0a0a] rounded-full mr-2 flex items-center justify-center">
-            <div className="w-1 h-1 bg-indigo-500/20 rounded-full blur-[1px]" />
+        {/* Camera / Notch Variation */}
+        {isMidnight && (
+          <div className="hidden sm:flex absolute top-6 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-full z-[100] items-center justify-center border border-white/5 shadow-xl transition-all duration-700">
+            <div className="w-1.5 h-1.5 bg-slate-900/50 rounded-full ml-auto mr-4 border border-white/5" />
+            <div className="w-2.5 h-2.5 bg-[#0a0a0a] rounded-full mr-2 flex items-center justify-center">
+              <div className="w-1 h-1 bg-indigo-500/20 rounded-full blur-[1px]" />
+            </div>
           </div>
-        </div>
+        )}
+        {(isSilver || isGold) && (
+          <div className="hidden sm:flex absolute top-7 left-1/2 -translate-x-1/2 w-4 h-4 bg-black rounded-full z-[100] items-center justify-center border border-white/10 shadow-inner transition-all duration-700">
+            <div className="w-1 h-1 bg-indigo-500/40 rounded-full blur-[0.5px]" />
+          </div>
+        )}
 
         {/* Screen Content Wrapper */}
         <div className="flex-1 w-full bg-app-bg overflow-hidden sm:rounded-[3.2rem] relative flex flex-col shadow-inner">
@@ -74,13 +94,13 @@ const ModernMobileSimulator: React.FC<{ children: React.ReactNode, header?: Reac
 
           {/* Home Indicator - Only on larger screens */}
           <div className="hidden sm:flex flex-none h-6 items-center justify-center pb-2 bg-app-bg">
-            <div className="w-32 h-1 bg-app-indicator/10 rounded-full" />
+            <div className={`w-32 h-1 rounded-full transition-colors duration-700 ${isSilver ? 'bg-slate-200' : isGold ? 'bg-amber-100' : 'bg-app-indicator/10'}`} />
           </div>
         </div>
       </div>
 
       {/* Decorative Glow */}
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-app-glow blur-[120px] rounded-full pointer-events-none -z-10 opacity-30" />
+      <div className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] blur-[120px] rounded-full pointer-events-none -z-10 opacity-30 transition-colors duration-1000 ${isGold ? 'bg-amber-500' : isSilver ? 'bg-blue-400' : 'bg-app-glow'}`} />
     </div>
   );
 };
@@ -261,8 +281,9 @@ const DashboardCard: React.FC<{ title: string, value: string | number, icon: Rea
 
 
 const App: React.FC = () => {
-  const [view, setView] = useState<'welcome' | 'login' | 'menu' | 'content'>('welcome');
-  const [activeTab, setActiveTab] = useState<'dash' | 'list' | 'lead' | 'lib'>('dash');
+  const [view, setView] = useState<'welcome' | 'login' | 'content'>('welcome');
+  const [activeTab, setActiveTab] = useState<'lib' | 'lead'>('lib');
+  const [frameStyle, setFrameStyle] = useState<'midnight' | 'silver' | 'gold'>('midnight');
   const [data, setData] = useState<Collaborator[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -423,232 +444,267 @@ const App: React.FC = () => {
 
 
 
+  const frameSelector = (
+    <div className="hidden lg:flex fixed right-10 top-1/2 -translate-y-1/2 flex-col gap-6 bg-white/80 backdrop-blur-xl p-6 rounded-[2.5rem] border border-slate-200 shadow-2xl shadow-slate-200/50 z-[200]">
+      <div className="flex flex-col gap-1">
+        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Moldura</span>
+        <div className="h-px w-full bg-slate-100" />
+      </div>
+
+      <div className="flex flex-col gap-4">
+        {[
+          { id: 'midnight', color: 'bg-slate-900', label: 'Midnight' },
+          { id: 'silver', color: 'bg-slate-300', label: 'Silver' },
+          { id: 'gold', color: 'bg-[#c5a059]', label: 'Gold' }
+        ].map(style => (
+          <button
+            key={style.id}
+            onClick={() => setFrameStyle(style.id as any)}
+            className={`flex flex-col items-center gap-2 group transition-all ${frameStyle === style.id ? 'scale-110' : 'opacity-40 hover:opacity-100'}`}
+          >
+            <div className={`w-12 h-12 ${style.color} rounded-2xl shadow-lg border-2 ${frameStyle === style.id ? 'border-brand-primary active' : 'border-white'} transition-all`} />
+            <span className={`text-[9px] font-bold uppercase tracking-widest ${frameStyle === style.id ? 'text-brand-primary' : 'text-slate-400'}`}>{style.label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
   if (view === 'welcome') {
     return (
-      <ModernMobileSimulator>
-        <WelcomeView onNext={() => {
-          if (session) {
-            setView('content');
-            setActiveTab('lib');
-          } else {
-            setView('login');
-          }
-        }} />
-      </ModernMobileSimulator>
+      <>
+        <ModernMobileSimulator variant={frameStyle}>
+          <WelcomeView onNext={() => {
+            if (session) {
+              setView('content');
+              setActiveTab('lib');
+            } else {
+              setView('login');
+            }
+          }} />
+        </ModernMobileSimulator>
+        {frameSelector}
+      </>
     );
   }
 
   if (view === 'login' || !session) {
     return (
-      <ModernMobileSimulator>
-        <LoginView onLogin={handleLogin} onBack={() => setView('welcome')} />
-      </ModernMobileSimulator>
+      <>
+        <ModernMobileSimulator variant={frameStyle}>
+          <LoginView onLogin={handleLogin} onBack={() => setView('welcome')} />
+        </ModernMobileSimulator>
+        {frameSelector}
+      </>
     );
   }
 
 
   return (
-    <ModernMobileSimulator header={headerBar}>
-      {loading ? (
-        <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
-          <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin" />
-          <p className="text-app-secondary animate-pulse text-sm">Atualizando seus dados...</p>
-        </div>
-      ) : (
-        <div className="px-5">
-          <AnimatePresence mode="wait">
-            {activeTab === 'dash' && (
-              <motion.div key="dash" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-4 pt-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <DashboardCard title="Mobilização" value={stats.active} icon={<Users size={22} />} delay={0.1} />
-                  <DashboardCard title="Lead Time" value={`${stats.avgLeadTime}d`} icon={<Timer size={22} />} delay={0.2} />
-                </div>
+    <>
+      <ModernMobileSimulator header={headerBar} variant={frameStyle}>
+        {loading ? (
+          <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
+            <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin" />
+            <p className="text-app-secondary animate-pulse text-sm">Atualizando seus dados...</p>
+          </div>
+        ) : (
+          <div className="px-5">
+            <AnimatePresence mode="wait">
+              {activeTab === 'dash' && (
+                <motion.div key="dash" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-4 pt-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <DashboardCard title="Mobilização" value={stats.active} icon={<Users size={22} />} delay={0.1} />
+                    <DashboardCard title="Lead Time" value={`${stats.avgLeadTime}d`} icon={<Timer size={22} />} delay={0.2} />
+                  </div>
 
-                <div className="space-y-4">
-                  {(() => {
-                    const allStatuses = [
-                      'EM SELEÇÃO',
-                      'AGUARDANDO DOCUMENTOS',
-                      'AGUARDANDO ASO',
-                      'AGUARDANDO VIAGEM',
-                      'SUBSTITUIR',
-                      'TRANSFERIDO',
-                      'LANÇAR NO RM',
-                      'STAND BY',
-                      'AGUARDANDO ACEITE DA CARTA',
-                      'ADMITIDO'
-                    ];
+                  <div className="space-y-4">
+                    {(() => {
+                      const allStatuses = [
+                        'EM SELEÇÃO',
+                        'AGUARDANDO DOCUMENTOS',
+                        'AGUARDANDO ASO',
+                        'AGUARDANDO VIAGEM',
+                        'SUBSTITUIR',
+                        'TRANSFERIDO',
+                        'LANÇAR NO RM',
+                        'STAND BY',
+                        'AGUARDANDO ACEITE DA CARTA',
+                        'ADMITIDO'
+                      ];
 
-                    const statusCounts = allStatuses.map(status => ({
-                      name: status,
-                      count: data.filter(c => c.status === status).length
-                    }));
+                      const statusCounts = allStatuses.map(status => ({
+                        name: status,
+                        count: data.filter(c => c.status === status).length
+                      }));
 
-                    const admitidos = statusCounts.find(s => s.name === 'ADMITIDO') || { name: 'ADMITIDO', count: 0 };
+                      const admitidos = statusCounts.find(s => s.name === 'ADMITIDO') || { name: 'ADMITIDO', count: 0 };
 
-                    // Outros status excluindo ADMITIDO para o fluxo normal
-                    const otherStatuses = statusCounts.filter(s => s.name !== 'ADMITIDO');
+                      // Outros status excluindo ADMITIDO para o fluxo normal
+                      const otherStatuses = statusCounts.filter(s => s.name !== 'ADMITIDO');
 
-                    // Ordenar outros status: Maiores primeiro, zeros por último
-                    const sortedStatuses = otherStatuses.sort((a, b) => {
-                      if (a.count === 0 && b.count > 0) return 1;
-                      if (a.count > 0 && b.count === 0) return -1;
-                      return b.count - a.count;
-                    });
+                      // Ordenar outros status: Maiores primeiro, zeros por último
+                      const sortedStatuses = otherStatuses.sort((a, b) => {
+                        if (a.count === 0 && b.count > 0) return 1;
+                        if (a.count > 0 && b.count === 0) return -1;
+                        return b.count - a.count;
+                      });
 
-                    // Separar os top 4 (Principais) dos secundários
-                    const mainStatuses = sortedStatuses.slice(0, 4);
-                    const secondaryStatuses = sortedStatuses.slice(4);
+                      // Separar os top 4 (Principais) dos secundários
+                      const mainStatuses = sortedStatuses.slice(0, 4);
+                      const secondaryStatuses = sortedStatuses.slice(4);
 
-                    return (
-                      <div className="space-y-3">
-                        {/* Hero Card: ADMITIDO */}
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.95 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/5 border border-emerald-500/30 p-5 rounded-3xl relative overflow-hidden group"
-                        >
-                          <div className="flex justify-between items-center relative z-10">
-                            <div className="flex flex-col gap-1">
-                              <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-[0.2em]">Concluído</span>
-                              <h3 className="text-xl font-bold text-app-text tracking-tight">{admitidos.name}</h3>
+                      return (
+                        <div className="space-y-3">
+                          {/* Hero Card: ADMITIDO */}
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/5 border border-emerald-500/30 p-5 rounded-3xl relative overflow-hidden group"
+                          >
+                            <div className="flex justify-between items-center relative z-10">
+                              <div className="flex flex-col gap-1">
+                                <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-[0.2em]">Concluído</span>
+                                <h3 className="text-xl font-bold text-app-text tracking-tight">{admitidos.name}</h3>
+                              </div>
+                              <div className="flex flex-col items-end">
+                                <span className="text-3xl font-black text-emerald-400 drop-shadow-[0_0_15px_rgba(52,211,153,0.3)]">{admitidos.count}</span>
+                                <span className="text-[10px] text-app-secondary font-medium">No Período</span>
+                              </div>
                             </div>
-                            <div className="flex flex-col items-end">
-                              <span className="text-3xl font-black text-emerald-400 drop-shadow-[0_0_15px_rgba(52,211,153,0.3)]">{admitidos.count}</span>
-                              <span className="text-[10px] text-app-secondary font-medium">No Período</span>
-                            </div>
+
+                            {/* Decorative elements */}
+                            <div className="absolute -right-4 -bottom-4 bg-emerald-500/10 w-24 h-24 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-colors" />
+                            <div className="absolute left-0 top-0 w-1 h-full bg-emerald-500/50" />
+                          </motion.div>
+
+                          <div className="pt-2">
+                            <span className="text-[10px] bg-brand-primary/10 text-brand-primary px-2 py-1 rounded-md border border-brand-primary/20 uppercase font-bold tracking-tighter">Fluxo de Mobilização</span>
                           </div>
 
-                          {/* Decorative elements */}
-                          <div className="absolute -right-4 -bottom-4 bg-emerald-500/10 w-24 h-24 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-colors" />
-                          <div className="absolute left-0 top-0 w-1 h-full bg-emerald-500/50" />
-                        </motion.div>
-
-                        <div className="pt-2">
-                          <span className="text-[10px] bg-brand-primary/10 text-brand-primary px-2 py-1 rounded-md border border-brand-primary/20 uppercase font-bold tracking-tighter">Fluxo de Mobilização</span>
-                        </div>
-
-                        {/* Principais - Cards Largos */}
-                        {mainStatuses.map((status, i) => {
-                          const percentage = (status.count / (stats.active || 1)) * 100;
-                          return (
-                            <div key={status.name} className="bg-app-card p-4 rounded-xl border border-app-border overflow-hidden relative">
-                              <div className="flex justify-between items-center mb-2 z-10 relative">
-                                <span className="text-xs font-semibold text-app-secondary">{status.name}</span>
-                                <span className="text-brand-primary font-bold">{status.count}</span>
+                          {/* Principais - Cards Largos */}
+                          {mainStatuses.map((status, i) => {
+                            const percentage = (status.count / (stats.active || 1)) * 100;
+                            return (
+                              <div key={status.name} className="bg-app-card p-4 rounded-xl border border-app-border overflow-hidden relative">
+                                <div className="flex justify-between items-center mb-2 z-10 relative">
+                                  <span className="text-xs font-semibold text-app-secondary">{status.name}</span>
+                                  <span className="text-brand-primary font-bold">{status.count}</span>
+                                </div>
+                                <div className="h-1.5 w-full bg-app-notch rounded-full overflow-hidden">
+                                  <motion.div
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${percentage}%` }}
+                                    transition={{ delay: 0.3 + (i * 0.1), duration: 1 }}
+                                    className="h-full bg-brand-primary"
+                                  />
+                                </div>
                               </div>
-                              <div className="h-1.5 w-full bg-app-notch rounded-full overflow-hidden">
-                                <motion.div
-                                  initial={{ width: 0 }}
-                                  animate={{ width: `${percentage}%` }}
-                                  transition={{ delay: 0.3 + (i * 0.1), duration: 1 }}
-                                  className="h-full bg-brand-primary"
-                                />
+                            );
+                          })}
+
+                          {/* Secundários - Grid de 2 colunas */}
+                          <div className="grid grid-cols-2 gap-3 pb-8">
+                            {secondaryStatuses.map((status) => (
+                              <div key={status.name} className="bg-app-card p-3 rounded-xl border border-app-border flex flex-col justify-between gap-1 transition-all active:scale-95">
+                                <span className="text-[10px] font-bold text-app-secondary uppercase leading-tight">{status.name}</span>
+                                <span className={`text-lg font-bold ${status.count > 0 ? 'text-brand-primary' : 'text-app-text opacity-20'}`}>
+                                  {status.count}
+                                </span>
                               </div>
-                            </div>
-                          );
-                        })}
-
-                        {/* Secundários - Grid de 2 colunas */}
-                        <div className="grid grid-cols-2 gap-3 pb-8">
-                          {secondaryStatuses.map((status) => (
-                            <div key={status.name} className="bg-app-card p-3 rounded-xl border border-app-border flex flex-col justify-between gap-1 transition-all active:scale-95">
-                              <span className="text-[10px] font-bold text-app-secondary uppercase leading-tight">{status.name}</span>
-                              <span className={`text-lg font-bold ${status.count > 0 ? 'text-brand-primary' : 'text-app-text opacity-20'}`}>
-                                {status.count}
-                              </span>
-                            </div>
-                          ))}
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })()}
-                </div>
-              </motion.div>
-            )}
-
-            {activeTab === 'list' && (
-              <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4 pt-4 pb-20">
-                {(() => {
-                  const groups = filteredData.reduce((acc, current) => {
-                    const role = current.role || 'Sem Função';
-                    if (!acc[role]) acc[role] = [];
-                    acc[role].push(current);
-                    return acc;
-                  }, {} as Record<string, Collaborator[]>);
-
-                  const sortedRoles = Object.keys(groups).sort((a, b) => groups[b].length - groups[a].length);
-
-                  if (sortedRoles.length === 0) {
-                    return (
-                      <div className="flex flex-col items-center justify-center py-20 text-app-secondary gap-3">
-                        <ListTodo size={40} strokeWidth={1} />
-                        <p className="text-sm font-medium">Nenhum registro encontrado.</p>
-                      </div>
-                    );
-                  }
-
-                  return sortedRoles.map((role) => (
-                    <RoleGroupCard key={role} role={role} collaborators={groups[role]} />
-                  ));
-                })()}
-              </motion.div>
-            )}
-
-            {activeTab === 'lib' && (
-              <LiberationView />
-            )}
-
-            {activeTab === 'lead' && (
-              <motion.div key="lead" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-4 pt-4 pb-20">
-                <div className="bg-brand-primary/10 border border-brand-primary/20 p-5 rounded-2xl flex flex-col gap-2">
-                  <div className="flex items-center gap-3">
-                    <Timer className="text-brand-primary" size={24} />
-                    <h3 className="text-lg font-bold">Pipeline Mobilização</h3>
+                      );
+                    })()}
                   </div>
-                  <p className="text-sm text-brand-primary/80">Acompanhe cada etapa da mobilização.</p>
-                </div>
+                </motion.div>
+              )}
 
-                {/* Status Filter */}
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-app-secondary font-bold uppercase tracking-wider">Filtrar:</span>
-                  <select
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                    className="flex-1 bg-app-card border border-app-border rounded-xl px-3 py-2 text-sm text-app-text focus:outline-none focus:border-brand-primary/50 transition-colors"
-                  >
-                    <option value="TODOS" className="bg-app-bg text-app-text">📊 Todos os Status</option>
-                    <option value="ADMITIDO" className="bg-app-bg text-app-text">✅ Admitido</option>
-                    <option value="EM SELEÇÃO" className="bg-app-bg text-app-text">🔍 Em Seleção</option>
-                    <option value="AGUARDANDO VIAGEM" className="bg-app-bg text-app-text">✈️ Aguardando Viagem</option>
-                    <option value="AGUARDANDO DOCUMENTOS" className="bg-app-bg text-app-text">📄 Aguardando Documentos</option>
-                    <option value="SUBSTITUIR" className="bg-app-bg text-app-text">🔄 Substituir</option>
-                    <option value="LANÇAR NO RM" className="bg-app-bg text-app-text">📝 Lançar no RM</option>
-                  </select>
-                </div>
+              {activeTab === 'list' && (
+                <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4 pt-4 pb-20">
+                  {(() => {
+                    const groups = filteredData.reduce((acc, current) => {
+                      const role = current.role || 'Sem Função';
+                      if (!acc[role]) acc[role] = [];
+                      acc[role].push(current);
+                      return acc;
+                    }, {} as Record<string, Collaborator[]>);
 
-                <div className="space-y-3">
-                  {filteredData
-                    .filter(c => c.status !== 'CANCELADO')
-                    .filter(c => statusFilter === 'TODOS' || c.status === statusFilter)
-                    .sort((a, b) => {
-                      // Priorizar ADMITIDOS no topo
-                      if (a.status === 'ADMITIDO' && b.status !== 'ADMITIDO') return -1;
-                      if (a.status !== 'ADMITIDO' && b.status === 'ADMITIDO') return 1;
-                      // Depois ordenar por quantidade de marcos concluídos
-                      const countDates = (col: Collaborator) => [col.requestDate, col.examDate, col.asoReleased, col.admissionDate].filter(Boolean).length;
-                      return countDates(b) - countDates(a);
-                    })
-                    .map((collab, i) => (
-                      <TimelineCard key={collab.name + 'tl' + i} collab={collab} />
-                    ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      )}
-    </ModernMobileSimulator>
+                    const sortedRoles = Object.keys(groups).sort((a, b) => groups[b].length - groups[a].length);
+
+                    if (sortedRoles.length === 0) {
+                      return (
+                        <div className="flex flex-col items-center justify-center py-20 text-app-secondary gap-3">
+                          <ListTodo size={40} strokeWidth={1} />
+                          <p className="text-sm font-medium">Nenhum registro encontrado.</p>
+                        </div>
+                      );
+                    }
+
+                    return sortedRoles.map((role) => (
+                      <RoleGroupCard key={role} role={role} collaborators={groups[role]} />
+                    ));
+                  })()}
+                </motion.div>
+              )}
+
+              {activeTab === 'lib' && (
+                <LiberationView />
+              )}
+
+              {activeTab === 'lead' && (
+                <motion.div key="lead" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-4 pt-4 pb-20">
+                  <div className="bg-brand-primary/10 border border-brand-primary/20 p-5 rounded-2xl flex flex-col gap-2">
+                    <div className="flex items-center gap-3">
+                      <Timer className="text-brand-primary" size={24} />
+                      <h3 className="text-lg font-bold">Pipeline Mobilização</h3>
+                    </div>
+                    <p className="text-sm text-brand-primary/80">Acompanhe cada etapa da mobilização.</p>
+                  </div>
+
+                  {/* Status Filter */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-app-secondary font-bold uppercase tracking-wider">Filtrar:</span>
+                    <select
+                      value={statusFilter}
+                      onChange={(e) => setStatusFilter(e.target.value)}
+                      className="flex-1 bg-app-card border border-app-border rounded-xl px-3 py-2 text-sm text-app-text focus:outline-none focus:border-brand-primary/50 transition-colors"
+                    >
+                      <option value="TODOS" className="bg-app-bg text-app-text">📊 Todos os Status</option>
+                      <option value="ADMITIDO" className="bg-app-bg text-app-text">✅ Admitido</option>
+                      <option value="EM SELEÇÃO" className="bg-app-bg text-app-text">🔍 Em Seleção</option>
+                      <option value="AGUARDANDO VIAGEM" className="bg-app-bg text-app-text">✈️ Aguardando Viagem</option>
+                      <option value="AGUARDANDO DOCUMENTOS" className="bg-app-bg text-app-text">📄 Aguardando Documentos</option>
+                      <option value="SUBSTITUIR" className="bg-app-bg text-app-text">🔄 Substituir</option>
+                      <option value="LANÇAR NO RM" className="bg-app-bg text-app-text">📝 Lançar no RM</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-3">
+                    {filteredData
+                      .filter(c => c.status !== 'CANCELADO')
+                      .filter(c => statusFilter === 'TODOS' || c.status === statusFilter)
+                      .sort((a, b) => {
+                        // Priorizar ADMITIDOS no topo
+                        if (a.status === 'ADMITIDO' && b.status !== 'ADMITIDO') return -1;
+                        if (a.status !== 'ADMITIDO' && b.status === 'ADMITIDO') return 1;
+                        // Depois ordenar por quantidade de marcos concluídos
+                        const countDates = (col: Collaborator) => [col.requestDate, col.examDate, col.asoReleased, col.admissionDate].filter(Boolean).length;
+                        return countDates(b) - countDates(a);
+                      })
+                      .map((collab, i) => (
+                        <TimelineCard key={collab.name + 'tl' + i} collab={collab} />
+                      ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
+      </ModernMobileSimulator>
+      {frameSelector}
+    </>
   );
 };
 
