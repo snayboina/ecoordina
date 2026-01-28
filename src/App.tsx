@@ -61,49 +61,49 @@ const AppContainer: React.FC<{ children: React.ReactNode, header?: React.ReactNo
 
 const WelcomeView: React.FC<{ onNext: () => void }> = ({ onNext }) => (
   <div className="relative h-full flex flex-col overflow-hidden">
-    <div className="flex-1 flex flex-col md:flex-row md:items-center">
-      <div className="p-8 pb-4 md:flex-1">
+    <div className="flex-1 flex flex-col items-center justify-center text-center p-8 md:p-16 max-w-4xl mx-auto w-full">
+      <div className="w-full flex flex-col items-center mb-12">
         <div className="flex items-center gap-2 mb-8">
-          <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20">
-            <Zap className="text-white" size={20} fill="currentColor" />
+          <div className="w-12 h-12 bg-brand-primary rounded-2xl flex items-center justify-center shadow-xl shadow-orange-500/20">
+            <Zap className="text-white" size={24} fill="currentColor" />
           </div>
-          <span className="font-black text-sm uppercase tracking-tight text-app-text">
+          <span className="font-black text-base uppercase tracking-wider text-app-text">
             Ecoordina<span className="text-brand-primary">Smart</span>
           </span>
         </div>
 
-        <div className="space-y-4">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-app-text tracking-tighter leading-[1.05]">
+        <div className="space-y-6">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-app-text tracking-tighter leading-[0.95]">
             Sua jornada <br />
             operacional <br />
             começa <span className="text-brand-primary">aqui.</span>
           </h1>
-          <p className="text-app-text-secondary text-base md:text-lg leading-relaxed pr-6 font-medium">
-            Bora saber se esta liberado para as suas atividades!
+          <p className="text-app-text-secondary text-lg md:text-xl leading-relaxed max-w-xl mx-auto font-medium opacity-80">
+            Bora saber se está liberado para as suas atividades!
           </p>
         </div>
       </div>
 
-      <div className="flex-1 relative flex items-center justify-center p-6 md:p-12">
+      <div className="relative w-full max-w-lg aspect-square mb-12 flex items-center justify-center">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="absolute w-72 h-72 md:w-96 md:h-96 bg-brand-primary/5 rounded-full blur-3xl"
+          className="absolute w-full h-full bg-brand-primary/5 rounded-full blur-[100px]"
         />
         <motion.img
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           src="https://res.cloudinary.com/duyb5dsw0/image/upload/v1769556456/Whisk_d93805c8624cb73b747439948d305d92eg_plg0wt.png"
-          className="relative z-10 w-full h-full md:max-h-[400px] object-cover rounded-[24px] border border-white/20 shadow-2xl"
+          className="relative z-10 w-full h-full object-cover rounded-[40px] border-4 border-white shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)]"
         />
       </div>
     </div>
 
-    <div className="p-8 bg-white/10 backdrop-blur-md">
+    <div className="p-8 md:p-12 w-full max-w-2xl mx-auto">
       <motion.button
         whileTap={{ scale: 0.95 }}
         onClick={onNext}
-        className="btn-primary w-full h-15 text-base shadow-xl shadow-orange-500/20"
+        className="btn-primary w-full h-16 md:h-20 text-lg md:text-xl shadow-2xl shadow-orange-500/30 rounded-[2rem]"
       >
         Acessar Plataforma
       </motion.button>
