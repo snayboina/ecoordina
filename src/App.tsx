@@ -15,8 +15,8 @@ import {
 } from 'lucide-react';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { fetchCollaborators, calculateLeadTime, login, fetchLiberationByMat, fetchLiberationData } from './services/api';
-import type { Collaborator, RequesterSession, LiberationData } from './types';
+import { fetchCollaborators, fetchLiberationByMat, fetchLiberationData, login, supabase, calculateLeadTime } from './services/api';
+import type { Collaborator, LiberationData, RequesterSession } from './types';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
@@ -940,11 +940,21 @@ const RoleGroupCard: React.FC<{ role: string, collaborators: Collaborator[] }> =
 };
 
 const StatusItem: React.FC<{ label: string, value?: string }> = ({ label, value }) => (
-  <div className="bg-app-card border border-app-border p-3 rounded-2xl flex flex-col items-center justify-center gap-1">
-    <span className="text-[9px] font-bold text-app-secondary/40 uppercase tracking-tighter">{label}</span>
-    <span className={`text-xs font-black ${(value || '').toUpperCase() === 'OK' ? 'text-emerald-400' : (value || '').toUpperCase() === 'PENDENTE' ? 'text-red-400' : 'text-app-text/40'}`}>
+  <div className="bg-app-card border-2 border-app-border p-3 rounded-[var(--radius-technical)] flex flex-col items-center justify-center gap-1 shadow-[2px_2px_0px_rgba(0,0,0,0.05)]">
+    <span className="text-[9px] font-black text-app-secondary/60 uppercase tracking-widest">{label}</span>
+    <span className={`text-xs font-mono font-black ${(value || '').toUpperCase() === 'OK' ? 'text-emerald-500' : (value || '').toUpperCase() === 'PENDENTE' ? 'text-red-500' : 'text-app-text/40'}`}>
       {value || '-'}
     </span>
+  </div>
+);
+
+const SkeletonItem: React.FC = () => (
+  <div className="w-full bg-app-card border-2 border-app-border p-5 rounded-[var(--radius-technical)] flex justify-between items-center animate-pulse">
+    <div className="flex flex-col gap-2 w-2/3">
+      <div className="h-4 bg-slate-200 rounded w-full" />
+      <div className="h-3 bg-slate-100 rounded w-1/2" />
+    </div>
+    <div className="w-16 h-8 bg-slate-100 rounded" />
   </div>
 );
 
@@ -964,13 +974,36 @@ const LiberationView: React.FC = () => {
 
   useEffect(() => {
     loadAllData();
+
+    // Sincronização em Tempo Real (Opção C)
+    const channel = supabase
+      .channel('schema-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*', // Escuta Insert, Update e Delete
+          schema: 'public',
+          table: 'liberation_data'
+        },
+        (payload: any) => {
+          console.log('Mudança detectada no Realtime:', payload);
+          // Recarrega os dados para garantir consistência ou faz o merge local
+          loadAllData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const loadAllData = async () => {
-    setLoading(true);
+    // Sò mostra o loader se não tiver dados ainda (pra não piscar com realtime)
+    if (allData.length === 0) setLoading(true);
     try {
       const data = await fetchLiberationData();
-      console.log('Dados de liberação carregados:', data);
+      console.log('Dados de liberação atualizados:', data);
       setAllData(data);
     } catch (err) {
       console.error('Erro ao carregar dados:', err);
@@ -1008,7 +1041,7 @@ const LiberationView: React.FC = () => {
 
   const handleSelectSuggestion = (item: LiberationData) => {
     setResult(item);
-    setSearch(item.nome); // Mostra o nome selecionado
+    setSearch(item.nome);
     setShowSuggestions(false);
     setError('');
   };
@@ -1023,7 +1056,6 @@ const LiberationView: React.FC = () => {
 
     const normalizedSearch = normalize(search);
 
-    // Tenta encontrar nos dados locais primeiro
     const found = allData.find(d =>
       normalize(d.mat) === normalizedSearch ||
       normalize(d.nome) === normalizedSearch ||
@@ -1049,35 +1081,22 @@ const LiberationView: React.FC = () => {
   };
 
   const filteredList = allData.filter(item => {
-    // Filtro de status de liberação
     const itemIsReleased = isReleased(item.data_liberacao_ecoordin);
-
-    // Se filtrar por LIBERADO, só mostra quem tem data válida
     if (statusFilter === 'LIBERADO' && !itemIsReleased) return false;
-
-    // Se filtrar por NÃO LIBERADO, só mostra quem NÃO tem data válida
     if (statusFilter === 'NAO_LIBERADO' && itemIsReleased) return false;
 
-    // Para "Não Liberados", permitir registros sem data
     if (statusFilter === 'NAO_LIBERADO') {
-      // Se não tem data ou data inválida, é "Não Liberado" - incluir na lista
       if (!item.data_liberacao_ecoordin || item.data_liberacao_ecoordin.trim().length === 0) {
-        // Aplicar filtros de função se houver
-        const matchesRole = roleFilter === 'ALL' || item.funcao === roleFilter;
-        return matchesRole;
+        return roleFilter === 'ALL' || item.funcao === roleFilter;
       }
     }
 
-    // Para outros filtros, exigir data válida
     if (!item.data_liberacao_ecoordin) return false;
 
-    // Tenta limpar espaços extras que o n8n/Sheets podem ter enviado
     const dateStr = item.data_liberacao_ecoordin.trim();
     if (dateStr.length === 0) {
-      // Célula vazia - só incluir se filtro for "Não Liberados"
       if (statusFilter === 'NAO_LIBERADO') {
-        const matchesRole = roleFilter === 'ALL' || item.funcao === roleFilter;
-        return matchesRole;
+        return roleFilter === 'ALL' || item.funcao === roleFilter;
       }
       return false;
     }
@@ -1086,8 +1105,6 @@ const LiberationView: React.FC = () => {
     if (!date.isValid()) return false;
 
     const isAfterStart = date.isAfter(START_FILTER_DATE) || date.isSame(START_FILTER_DATE, 'day');
-
-    // Se um mês específico estiver selecionado, não trava na data de hoje
     const isBeforeToday = monthFilter !== 'ALL' || date.isBefore(dayjs(), 'day') || date.isSame(dayjs(), 'day');
 
     if (!isAfterStart || !isBeforeToday) return false;
@@ -1102,10 +1119,10 @@ const LiberationView: React.FC = () => {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6 pt-4 pb-24">
-      <div className="bg-app-card border border-app-border p-6 rounded-[2.5rem] space-y-4">
+      <div className="bg-app-card border-2 border-app-border p-6 rounded-[var(--radius-technical)] shadow-[8px_8px_0px_rgba(0,0,0,0.05)] space-y-4">
         <div className="flex flex-col gap-4">
           <div className="space-y-1">
-            <h3 className="text-base font-black flex items-center gap-3">
+            <h3 className="text-base font-black flex items-center gap-3 uppercase tracking-tighter">
               <Lock className="text-brand-primary" size={20} />
               Check de Liberação
             </h3>
@@ -1114,29 +1131,29 @@ const LiberationView: React.FC = () => {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="flex-1 bg-ice-white border border-slate-100 rounded-xl px-3 py-2 text-[10px] font-bold text-app-text outline-none focus:border-brand-primary/50 transition-all min-w-[120px]"
+              className="flex-1 bg-ice-white border-2 border-app-border rounded-[var(--radius-technical)] px-3 py-2 text-[10px] font-black text-app-text outline-none focus:border-brand-primary transition-all min-w-[120px]"
             >
-              <option value="ALL">📊 Todos Status</option>
-              <option value="LIBERADO">✅ Liberados</option>
-              <option value="NAO_LIBERADO">🔒 Não Liberados</option>
+              <option value="ALL">STATUS: TODOS</option>
+              <option value="LIBERADO">STATUS: LIBERADOS</option>
+              <option value="NAO_LIBERADO">STATUS: PENDENTES</option>
             </select>
             <select
               value={monthFilter}
               onChange={(e) => setMonthFilter(e.target.value)}
-              className="flex-1 bg-ice-white border border-slate-100 rounded-xl px-3 py-2 text-[10px] font-bold text-app-text outline-none focus:border-brand-primary/50 transition-all min-w-[120px]"
+              className="flex-1 bg-ice-white border-2 border-app-border rounded-[var(--radius-technical)] px-3 py-2 text-[10px] font-black text-app-text outline-none focus:border-brand-primary transition-all min-w-[120px]"
             >
-              <option value="ALL">🗓️ Todos os Meses</option>
-              <option value="DEC">📅 Dezembro</option>
-              <option value="JAN">📅 Janeiro</option>
+              <option value="ALL">MÊS: TODOS</option>
+              <option value="DEC">MÊS: DEZEMBRO</option>
+              <option value="JAN">MÊS: JANEIRO</option>
             </select>
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="flex-1 bg-ice-white border border-slate-100 rounded-xl px-3 py-2 text-[10px] font-bold text-app-text outline-none focus:border-brand-primary/50 transition-all min-w-[120px]"
+              className="flex-1 bg-ice-white border-2 border-app-border rounded-[var(--radius-technical)] px-3 py-2 text-[10px] font-black text-app-text outline-none focus:border-brand-primary transition-all min-w-[120px]"
             >
-              <option value="ALL">🛠️ Todas Funções</option>
+              <option value="ALL">FUNÇÃO: TODAS</option>
               {uniqueRoles.map(role => (
-                <option key={role} value={role}>{role}</option>
+                <option key={role} value={role}>{role ? `FUNÇÃO: ${role.toUpperCase()}` : 'SEM FUNÇÃO'}</option>
               ))}
             </select>
           </div>
@@ -1147,7 +1164,7 @@ const LiberationView: React.FC = () => {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-app-secondary/40" size={18} />
             <input
               type="text"
-              className="w-full bg-app-card border border-app-border rounded-2xl py-4 pl-12 pr-12 outline-none focus:border-brand-primary/50 transition-all font-mono text-app-text"
+              className="w-full bg-app-card border-2 border-app-border rounded-[var(--radius-technical)] py-4 pl-12 pr-12 outline-none focus:border-brand-primary transition-all font-mono text-app-text shadow-inner"
               placeholder="Matrícula ou Nome..."
               value={search}
               onChange={(e) => handleInputChange(e.target.value)}
@@ -1155,26 +1172,25 @@ const LiberationView: React.FC = () => {
             />
             <button type="submit" className="hidden" />
 
-            {/* Autocomplete Suggestions */}
             <AnimatePresence>
               {showSuggestions && suggestions.length > 0 && (
                 <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="absolute top-full left-0 right-[-85px] mt-2 bg-app-bg border border-app-border rounded-2xl shadow-2xl z-50 overflow-hidden"
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  className="absolute top-full left-0 right-[-85px] mt-2 bg-white border-2 border-app-border rounded-[var(--radius-technical)] shadow-[12px_12px_0px_rgba(0,0,0,0.1)] z-50 overflow-hidden"
                 >
                   {suggestions.map((item, i) => (
                     <button
                       key={i}
                       type="button"
                       onClick={() => handleSelectSuggestion(item)}
-                      className="w-full px-6 py-5 flex flex-col gap-1.5 hover:bg-app-card border-b border-app-border last:border-0 text-left transition-colors"
+                      className="w-full px-6 py-5 flex flex-col gap-1.5 hover:bg-slate-50 border-b-2 border-app-border last:border-0 text-left transition-colors"
                     >
                       <span className="text-sm font-black text-app-text uppercase tracking-tight">{item.nome}</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] text-brand-primary font-bold bg-brand-primary/10 px-2 py-1 rounded-md">MAT: {item.mat}</span>
-                        <span className="text-[10px] text-app-secondary font-medium">{item.funcao}</span>
+                        <span className="text-[10px] text-brand-primary font-black bg-brand-primary/10 px-2 py-1 rounded-sm border border-brand-primary/20">MAT: {item.mat}</span>
+                        <span className="text-[10px] text-app-secondary font-bold uppercase">{item.funcao}</span>
                       </div>
                     </button>
                   ))}
@@ -1185,7 +1201,7 @@ const LiberationView: React.FC = () => {
           {(search || result) && (
             <button
               onClick={handleClear}
-              className="px-4 bg-app-card border border-app-border rounded-2xl text-[10px] font-black text-brand-primary uppercase tracking-widest active:scale-95 transition-all shadow-sm flex items-center gap-2"
+              className="px-4 bg-app-card border-2 border-app-border rounded-[var(--radius-technical)] text-[10px] font-black text-brand-primary uppercase tracking-widest active:translate-x-[2px] active:translate-y-[2px] transition-all shadow-[2px_2px_0px_rgba(0,0,0,0.1)] flex items-center gap-2"
             >
               <RotateCcw size={14} />
               Limpar
@@ -1196,110 +1212,116 @@ const LiberationView: React.FC = () => {
 
       <AnimatePresence mode="wait">
         {loading && (
-          <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex justify-center py-10">
-            <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin" />
+          <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-3 px-1">
+            <div className="flex justify-between items-center mb-2">
+              <div className="h-3 bg-slate-200 rounded w-32 animate-pulse" />
+              <div className="h-4 bg-slate-200 rounded w-8 animate-pulse" />
+            </div>
+            <SkeletonItem />
+            <SkeletonItem />
+            <SkeletonItem />
           </motion.div>
         )}
 
         {error && !loading && (
-          <motion.div key="error" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="p-4 bg-red-400/10 border border-red-400/20 rounded-2xl flex items-center gap-3 text-red-400 text-sm">
+          <motion.div key="error" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="p-4 bg-red-400/10 border-2 border-red-400 rounded-[var(--radius-technical)] flex items-center gap-3 text-red-500 text-sm font-bold shadow-[4px_4px_0px_rgba(239,68,68,0.1)]">
             <AlertCircle size={18} />
-            {error}
+            {error.toUpperCase()}
           </motion.div>
         )}
 
         {result && !loading ? (
-          <motion.div key="result" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="space-y-4">
-            <div className={`p-10 rounded-[3rem] border-2 ${isReleased(result.data_liberacao_ecoordin) ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-red-500/5 border-red-500/20'} relative overflow-hidden shadow-2xl shadow-brand-primary/5`}>
-              <div className="relative z-10 flex flex-col gap-8">
-                <div>
-                  <span className="text-[11px] font-black text-app-secondary uppercase tracking-widest bg-app-card px-3 py-1.5 rounded-lg border border-app-border">MAT: {result.mat}</span>
-                  <h2 className={`text-2xl font-black mt-4 uppercase tracking-tighter leading-tight ${isReleased(result.data_liberacao_ecoordin) ? 'text-app-text' : 'text-red-500'}`}>{result.mat} - {result.nome}</h2>
-                  <p className="text-app-secondary text-base font-bold mt-1 uppercase tracking-tight">{result.funcao}</p>
+          <motion.div key="result" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.98 }} className="space-y-4">
+            <div className={`p-8 rounded-[var(--radius-technical)] border-2 ${isReleased(result.data_liberacao_ecoordin) ? 'bg-emerald-500/5 border-emerald-500' : 'bg-red-500/5 border-red-500'} relative overflow-hidden shadow-[12px_12px_0px_rgba(0,0,0,0.05)]`}>
+              <div className="relative z-10 flex flex-col gap-6">
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-black text-deep-charcoal uppercase tracking-widest bg-white px-2 py-1 rounded-sm border-2 border-app-border shadow-[2px_2px_0px_rgba(0,0,0,0.1)]">MAT: {result.mat}</span>
+                  </div>
+                  <h2 className={`text-2xl font-black mt-2 uppercase tracking-tighter leading-tight ${isReleased(result.data_liberacao_ecoordin) ? 'text-app-text' : 'text-red-600'}`}>
+                    {result.nome}
+                  </h2>
+                  <p className="text-app-secondary text-sm font-black uppercase tracking-widest opacity-60 font-mono">{result.funcao}</p>
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-app-bg rounded-2xl border border-app-border">
+                <div className="flex items-center justify-between p-5 bg-white rounded-sm border-2 border-app-border shadow-[4px_4px_0px_rgba(0,0,0,0.05)]">
                   <div className="flex flex-col">
-                    <span className="text-[10px] font-bold text-app-secondary/40 uppercase tracking-wider">Status E-COORDINA</span>
-                    <span className={`text-xl font-black ${isReleased(result.data_liberacao_ecoordin) ? 'text-emerald-400' : 'text-red-400'} tracking-widest`}>
-                      {isReleased(result.data_liberacao_ecoordin) ? 'LIBERADO' : 'NÃO LIBERADO'}
+                    <span className="text-[10px] font-black text-app-secondary/60 uppercase tracking-widest">Status E-COORDINA</span>
+                    <span className={`text-xl font-black ${isReleased(result.data_liberacao_ecoordin) ? 'text-emerald-500' : 'text-red-500'} tracking-tighter uppercase`}>
+                      {isReleased(result.data_liberacao_ecoordin) ? '✓ LIBERADO' : '× PENDENTE'}
                     </span>
-                    <span className="text-[10px] text-app-secondary font-mono mt-0.5">{result.data_liberacao_ecoordin || 'Sem data definida'}</span>
+                    <span className="text-[11px] text-app-secondary font-mono font-bold mt-1 bg-slate-50 px-2 py-0.5 border border-slate-100">{result.data_liberacao_ecoordin || 'DATA NÃO DEFINIDA'}</span>
                   </div>
                   {isReleased(result.data_liberacao_ecoordin) ? (
-                    <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 2 }}>
-                      <Zap className="text-emerald-400" size={32} fill="currentColor" />
-                    </motion.div>
+                    <Zap className="text-emerald-500" size={36} fill="currentColor" />
                   ) : (
-                    <Lock className="text-red-400" size={32} />
+                    <div className="p-2 border-2 border-red-500 rounded-sm">
+                      <Lock className="text-red-500" size={28} />
+                    </div>
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 gap-3">
                   <StatusItem label="RH" value={result.rh} />
                   <StatusItem label="SAÚDE" value={result.saude} />
                   <StatusItem label="SEGURANÇA" value={result.seguranca} />
                   <StatusItem label="GRD" value={result.grd} />
                   <div className="col-span-full">
-                    <StatusItem label="ÁREA" value={result.area} />
+                    <StatusItem label="ÁREA DE TRABALHO" value={result.area} />
                   </div>
                 </div>
 
                 {result.obs_grd && (
-                  <div className="p-3 bg-app-card rounded-xl border border-app-border">
-                    <span className="text-[9px] font-bold text-app-secondary uppercase block mb-1">Observação GRD</span>
-                    <p className="text-[11px] text-app-text/60 leading-relaxed">{result.obs_grd}</p>
+                  <div className="p-4 bg-white rounded-sm border-2 border-app-border shadow-[2px_2px_0px_rgba(0,0,0,0.05)]">
+                    <span className="text-[10px] font-black text-app-secondary uppercase block mb-1 tracking-widest">Observações Técnicas (GRD)</span>
+                    <p className="text-[11px] text-app-text font-mono leading-relaxed">{result.obs_grd}</p>
                   </div>
                 )}
 
                 <button
                   onClick={handleClear}
-                  className="w-full py-4 bg-app-bg border border-app-border rounded-2xl text-xs font-black text-brand-primary uppercase tracking-widest active:scale-95 transition-all mt-2"
+                  className="w-full py-4 bg-white border-2 border-app-border rounded-[var(--radius-button)] text-xs font-black text-brand-primary uppercase tracking-widest active:translate-x-[2px] active:translate-y-[2px] transition-all shadow-[4px_4px_0px_rgba(255,92,0,0.1)] mt-2"
                 >
                   Voltar para a lista
                 </button>
               </div>
-
-              {/* Background Decor */}
-              <div className={`absolute -right-20 -bottom-20 w-64 h-64 blur-[80px] rounded-full opacity-20 ${isReleased(result.data_liberacao_ecoordin) ? 'bg-emerald-500' : 'bg-red-500'}`} />
             </div>
           </motion.div>
-        ) : loading ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-4">
-            <div className="w-8 h-8 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin" />
-            <span className="text-xs font-bold text-app-secondary uppercase tracking-widest animate-pulse">Sincronizando dados com a planilha...</span>
-          </div>
-        ) : (
+        ) : loading ? null : (
           (
             <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3 px-1">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-[10px] font-black text-app-text/40 uppercase tracking-widest">Liberados no Período</span>
-                <span className="text-[10px] font-bold text-brand-primary bg-brand-primary/10 px-2 py-0.5 rounded-full">{filteredList.length}</span>
+                <span className="text-[10px] font-black text-app-text/60 uppercase tracking-widest">Registro de Liberação</span>
+                <span className="text-[10px] font-black text-white bg-deep-charcoal px-2 py-0.5 rounded-sm shadow-[2px_2px_0px_rgba(0,0,0,0.1)]">{filteredList.length}</span>
               </div>
               {filteredList.length === 0 ? (
-                <div className="text-center py-10 bg-app-card rounded-3xl border border-app-border">
-                  <span className="text-sm text-app-secondary">Nenhum registro para este filtro.</span>
+                <div className="text-center py-12 bg-app-card rounded-[var(--radius-technical)] border-2 border-app-border shadow-[4px_4px_0px_rgba(0,0,0,0.05)]">
+                  <span className="text-xs font-black text-app-secondary uppercase tracking-widest opacity-40">Nenhum registro encontrado</span>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-8">
                   {filteredList.map((item, i) => (
                     <motion.button
                       key={i}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.03 }}
+                      transition={{ delay: i * 0.02 }}
                       onClick={() => handleSelectSuggestion(item)}
-                      className="w-full bg-app-card border border-app-border p-5 rounded-2xl flex justify-between items-center active:scale-95 transition-all text-left group hover:border-brand-primary/30"
+                      className="w-full bg-app-card border-2 border-app-border p-5 rounded-[var(--radius-technical)] flex justify-between items-center active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all text-left group hover:border-brand-primary shadow-[4px_4px_0px_rgba(0,0,0,0.05)]"
                     >
-                      <div className="flex flex-col gap-1 max-w-[70%]">
-                        <span className={`text-sm font-bold truncate group-hover:text-brand-primary transition-colors ${isReleased(item.data_liberacao_ecoordin) ? 'text-app-text' : 'text-red-500'}`}>{item.mat} - {item.nome}</span>
-                        <span className="text-[10px] text-app-secondary truncate opacity-60 uppercase font-black">{item.funcao}</span>
+                      <div className="flex flex-col gap-1.5 max-w-[70%]">
+                        <span className={`text-sm font-black truncate group-hover:text-brand-primary transition-colors uppercase tracking-tighter ${isReleased(item.data_liberacao_ecoordin) ? 'text-app-text' : 'text-red-500'}`}>{item.nome}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-mono text-app-secondary/60 font-black">{item.mat}</span>
+                          <span className="w-1 h-1 rounded-full bg-slate-300" />
+                          <span className="text-[9px] text-app-secondary/50 font-black uppercase truncate">{item.funcao}</span>
+                        </div>
                       </div>
-                      <div className="flex flex-col items-end gap-1.5">
-                        <span className="text-[10px] font-mono text-brand-primary bg-brand-primary/10 px-2 py-0.5 rounded-lg border border-brand-primary/10">
-                          {item.data_liberacao_ecoordin}
+                      <div className="flex flex-col items-end gap-2">
+                        <span className="text-[10px] font-mono text-brand-primary font-black bg-brand-primary/5 px-2 py-0.5 rounded-sm border border-brand-primary/10">
+                          {item.data_liberacao_ecoordin || 'PENDENTE'}
                         </span>
-                        <ChevronRight size={16} className="text-app-text/20 group-hover:text-brand-primary/40 transition-all" />
+                        <ChevronRight size={14} className="text-app-text/20 group-hover:text-brand-primary transition-all" />
                       </div>
                     </motion.button>
                   ))}
@@ -1313,5 +1335,5 @@ const LiberationView: React.FC = () => {
   );
 };
 
-
 export default App;
+

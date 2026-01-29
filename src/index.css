@@ -14,18 +14,27 @@
   --color-brand-secondary: var(--color-vibrant-coral);
   --color-bg-dark: var(--color-deep-charcoal);
 
-  /* App Semantic Colors (Vibrant Ice Mode) */
+  /* App Semantic Colors (Technical Ice Mode) */
   --color-app-bg: var(--color-ice-white);
   --color-app-card: #ffffff;
-  --color-app-border: #E2E8F0;
+  --color-app-border: #1A1A1A;
+  /* Borda técnica escura */
   --color-app-text: var(--color-deep-charcoal);
   --color-app-text-secondary: var(--color-soft-gray);
   --color-app-notch: #000000;
   --color-app-indicator: var(--color-deep-charcoal);
-  --color-app-glow: rgba(255, 92, 0, 0.1);
+  --color-app-glow: rgba(255, 92, 0, 0.05);
 
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+
+  /* Technical Geometry Tokens */
+  --radius-technical: 2px;
+  --radius-button: 4px;
+  --shadow-btn: 4px 4px 0px rgba(0, 0, 0, 0.2);
+  --shadow-btn-hover: 6px 6px 0px rgba(0, 0, 0, 0.25);
+  --shadow-hard: 4px 4px 0px rgba(0, 0, 0, 0.1);
+  --shadow-hard-lg: 8px 8px 0px rgba(0, 0, 0, 0.05);
 }
 
 :root {
@@ -33,13 +42,13 @@
   line-height: 1.5;
   font-weight: 400;
   color-scheme: light;
-  background-color: var(--color-ice-white);
+  background-color: var(--color-app-bg);
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background-color: var(--color-ice-white);
+  background-color: var(--color-app-bg);
 }
 
 #root {
@@ -48,15 +57,15 @@ body {
 
 @layer components {
   .btn-primary {
-    @apply bg-brand-primary text-white font-black py-4 px-8 rounded-[1.5rem] shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 hover:scale-[1.02] transition-all active:scale-95 uppercase tracking-wide text-sm flex items-center justify-center gap-2;
+    @apply bg-brand-primary text-white font-black py-4 px-8 rounded-[var(--radius-button)] shadow-btn hover:shadow-btn-hover hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all active:translate-x-[1px] active:translate-y-[1px] active:shadow-none uppercase tracking-widest text-sm flex items-center justify-center gap-2 border-2 border-deep-charcoal;
   }
 
   .nav-input {
-    @apply bg-white border border-app-border rounded-xl py-4 px-5 outline-none focus:border-brand-primary transition-all text-sm text-app-text font-sans;
+    @apply bg-white border-2 border-app-border rounded-[var(--radius-technical)] py-4 px-5 outline-none focus:border-brand-primary transition-all text-sm text-app-text font-mono shadow-hard;
   }
 
   .menu-block {
-    @apply bg-app-card border border-app-border p-6 rounded-[2rem] flex flex-col justify-between aspect-square transition-all active:scale-95 hover:border-brand-primary/40 hover:shadow-2xl hover:shadow-orange-500/5;
+    @apply bg-app-card border-2 border-app-border p-6 rounded-[var(--radius-technical)] flex flex-col justify-between aspect-square transition-all active:scale-[0.98] hover:border-brand-primary hover:shadow-hard-lg relative overflow-hidden;
   }
 }
 
