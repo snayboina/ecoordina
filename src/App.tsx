@@ -970,7 +970,7 @@ const LiberationView: React.FC = () => {
   const [roleFilter, setRoleFilter] = useState('ALL');
   const [statusFilter, setStatusFilter] = useState('ALL');
 
-  const START_FILTER_DATE = dayjs('2025-12-09');
+
 
   useEffect(() => {
     loadAllData();
@@ -1081,38 +1081,25 @@ const LiberationView: React.FC = () => {
   };
 
   const filteredList = allData.filter(item => {
+    // 1. Filtro de Status
     const itemIsReleased = isReleased(item.data_liberacao_ecoordin);
     if (statusFilter === 'LIBERADO' && !itemIsReleased) return false;
     if (statusFilter === 'NAO_LIBERADO' && itemIsReleased) return false;
 
-    if (statusFilter === 'NAO_LIBERADO') {
-      if (!item.data_liberacao_ecoordin || item.data_liberacao_ecoordin.trim().length === 0) {
-        return roleFilter === 'ALL' || item.funcao === roleFilter;
-      }
-    }
-
-    if (!item.data_liberacao_ecoordin) return false;
-
-    const dateStr = item.data_liberacao_ecoordin.trim();
-    if (dateStr.length === 0) {
-      if (statusFilter === 'NAO_LIBERADO') {
-        return roleFilter === 'ALL' || item.funcao === roleFilter;
-      }
-      return false;
-    }
-
-    const date = dayjs(dateStr, 'DD/MM/YYYY');
-    if (!date.isValid()) return false;
-
-    const isAfterStart = date.isAfter(START_FILTER_DATE) || date.isSame(START_FILTER_DATE, 'day');
-    const isBeforeToday = monthFilter !== 'ALL' || date.isBefore(dayjs(), 'day') || date.isSame(dayjs(), 'day');
-
-    if (!isAfterStart || !isBeforeToday) return false;
-
-    const matchesMonth = monthFilter === 'ALL' || (monthFilter === 'DEC' ? date.month() === 11 : monthFilter === 'JAN' ? date.month() === 0 : true);
+    // 2. Filtro de Função (MANDATÓRIO)
     const matchesRole = roleFilter === 'ALL' || item.funcao === roleFilter;
+    if (!matchesRole) return false;
 
-    return matchesMonth && matchesRole;
+    // 3. Filtro de Mês (Apenas para liberados ou se o filtro for ALL)
+    if (monthFilter !== 'ALL') {
+      if (!itemIsReleased) return false; // Se não está liberado, não tem mês para filtrar
+      const date = dayjs(item.data_liberacao_ecoordin, 'DD/MM/YYYY');
+      if (!date.isValid()) return false;
+      const matchesMonth = (monthFilter === 'DEC' ? date.month() === 11 : monthFilter === 'JAN' ? date.month() === 0 : true);
+      if (!matchesMonth) return false;
+    }
+
+    return true;
   });
 
   const uniqueRoles = Array.from(new Set(allData.map(d => d.funcao).filter(Boolean))).sort();
@@ -1126,27 +1113,25 @@ const LiberationView: React.FC = () => {
       {!result && (
         <div className="bg-white p-8 rounded-[40px] border border-app-border shadow-premium space-y-8">
           <div className="flex justify-between items-start">
-            <div className="space-y-1">
-              <span className="text-[11px] font-bold text-app-text-secondary uppercase tracking-[0.1em]">Total Liberados</span>
-              <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-extrabold text-app-text tabular-nums tracking-tighter">{releasedCount}</span>
-                <span className="text-sm font-bold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-full">✓ OK</span>
+            <div className="flex flex-col sm:flex-row gap-8 sm:gap-12">
+              <div className="space-y-1">
+                <span className="text-[11px] font-bold text-app-text-secondary uppercase tracking-[0.1em]">Total Liberados</span>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-4xl font-extrabold text-app-text tabular-nums tracking-tighter">{releasedCount}</span>
+                  <span className="text-sm font-bold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-full">✓ OK</span>
+                </div>
+              </div>
+              <div className="space-y-1">
+                <span className="text-[11px] font-bold text-app-text-secondary uppercase tracking-[0.1em]">Total Pendentes</span>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-4xl font-extrabold text-red-500 tabular-nums tracking-tighter">{pendingCount}</span>
+                  <span className="text-sm font-bold text-red-400 bg-red-50 px-2 py-0.5 rounded-full">× LOCK</span>
+                </div>
               </div>
             </div>
-            <div className="w-12 h-12 bg-orange-500/10 rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-orange-500/10 rounded-full flex items-center justify-center shrink-0">
               <Zap className="text-orange-500" size={24} fill="currentColor" />
             </div>
-          </div>
-
-          <div className="flex gap-4">
-            <button className="flex-1 py-3 bg-slate-50 rounded-full flex flex-col items-center gap-0.5 border border-slate-100 transition-all hover:bg-slate-100">
-              <span className="text-[10px] font-bold text-slate-400 uppercase">Pendentes</span>
-              <span className="text-lg font-black text-red-400">{pendingCount}</span>
-            </button>
-            <button className="flex-1 py-3 bg-slate-50 rounded-full flex flex-col items-center gap-0.5 border border-slate-100 transition-all hover:bg-slate-100">
-              <span className="text-[10px] font-bold text-slate-400 uppercase">Taxa</span>
-              <span className="text-lg font-black text-app-text">{Math.round((releasedCount / allData.length) * 100)}%</span>
-            </button>
           </div>
 
           <div className="border-t border-slate-50 pt-6 space-y-4">
