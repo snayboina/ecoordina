@@ -1135,40 +1135,51 @@ const LiberationView: React.FC = () => {
           </div>
 
           <div className="border-t border-slate-50 pt-6 space-y-4">
-            <div className="flex gap-2 w-full overflow-x-auto pb-2 scrollbar-hide">
+            <div className="grid grid-cols-1 gap-3">
               {/* 1. Função */}
-              <select
-                value={roleFilter}
-                onChange={(e) => setRoleFilter(e.target.value)}
-                className="bg-slate-50 border border-slate-100 rounded-full px-4 py-2 text-[10px] font-bold text-app-text outline-none focus:border-brand-orange transition-all whitespace-nowrap min-w-max"
-              >
-                <option value="ALL">FUNÇÃO: TODAS</option>
-                {uniqueRoles.map(role => (
-                  <option key={role} value={role}>{role ? role.toUpperCase() : 'SEM FUNÇÃO'}</option>
-                ))}
-              </select>
+              <div className="space-y-1">
+                <span className="text-[9px] font-black text-slate-400 uppercase ml-4 tracking-widest"> Filtrar por Função</span>
+                <select
+                  value={roleFilter}
+                  onChange={(e) => setRoleFilter(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-100 rounded-full px-5 py-4 text-xs font-bold text-app-text outline-none focus:border-brand-orange transition-all appearance-none"
+                >
+                  <option value="ALL">FUNÇÃO: TODAS</option>
+                  {uniqueRoles.map(role => (
+                    <option key={role} value={role}>{role ? role.toUpperCase() : 'SEM FUNÇÃO'}</option>
+                  ))}
+                </select>
+              </div>
 
-              {/* 2. Período Data */}
-              <select
-                value={monthFilter}
-                onChange={(e) => setMonthFilter(e.target.value)}
-                className="bg-slate-50 border border-slate-100 rounded-full px-4 py-2 text-[10px] font-bold text-app-text outline-none focus:border-brand-orange transition-all whitespace-nowrap min-w-max"
-              >
-                <option value="ALL">PERÍODO: TODOS</option>
-                <option value="DEC">DEZEMBRO</option>
-                <option value="JAN">JANEIRO</option>
-              </select>
+              <div className="grid grid-cols-2 gap-3">
+                {/* 2. Período Data */}
+                <div className="space-y-1">
+                  <span className="text-[9px] font-black text-slate-400 uppercase ml-4 tracking-widest">Período</span>
+                  <select
+                    value={monthFilter}
+                    onChange={(e) => setMonthFilter(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-100 rounded-full px-5 py-4 text-xs font-bold text-app-text outline-none focus:border-brand-orange transition-all appearance-none"
+                  >
+                    <option value="ALL">MÊS: TODOS</option>
+                    <option value="DEC">DEZEMBRO</option>
+                    <option value="JAN">JANEIRO</option>
+                  </select>
+                </div>
 
-              {/* 3. Status */}
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="bg-slate-50 border border-slate-100 rounded-full px-4 py-2 text-[10px] font-bold text-app-text outline-none focus:border-brand-orange transition-all whitespace-nowrap min-w-max"
-              >
-                <option value="ALL">STATUS: TODOS</option>
-                <option value="LIBERADO">✅ LIBERADO</option>
-                <option value="NAO_LIBERADO">🔒 NÃO LIBERADO</option>
-              </select>
+                {/* 3. Status */}
+                <div className="space-y-1">
+                  <span className="text-[9px] font-black text-slate-400 uppercase ml-4 tracking-widest">Status</span>
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-100 rounded-full px-5 py-4 text-xs font-bold text-app-text outline-none focus:border-brand-orange transition-all appearance-none"
+                  >
+                    <option value="ALL">TODOS</option>
+                    <option value="LIBERADO">✅ LIBERADO</option>
+                    <option value="NAO_LIBERADO">🔒 NÃO LIBERADO</option>
+                  </select>
+                </div>
+              </div>
             </div>
 
             <form onSubmit={handleSearch} className="relative group">
