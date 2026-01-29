@@ -190,7 +190,16 @@ export const fetchLiberationData = async (): Promise<LiberationData[]> => {
             .select('*');
 
         if (error) throw error;
-        return data || [];
+
+        // Mapeia os nomes das colunas do Supabase para o que o app espera
+        return (data || []).map(row => ({
+            ...row,
+            mat: String(row.chapa || '').trim(),
+            nome: String(row.nome || row.chapa || '').trim(), // Usa chapa se nome não existir
+            funcao: row.funcao || 'Sem Função',
+            data_liberacao_ecoordin: row.liberacao_ecoordin || row.data_liberacao_ecoordin,
+            updated_at: row.updated_at || new Date().toISOString()
+        })) as LiberationData[];
     } catch (error) {
         console.error('Error fetching liberation data from Supabase:', error);
         return [];
@@ -203,12 +212,41 @@ export const fetchLiberationByMat = async (search: string): Promise<LiberationDa
         const { data, error } = await supabase
             .from('liberation_data')
             .select('*')
-            .or(`mat.eq.${term},nome.ilike.%${term}%`)
+            .or(`chapa.eq.${term},nome.ilike.%${term}%`)
             .limit(1)
             .maybeSingle();
 
-        if (error) throw error;
-        return data;
+        if (error) {
+            // Se a coluna 'nome' não existir no banco, tenta buscar apenas por 'chapa'
+            if (error.message?.includes('column "nome" does not exist')) {
+                const { data: retryData, error: retryError } = await supabase
+                    .from('liberation_data')
+                    .select('*')
+                    .eq('chapa', term)
+                    .limit(1)
+                    .maybeSingle();
+                if (retryError) throw retryError;
+                if (!retryData) return null;
+                return {
+                    ...retryData,
+                    mat: String(retryData.chapa || '').trim(),
+                    nome: String(retryData.nome || retryData.chapa || '').trim(),
+                    funcao: retryData.funcao || 'Sem Função',
+                    data_liberacao_ecoordin: retryData.liberacao_ecoordin || retryData.data_liberacao_ecoordin
+                } as LiberationData;
+            }
+            throw error;
+        }
+
+        if (!data) return null;
+
+        return {
+            ...data,
+            mat: String(data.chapa || '').trim(),
+            nome: String(data.nome || data.chapa || '').trim(),
+            funcao: data.funcao || 'Sem Função',
+            data_liberacao_ecoordin: data.liberacao_ecoordin || data.data_liberacao_ecoordin
+        } as LiberationData;
     } catch (err) {
         console.error('Liberation fetch error from Supabase:', err);
         return null;
