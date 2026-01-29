@@ -940,21 +940,21 @@ const RoleGroupCard: React.FC<{ role: string, collaborators: Collaborator[] }> =
 };
 
 const StatusItem: React.FC<{ label: string, value?: string }> = ({ label, value }) => (
-  <div className="bg-app-card border-2 border-app-border p-3 rounded-[var(--radius-technical)] flex flex-col items-center justify-center gap-1 shadow-[2px_2px_0px_rgba(0,0,0,0.05)]">
-    <span className="text-[9px] font-black text-app-secondary/60 uppercase tracking-widest">{label}</span>
-    <span className={`text-xs font-mono font-black ${(value || '').toUpperCase() === 'OK' ? 'text-emerald-500' : (value || '').toUpperCase() === 'PENDENTE' ? 'text-red-500' : 'text-app-text/40'}`}>
+  <div className="bg-white border border-app-border p-4 rounded-[24px] flex flex-col items-center justify-center gap-1 shadow-sm">
+    <span className="text-[10px] font-bold text-app-text-secondary uppercase tracking-tight">{label}</span>
+    <span className={`text-sm font-bold ${(value || '').toUpperCase() === 'OK' ? 'text-emerald-500' : (value || '').toUpperCase() === 'PENDENTE' ? 'text-red-400' : 'text-app-text/40'}`}>
       {value || '-'}
     </span>
   </div>
 );
 
 const SkeletonItem: React.FC = () => (
-  <div className="w-full bg-app-card border-2 border-app-border p-5 rounded-[var(--radius-technical)] flex justify-between items-center animate-pulse">
+  <div className="w-full bg-white border border-app-border p-6 rounded-[32px] flex justify-between items-center animate-pulse">
     <div className="flex flex-col gap-2 w-2/3">
-      <div className="h-4 bg-slate-200 rounded w-full" />
-      <div className="h-3 bg-slate-100 rounded w-1/2" />
+      <div className="h-5 bg-slate-100 rounded-full w-full" />
+      <div className="h-3 bg-slate-50 rounded-full w-1/2" />
     </div>
-    <div className="w-16 h-8 bg-slate-100 rounded" />
+    <div className="w-12 h-12 bg-slate-50 rounded-full" />
   </div>
 );
 
@@ -1117,106 +1117,123 @@ const LiberationView: React.FC = () => {
 
   const uniqueRoles = Array.from(new Set(allData.map(d => d.funcao).filter(Boolean))).sort();
 
+  const releasedCount = allData.filter(d => isReleased(d.data_liberacao_ecoordin)).length;
+  const pendingCount = allData.length - releasedCount;
+
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6 pt-4 pb-24">
-      <div className="bg-app-card border-2 border-app-border p-6 rounded-[var(--radius-technical)] shadow-[8px_8px_0px_rgba(0,0,0,0.05)] space-y-4">
-        <div className="flex flex-col gap-4">
-          <div className="space-y-1">
-            <h3 className="text-base font-black flex items-center gap-3 uppercase tracking-tighter">
-              <Lock className="text-brand-primary" size={20} />
-              Check de Liberação
-            </h3>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6 pt-4 pb-24 px-1">
+      {/* Glo-style Dashboard Header */}
+      {!result && (
+        <div className="bg-white p-8 rounded-[40px] border border-app-border shadow-premium space-y-8">
+          <div className="flex justify-between items-start">
+            <div className="space-y-1">
+              <span className="text-[11px] font-bold text-app-text-secondary uppercase tracking-[0.1em]">Total Liberados</span>
+              <div className="flex items-baseline gap-1">
+                <span className="text-4xl font-extrabold text-app-text tabular-nums tracking-tighter">{releasedCount}</span>
+                <span className="text-sm font-bold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-full">✓ OK</span>
+              </div>
+            </div>
+            <div className="w-12 h-12 bg-glo-mint/10 rounded-full flex items-center justify-center">
+              <Zap className="text-glo-mint" size={24} fill="currentColor" />
+            </div>
           </div>
-          <div className="flex flex-row flex-wrap gap-2 w-full">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="flex-1 bg-ice-white border-2 border-app-border rounded-[var(--radius-technical)] px-3 py-2 text-[10px] font-black text-app-text outline-none focus:border-brand-primary transition-all min-w-[120px]"
-            >
-              <option value="ALL">STATUS: TODOS</option>
-              <option value="LIBERADO">STATUS: LIBERADOS</option>
-              <option value="NAO_LIBERADO">STATUS: PENDENTES</option>
-            </select>
-            <select
-              value={monthFilter}
-              onChange={(e) => setMonthFilter(e.target.value)}
-              className="flex-1 bg-ice-white border-2 border-app-border rounded-[var(--radius-technical)] px-3 py-2 text-[10px] font-black text-app-text outline-none focus:border-brand-primary transition-all min-w-[120px]"
-            >
-              <option value="ALL">MÊS: TODOS</option>
-              <option value="DEC">MÊS: DEZEMBRO</option>
-              <option value="JAN">MÊS: JANEIRO</option>
-            </select>
-            <select
-              value={roleFilter}
-              onChange={(e) => setRoleFilter(e.target.value)}
-              className="flex-1 bg-ice-white border-2 border-app-border rounded-[var(--radius-technical)] px-3 py-2 text-[10px] font-black text-app-text outline-none focus:border-brand-primary transition-all min-w-[120px]"
-            >
-              <option value="ALL">FUNÇÃO: TODAS</option>
-              {uniqueRoles.map(role => (
-                <option key={role} value={role}>{role ? `FUNÇÃO: ${role.toUpperCase()}` : 'SEM FUNÇÃO'}</option>
-              ))}
-            </select>
-          </div>
-        </div>
 
-        <div className="flex gap-2">
-          <form onSubmit={handleSearch} className="relative flex-1 group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-app-secondary/40" size={18} />
-            <input
-              type="text"
-              className="w-full bg-app-card border-2 border-app-border rounded-[var(--radius-technical)] py-4 pl-12 pr-12 outline-none focus:border-brand-primary transition-all font-mono text-app-text shadow-inner"
-              placeholder="Matrícula ou Nome..."
-              value={search}
-              onChange={(e) => handleInputChange(e.target.value)}
-              onFocus={() => search.length > 1 && setShowSuggestions(true)}
-            />
-            <button type="submit" className="hidden" />
-
-            <AnimatePresence>
-              {showSuggestions && suggestions.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.98 }}
-                  className="absolute top-full left-0 right-[-85px] mt-2 bg-white border-2 border-app-border rounded-[var(--radius-technical)] shadow-[12px_12px_0px_rgba(0,0,0,0.1)] z-50 overflow-hidden"
-                >
-                  {suggestions.map((item, i) => (
-                    <button
-                      key={i}
-                      type="button"
-                      onClick={() => handleSelectSuggestion(item)}
-                      className="w-full px-6 py-5 flex flex-col gap-1.5 hover:bg-slate-50 border-b-2 border-app-border last:border-0 text-left transition-colors"
-                    >
-                      <span className="text-sm font-black text-app-text uppercase tracking-tight">{item.nome}</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] text-brand-primary font-black bg-brand-primary/10 px-2 py-1 rounded-sm border border-brand-primary/20">MAT: {item.mat}</span>
-                        <span className="text-[10px] text-app-secondary font-bold uppercase">{item.funcao}</span>
-                      </div>
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </form>
-          {(search || result) && (
-            <button
-              onClick={handleClear}
-              className="px-4 bg-app-card border-2 border-app-border rounded-[var(--radius-technical)] text-[10px] font-black text-brand-primary uppercase tracking-widest active:translate-x-[2px] active:translate-y-[2px] transition-all shadow-[2px_2px_0px_rgba(0,0,0,0.1)] flex items-center gap-2"
-            >
-              <RotateCcw size={14} />
-              Limpar
+          <div className="flex gap-4">
+            <button className="flex-1 py-3 bg-slate-50 rounded-full flex flex-col items-center gap-0.5 border border-slate-100 transition-all hover:bg-slate-100">
+              <span className="text-[10px] font-bold text-slate-400 uppercase">Pendentes</span>
+              <span className="text-lg font-black text-red-400">{pendingCount}</span>
             </button>
-          )}
+            <button className="flex-1 py-3 bg-slate-50 rounded-full flex flex-col items-center gap-0.5 border border-slate-100 transition-all hover:bg-slate-100">
+              <span className="text-[10px] font-bold text-slate-400 uppercase">Taxa</span>
+              <span className="text-lg font-black text-app-text">{Math.round((releasedCount / allData.length) * 100)}%</span>
+            </button>
+          </div>
+
+          <div className="border-t border-slate-50 pt-6 space-y-4">
+            <div className="flex gap-2 w-full overflow-x-auto pb-2 scrollbar-hide">
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="bg-slate-50 border border-slate-100 rounded-full px-4 py-2 text-[10px] font-bold text-app-text outline-none focus:border-glo-mint transition-all whitespace-nowrap min-w-max"
+              >
+                <option value="ALL">STATUS: TODOS</option>
+                <option value="LIBERADO">✅ LIBERADOS</option>
+                <option value="NAO_LIBERADO">🔒 PENDENTES</option>
+              </select>
+              <select
+                value={monthFilter}
+                onChange={(e) => setMonthFilter(e.target.value)}
+                className="bg-slate-50 border border-slate-100 rounded-full px-4 py-2 text-[10px] font-bold text-app-text outline-none focus:border-glo-mint transition-all whitespace-nowrap min-w-max"
+              >
+                <option value="ALL">MÊS: TODOS</option>
+                <option value="DEC">DEZEMBRO</option>
+                <option value="JAN">JANEIRO</option>
+              </select>
+              <select
+                value={roleFilter}
+                onChange={(e) => setRoleFilter(e.target.value)}
+                className="bg-slate-50 border border-slate-100 rounded-full px-4 py-2 text-[10px] font-bold text-app-text outline-none focus:border-glo-mint transition-all whitespace-nowrap min-w-max"
+              >
+                <option value="ALL">FUNÇÃO: TODAS</option>
+                {uniqueRoles.map(role => (
+                  <option key={role} value={role}>{role ? role.toUpperCase() : 'SEM FUNÇÃO'}</option>
+                ))}
+              </select>
+            </div>
+
+            <form onSubmit={handleSearch} className="relative group">
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-app-text-secondary/40" size={18} />
+              <input
+                type="text"
+                className="w-full bg-slate-50 border border-slate-100 rounded-full py-5 pl-14 pr-12 outline-none focus:border-glo-mint focus:bg-white transition-all text-sm font-semibold text-app-text shadow-inner"
+                placeholder="Pesquisar matrícula ou nome..."
+                value={search}
+                onChange={(e) => handleInputChange(e.target.value)}
+                onFocus={() => search.length > 1 && setShowSuggestions(true)}
+              />
+              <AnimatePresence>
+                {showSuggestions && suggestions.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="absolute top-full left-0 right-0 mt-3 bg-white border border-app-border rounded-[32px] shadow-premium z-50 overflow-hidden"
+                  >
+                    {suggestions.map((item, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => handleSelectSuggestion(item)}
+                        className="w-full px-8 py-5 flex items-center justify-between hover:bg-slate-50 border-b border-app-border last:border-0 text-left transition-colors"
+                      >
+                        <div className="flex flex-col gap-0.5">
+                          <span className="text-sm font-bold text-app-text uppercase">{item.nome}</span>
+                          <span className="text-[10px] text-app-text-secondary/60 font-medium">MAT: {item.mat}</span>
+                        </div>
+                        <ChevronRight size={16} className="text-slate-300" />
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
+
+      {(search || result) && !result && (
+        <button
+          onClick={handleClear}
+          className="w-full py-4 bg-white border border-app-border rounded-full text-[10px] font-bold text-glo-mint uppercase tracking-widest active:scale-95 transition-all shadow-soft flex items-center justify-center gap-2"
+        >
+          <RotateCcw size={14} />
+          Limpar Busca
+        </button>
+      )}
 
       <AnimatePresence mode="wait">
         {loading && (
-          <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-3 px-1">
-            <div className="flex justify-between items-center mb-2">
-              <div className="h-3 bg-slate-200 rounded w-32 animate-pulse" />
-              <div className="h-4 bg-slate-200 rounded w-8 animate-pulse" />
-            </div>
+          <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
             <SkeletonItem />
             <SkeletonItem />
             <SkeletonItem />
@@ -1224,82 +1241,83 @@ const LiberationView: React.FC = () => {
         )}
 
         {error && !loading && (
-          <motion.div key="error" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="p-4 bg-red-400/10 border-2 border-red-400 rounded-[var(--radius-technical)] flex items-center gap-3 text-red-500 text-sm font-bold shadow-[4px_4px_0px_rgba(239,68,68,0.1)]">
-            <AlertCircle size={18} />
+          <motion.div key="error" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="p-6 bg-red-50 border border-red-100 rounded-[32px] flex items-center gap-4 text-red-500 text-sm font-bold shadow-soft">
+            <AlertCircle size={20} />
             {error.toUpperCase()}
           </motion.div>
         )}
 
         {result && !loading ? (
-          <motion.div key="result" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.98 }} className="space-y-4">
-            <div className={`p-8 rounded-[var(--radius-technical)] border-2 ${isReleased(result.data_liberacao_ecoordin) ? 'bg-emerald-500/5 border-emerald-500' : 'bg-red-500/5 border-red-500'} relative overflow-hidden shadow-[12px_12px_0px_rgba(0,0,0,0.05)]`}>
-              <div className="relative z-10 flex flex-col gap-6">
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-black text-deep-charcoal uppercase tracking-widest bg-white px-2 py-1 rounded-sm border-2 border-app-border shadow-[2px_2px_0px_rgba(0,0,0,0.1)]">MAT: {result.mat}</span>
+          <motion.div key="result" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9 }} className="space-y-6">
+            <div className={`p-10 rounded-[48px] border-2 ${isReleased(result.data_liberacao_ecoordin) ? 'bg-white border-emerald-500/20' : 'bg-white border-red-500/20'} shadow-premium relative overflow-hidden`}>
+              <div className="relative z-10 flex flex-col gap-8">
+                <div className="flex justify-between items-start">
+                  <div className="space-y-2">
+                    <span className="text-[10px] font-extrabold text-app-text-secondary uppercase tracking-[0.2em] bg-slate-50 px-3 py-1 rounded-full border border-slate-100">Matrícula {result.mat}</span>
+                    <h2 className={`text-3xl font-black uppercase tracking-tight leading-tight ${isReleased(result.data_liberacao_ecoordin) ? 'text-app-text' : 'text-red-500'}`}>
+                      {result.nome}
+                    </h2>
+                    <p className="text-app-text-secondary text-base font-bold uppercase tracking-wide opacity-60 italic">{result.funcao}</p>
                   </div>
-                  <h2 className={`text-2xl font-black mt-2 uppercase tracking-tighter leading-tight ${isReleased(result.data_liberacao_ecoordin) ? 'text-app-text' : 'text-red-600'}`}>
-                    {result.nome}
-                  </h2>
-                  <p className="text-app-secondary text-sm font-black uppercase tracking-widest opacity-60 font-mono">{result.funcao}</p>
+                  <div className={`w-16 h-16 rounded-full flex items-center justify-center ${isReleased(result.data_liberacao_ecoordin) ? 'bg-emerald-50' : 'bg-red-50'}`}>
+                    {isReleased(result.data_liberacao_ecoordin) ? (
+                      <Zap className="text-emerald-500" size={32} fill="currentColor" />
+                    ) : (
+                      <Lock className="text-red-400" size={32} />
+                    )}
+                  </div>
                 </div>
 
-                <div className="flex items-center justify-between p-5 bg-white rounded-sm border-2 border-app-border shadow-[4px_4px_0px_rgba(0,0,0,0.05)]">
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-black text-app-secondary/60 uppercase tracking-widest">Status E-COORDINA</span>
-                    <span className={`text-xl font-black ${isReleased(result.data_liberacao_ecoordin) ? 'text-emerald-500' : 'text-red-500'} tracking-tighter uppercase`}>
-                      {isReleased(result.data_liberacao_ecoordin) ? '✓ LIBERADO' : '× PENDENTE'}
-                    </span>
-                    <span className="text-[11px] text-app-secondary font-mono font-bold mt-1 bg-slate-50 px-2 py-0.5 border border-slate-100">{result.data_liberacao_ecoordin || 'DATA NÃO DEFINIDA'}</span>
-                  </div>
-                  {isReleased(result.data_liberacao_ecoordin) ? (
-                    <Zap className="text-emerald-500" size={36} fill="currentColor" />
-                  ) : (
-                    <div className="p-2 border-2 border-red-500 rounded-sm">
-                      <Lock className="text-red-500" size={28} />
-                    </div>
-                  )}
+                <div className="p-6 bg-slate-50 rounded-[32px] border border-slate-100/50 flex flex-col gap-1">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Status de Liberação</span>
+                  <span className={`text-2xl font-black ${isReleased(result.data_liberacao_ecoordin) ? 'text-emerald-500' : 'text-red-500'} tracking-tighter`}>
+                    {isReleased(result.data_liberacao_ecoordin) ? '✓ LIBERADO NO SISTEMA' : '× PENDENTE DE LIBERAÇÃO'}
+                  </span>
+                  <span className="text-[11px] font-bold text-slate-400 mt-2 font-mono">Processado em: {result.data_liberacao_ecoordin || 'N/A'}</span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <StatusItem label="RH" value={result.rh} />
-                  <StatusItem label="SAÚDE" value={result.saude} />
-                  <StatusItem label="SEGURANÇA" value={result.seguranca} />
-                  <StatusItem label="GRD" value={result.grd} />
+                <div className="grid grid-cols-2 gap-4">
+                  <StatusItem label="RECURSOS HUMANOS" value={result.rh} />
+                  <StatusItem label="SAÚDE OCUPACIONAL" value={result.saude} />
+                  <StatusItem label="SEG. TRABALHO" value={result.seguranca} />
+                  <StatusItem label="GERÊNCIA (GRD)" value={result.grd} />
                   <div className="col-span-full">
-                    <StatusItem label="ÁREA DE TRABALHO" value={result.area} />
+                    <StatusItem label="ÁREA DE TRABALHO AUTORIZADA" value={result.area} />
                   </div>
                 </div>
 
                 {result.obs_grd && (
-                  <div className="p-4 bg-white rounded-sm border-2 border-app-border shadow-[2px_2px_0px_rgba(0,0,0,0.05)]">
-                    <span className="text-[10px] font-black text-app-secondary uppercase block mb-1 tracking-widest">Observações Técnicas (GRD)</span>
-                    <p className="text-[11px] text-app-text font-mono leading-relaxed">{result.obs_grd}</p>
+                  <div className="p-6 bg-amber-50/30 rounded-[32px] border border-amber-100/50">
+                    <span className="text-[10px] font-bold text-amber-600/60 uppercase block mb-2 tracking-widest">Observações da Gerência</span>
+                    <p className="text-xs text-app-text font-medium leading-relaxed italic">"{result.obs_grd}"</p>
                   </div>
                 )}
 
                 <button
                   onClick={handleClear}
-                  className="w-full py-4 bg-white border-2 border-app-border rounded-[var(--radius-button)] text-xs font-black text-brand-primary uppercase tracking-widest active:translate-x-[2px] active:translate-y-[2px] transition-all shadow-[4px_4px_0px_rgba(255,92,0,0.1)] mt-2"
+                  className="w-full py-5 bg-glo-mint text-glo-text-main rounded-full text-xs font-black uppercase tracking-widest shadow-lg shadow-glo-mint/20 active:scale-95 transition-all mt-4"
                 >
-                  Voltar para a lista
+                  Fechar Detalhes
                 </button>
               </div>
             </div>
           </motion.div>
         ) : loading ? null : (
           (
-            <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3 px-1">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-[10px] font-black text-app-text/60 uppercase tracking-widest">Registro de Liberação</span>
-                <span className="text-[10px] font-black text-white bg-deep-charcoal px-2 py-0.5 rounded-sm shadow-[2px_2px_0px_rgba(0,0,0,0.1)]">{filteredList.length}</span>
+            <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
+              <div className="flex justify-between items-center px-4">
+                <span className="text-[11px] font-bold text-app-text-secondary uppercase tracking-[0.1em]">Resultados Filtrados</span>
+                <span className="text-[10px] font-black text-app-text-secondary bg-slate-100 px-3 py-1 rounded-full">{filteredList.length}</span>
               </div>
               {filteredList.length === 0 ? (
-                <div className="text-center py-12 bg-app-card rounded-[var(--radius-technical)] border-2 border-app-border shadow-[4px_4px_0px_rgba(0,0,0,0.05)]">
-                  <span className="text-xs font-black text-app-secondary uppercase tracking-widest opacity-40">Nenhum registro encontrado</span>
+                <div className="text-center py-16 bg-white rounded-[40px] border border-app-border shadow-soft">
+                  <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Users className="text-slate-200" size={24} />
+                  </div>
+                  <span className="text-xs font-bold text-slate-300 uppercase tracking-widest">Nenhum colaborador na lista</span>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-8">
+                <div className="grid grid-cols-1 gap-4 pb-12">
                   {filteredList.map((item, i) => (
                     <motion.button
                       key={i}
@@ -1307,22 +1325,26 @@ const LiberationView: React.FC = () => {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.02 }}
                       onClick={() => handleSelectSuggestion(item)}
-                      className="w-full bg-app-card border-2 border-app-border p-5 rounded-[var(--radius-technical)] flex justify-between items-center active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all text-left group hover:border-brand-primary shadow-[4px_4px_0px_rgba(0,0,0,0.05)]"
+                      className="w-full bg-white border border-app-border p-6 rounded-[32px] flex justify-between items-center active:scale-[0.98] transition-all text-left group hover:shadow-premium shadow-soft"
                     >
-                      <div className="flex flex-col gap-1.5 max-w-[70%]">
-                        <span className={`text-sm font-black truncate group-hover:text-brand-primary transition-colors uppercase tracking-tighter ${isReleased(item.data_liberacao_ecoordin) ? 'text-app-text' : 'text-red-500'}`}>{item.nome}</span>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-mono text-app-secondary/60 font-black">{item.mat}</span>
-                          <span className="w-1 h-1 rounded-full bg-slate-300" />
-                          <span className="text-[9px] text-app-secondary/50 font-black uppercase truncate">{item.funcao}</span>
+                      <div className="flex items-center gap-4 max-w-[75%]">
+                        <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 ${isReleased(item.data_liberacao_ecoordin) ? 'bg-emerald-50' : 'bg-red-50'}`}>
+                          {isReleased(item.data_liberacao_ecoordin) ? (
+                            <Zap className="text-emerald-500" size={20} fill="currentColor" />
+                          ) : (
+                            <Lock className="text-red-400" size={20} />
+                          )}
+                        </div>
+                        <div className="flex flex-col gap-0.5 truncate">
+                          <span className="text-sm font-extrabold text-app-text uppercase truncate">{item.nome}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-bold text-app-text-secondary/60">MAT: {item.mat}</span>
+                            <span className="w-1 h-1 rounded-full bg-slate-200" />
+                            <span className="text-[10px] font-bold text-app-text-secondary/60 uppercase truncate">{item.funcao}</span>
+                          </div>
                         </div>
                       </div>
-                      <div className="flex flex-col items-end gap-2">
-                        <span className="text-[10px] font-mono text-brand-primary font-black bg-brand-primary/5 px-2 py-0.5 rounded-sm border border-brand-primary/10">
-                          {item.data_liberacao_ecoordin || 'PENDENTE'}
-                        </span>
-                        <ChevronRight size={14} className="text-app-text/20 group-hover:text-brand-primary transition-all" />
-                      </div>
+                      <ChevronRight size={18} className="text-slate-200 group-hover:text-glo-mint transition-colors" />
                     </motion.button>
                   ))}
                 </div>
