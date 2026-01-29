@@ -1104,8 +1104,8 @@ const LiberationView: React.FC = () => {
 
   const uniqueRoles = Array.from(new Set(allData.map(d => d.funcao).filter(Boolean))).sort();
 
-  const releasedCount = allData.filter(d => isReleased(d.data_liberacao_ecoordin)).length;
-  const pendingCount = allData.length - releasedCount;
+  const releasedCount = filteredList.filter(d => isReleased(d.data_liberacao_ecoordin)).length;
+  const pendingCount = filteredList.length - releasedCount;
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6 pt-4 pb-24 px-1">
