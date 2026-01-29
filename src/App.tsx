@@ -1136,6 +1136,7 @@ const LiberationView: React.FC = () => {
 
           <div className="border-t border-slate-50 pt-6 space-y-4">
             <div className="flex gap-2 w-full overflow-x-auto pb-2 scrollbar-hide">
+              {/* 1. Função */}
               <select
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
@@ -1146,23 +1147,27 @@ const LiberationView: React.FC = () => {
                   <option key={role} value={role}>{role ? role.toUpperCase() : 'SEM FUNÇÃO'}</option>
                 ))}
               </select>
+
+              {/* 2. Período Data */}
+              <select
+                value={monthFilter}
+                onChange={(e) => setMonthFilter(e.target.value)}
+                className="bg-slate-50 border border-slate-100 rounded-full px-4 py-2 text-[10px] font-bold text-app-text outline-none focus:border-brand-orange transition-all whitespace-nowrap min-w-max"
+              >
+                <option value="ALL">PERÍODO: TODOS</option>
+                <option value="DEC">DEZEMBRO</option>
+                <option value="JAN">JANEIRO</option>
+              </select>
+
+              {/* 3. Status */}
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="bg-slate-50 border border-slate-100 rounded-full px-4 py-2 text-[10px] font-bold text-app-text outline-none focus:border-brand-orange transition-all whitespace-nowrap min-w-max"
               >
                 <option value="ALL">STATUS: TODOS</option>
-                <option value="LIBERADO">✅ LIBERADOS</option>
-                <option value="NAO_LIBERADO">🔒 PENDENTES</option>
-              </select>
-              <select
-                value={monthFilter}
-                onChange={(e) => setMonthFilter(e.target.value)}
-                className="bg-slate-50 border border-slate-100 rounded-full px-4 py-2 text-[10px] font-bold text-app-text outline-none focus:border-brand-orange transition-all whitespace-nowrap min-w-max"
-              >
-                <option value="ALL">MÊS: TODOS</option>
-                <option value="DEC">DEZEMBRO</option>
-                <option value="JAN">JANEIRO</option>
+                <option value="LIBERADO">✅ LIBERADO</option>
+                <option value="NAO_LIBERADO">🔒 NÃO LIBERADO</option>
               </select>
             </div>
 
