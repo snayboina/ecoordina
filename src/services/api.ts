@@ -25,7 +25,6 @@ const getStableGoogleCsvUrl = (url: string) => {
 
 const CSV_URL = getStableGoogleCsvUrl(import.meta.env.VITE_SPREADSHEET_URL || 'https://docs.google.com/spreadsheets/d/1yLnwKTo1yM-fmlzX5cDzrIlbg2-BjbME/export?format=csv');
 
-const LIBERATION_CSV_URL = getStableGoogleCsvUrl(import.meta.env.VITE_LIBERATION_SPREADSHEET_URL || 'https://docs.google.com/spreadsheets/d/1zYOgUNgNkUA5C5N2pLZ-0ub5Um_uZ2inCh0YDi1JDSo/export?format=csv&gid=0');
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
