@@ -1018,6 +1018,9 @@ const LiberationView: React.FC = () => {
     setError('');
     setSuggestions([]);
     setShowSuggestions(false);
+    setRoleFilter('ALL');
+    setMonthFilter('ALL');
+    setStatusFilter('ALL');
   };
 
   const normalize = (str: string) =>
@@ -1180,6 +1183,16 @@ const LiberationView: React.FC = () => {
                   </select>
                 </div>
               </div>
+
+              {(roleFilter !== 'ALL' || monthFilter !== 'ALL' || statusFilter !== 'ALL') && (
+                <button
+                  onClick={handleClear}
+                  className="w-full py-3 bg-white border border-dashed border-slate-200 rounded-full text-[10px] font-bold text-slate-400 uppercase tracking-widest active:scale-95 transition-all flex items-center justify-center gap-2 hover:bg-slate-50 hover:border-brand-orange/30 hover:text-brand-orange"
+                >
+                  <RotateCcw size={12} />
+                  Limpar Filtros
+                </button>
+              )}
             </div>
 
             <form onSubmit={handleSearch} className="relative group">
