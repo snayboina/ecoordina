@@ -14,22 +14,22 @@
   --color-brand-secondary: var(--color-vibrant-coral);
   --color-bg-dark: var(--color-deep-charcoal);
 
-  /* Glo Palette (Soft Premium) */
-  --color-glo-mint: #2CE5D1;
+  /* Glo Palette (Orange Refresh) */
+  --color-brand-orange: #FF5C00;
   --color-glo-bg: #F8FAFB;
   --color-glo-card: #FFFFFF;
   --color-glo-text-main: #0F172A;
   --color-glo-text-sub: #64748B;
 
-  /* App Semantic Colors (Glo Mode) */
+  /* App Semantic Colors (Orange Mode) */
   --color-app-bg: var(--color-glo-bg);
   --color-app-card: var(--color-glo-card);
   --color-app-border: rgba(15, 23, 42, 0.04);
   --color-app-text: var(--color-glo-text-main);
   --color-app-text-secondary: var(--color-glo-text-sub);
   --color-app-notch: #000000;
-  --color-app-indicator: var(--color-glo-mint);
-  --color-app-glow: rgba(44, 229, 209, 0.15);
+  --color-app-indicator: var(--color-brand-orange);
+  --color-app-glow: rgba(255, 92, 0, 0.12);
 
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -62,11 +62,11 @@ body {
 
 @layer components {
   .btn-primary {
-    @apply bg-glo-mint text-glo-text-main font-bold py-5 px-10 rounded-full shadow-lg shadow-glo-mint/20 hover:shadow-glo-mint/40 hover:scale-[1.02] transition-all active:scale-95 uppercase tracking-widest text-sm flex items-center justify-center gap-2;
+    @apply bg-brand-orange text-white font-bold py-5 px-10 rounded-full shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:scale-[1.02] transition-all active:scale-95 uppercase tracking-widest text-sm flex items-center justify-center gap-2;
   }
 
   .nav-input {
-    @apply bg-white border border-app-border rounded-3xl py-4 px-6 outline-none focus:border-glo-mint transition-all text-sm text-app-text font-sans shadow-soft;
+    @apply bg-white border border-app-border rounded-3xl py-4 px-6 outline-none focus:border-brand-orange transition-all text-sm text-app-text font-sans shadow-soft;
   }
 
   .menu-block {

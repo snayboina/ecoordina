@@ -1133,8 +1133,8 @@ const LiberationView: React.FC = () => {
                 <span className="text-sm font-bold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-full">✓ OK</span>
               </div>
             </div>
-            <div className="w-12 h-12 bg-glo-mint/10 rounded-full flex items-center justify-center">
-              <Zap className="text-glo-mint" size={24} fill="currentColor" />
+            <div className="w-12 h-12 bg-orange-500/10 rounded-full flex items-center justify-center">
+              <Zap className="text-orange-500" size={24} fill="currentColor" />
             </div>
           </div>
 
@@ -1154,7 +1154,7 @@ const LiberationView: React.FC = () => {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="bg-slate-50 border border-slate-100 rounded-full px-4 py-2 text-[10px] font-bold text-app-text outline-none focus:border-glo-mint transition-all whitespace-nowrap min-w-max"
+                className="bg-slate-50 border border-slate-100 rounded-full px-4 py-2 text-[10px] font-bold text-app-text outline-none focus:border-brand-orange transition-all whitespace-nowrap min-w-max"
               >
                 <option value="ALL">STATUS: TODOS</option>
                 <option value="LIBERADO">✅ LIBERADOS</option>
@@ -1163,7 +1163,7 @@ const LiberationView: React.FC = () => {
               <select
                 value={monthFilter}
                 onChange={(e) => setMonthFilter(e.target.value)}
-                className="bg-slate-50 border border-slate-100 rounded-full px-4 py-2 text-[10px] font-bold text-app-text outline-none focus:border-glo-mint transition-all whitespace-nowrap min-w-max"
+                className="bg-slate-50 border border-slate-100 rounded-full px-4 py-2 text-[10px] font-bold text-app-text outline-none focus:border-brand-orange transition-all whitespace-nowrap min-w-max"
               >
                 <option value="ALL">MÊS: TODOS</option>
                 <option value="DEC">DEZEMBRO</option>
@@ -1172,7 +1172,7 @@ const LiberationView: React.FC = () => {
               <select
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
-                className="bg-slate-50 border border-slate-100 rounded-full px-4 py-2 text-[10px] font-bold text-app-text outline-none focus:border-glo-mint transition-all whitespace-nowrap min-w-max"
+                className="bg-slate-50 border border-slate-100 rounded-full px-4 py-2 text-[10px] font-bold text-app-text outline-none focus:border-brand-orange transition-all whitespace-nowrap min-w-max"
               >
                 <option value="ALL">FUNÇÃO: TODAS</option>
                 {uniqueRoles.map(role => (
@@ -1185,7 +1185,7 @@ const LiberationView: React.FC = () => {
               <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-app-text-secondary/40" size={18} />
               <input
                 type="text"
-                className="w-full bg-slate-50 border border-slate-100 rounded-full py-5 pl-14 pr-12 outline-none focus:border-glo-mint focus:bg-white transition-all text-sm font-semibold text-app-text shadow-inner"
+                className="w-full bg-slate-50 border border-slate-100 rounded-full py-5 pl-14 pr-12 outline-none focus:border-brand-orange focus:bg-white transition-all text-sm font-semibold text-app-text shadow-inner"
                 placeholder="Pesquisar matrícula ou nome..."
                 value={search}
                 onChange={(e) => handleInputChange(e.target.value)}
@@ -1224,7 +1224,7 @@ const LiberationView: React.FC = () => {
       {(search || result) && !result && (
         <button
           onClick={handleClear}
-          className="w-full py-4 bg-white border border-app-border rounded-full text-[10px] font-bold text-glo-mint uppercase tracking-widest active:scale-95 transition-all shadow-soft flex items-center justify-center gap-2"
+          className="w-full py-4 bg-white border border-app-border rounded-full text-[10px] font-bold text-brand-orange uppercase tracking-widest active:scale-95 transition-all shadow-soft flex items-center justify-center gap-2"
         >
           <RotateCcw size={14} />
           Limpar Busca
@@ -1295,7 +1295,7 @@ const LiberationView: React.FC = () => {
 
                 <button
                   onClick={handleClear}
-                  className="w-full py-5 bg-glo-mint text-glo-text-main rounded-full text-xs font-black uppercase tracking-widest shadow-lg shadow-glo-mint/20 active:scale-95 transition-all mt-4"
+                  className="w-full py-5 bg-brand-orange text-white rounded-full text-xs font-black uppercase tracking-widest shadow-lg shadow-orange-500/20 active:scale-95 transition-all mt-4"
                 >
                   Fechar Detalhes
                 </button>
@@ -1344,7 +1344,7 @@ const LiberationView: React.FC = () => {
                           </div>
                         </div>
                       </div>
-                      <ChevronRight size={18} className="text-slate-200 group-hover:text-glo-mint transition-colors" />
+                      <ChevronRight size={18} className="text-slate-200 group-hover:text-brand-orange transition-colors" />
                     </motion.button>
                   ))}
                 </div>
