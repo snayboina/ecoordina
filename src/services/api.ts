@@ -185,56 +185,33 @@ export const calculateLeadTime = (collab: Collaborator) => {
 
 export const fetchLiberationData = async (): Promise<LiberationData[]> => {
     try {
-        console.log('Fetching Liberation Data from:', LIBERATION_CSV_URL);
-        const response = await fetch(LIBERATION_CSV_URL);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const csvRawText = await response.text();
+        console.log('Fetching Liberation Data from Supabase table: liberation_data');
+        const { data, error } = await supabase
+            .from('liberation_data')
+            .select('*');
 
-        return new Promise<LiberationData[]>((resolve, reject) => {
-            Papa.parse(csvRawText, {
-                header: true,
-                skipEmptyLines: true,
-                complete: (results: Papa.ParseResult<any>) => {
-                    const mapped = results.data
-                        .filter((row: any) => row.MAT || row.NOME)
-                        .map((row: any) => ({
-                            mat: String(row.MAT || row.CHAPA || '').trim(),
-                            nome: String(row.NOME || '').trim(),
-                            funcao: row['FUNÇÃO RM ATUALIZADA'] || row['FUNCAO'] || row['FUNÇÃO'],
-                            area: row['AREA DE NEGOCIO'] || row['AREA'],
-                            cid: row['CIP DE LIBERAÇÃO'] || row['CID'],
-                            rh: row.RH,
-                            saude: row.SAÚDE || row.SAUDE,
-                            seguranca: row.SEGURANÇA || row.SEGURANCA,
-                            grd: row.GRD,
-                            obs_grd: row['OBSERVAÇÃO GRD'] || row['OBSERVACAO GRD'],
-                            data_admissao: row['DATA ADMISSÃO'] || row['DATA_ADMISSAO'] || row['DATA ADMISSAO'],
-                            data_liberacao_ecoordin: row['DATA DE LIBERAÇÃO E-COORDINA'] || row['DATA DE LIBERERAÇÃO'] || row['LiberaçãoEcoordina'],
-                            envio_cliente: row['ENVIO PARA O CLIENTE'] || row['Envio para o cliente'],
-                            updated_at: new Date().toISOString()
-                        }));
-                    resolve(mapped);
-                },
-                error: (error: any) => reject(error)
-            });
-        });
+        if (error) throw error;
+        return data || [];
     } catch (error) {
-        console.error('Error fetching liberation data:', error);
+        console.error('Error fetching liberation data from Supabase:', error);
         return [];
     }
 };
 
 export const fetchLiberationByMat = async (search: string): Promise<LiberationData | null> => {
     try {
-        const allData = await fetchLiberationData();
-        const term = search.trim().toLowerCase();
+        const term = search.trim();
+        const { data, error } = await supabase
+            .from('liberation_data')
+            .select('*')
+            .or(`mat.eq.${term},nome.ilike.%${term}%`)
+            .limit(1)
+            .maybeSingle();
 
-        return allData.find(d =>
-            d.mat.toLowerCase() === term ||
-            d.nome.toLowerCase().includes(term)
-        ) || null;
+        if (error) throw error;
+        return data;
     } catch (err) {
-        console.error('Liberation fetch error:', err);
+        console.error('Liberation fetch error from Supabase:', err);
         return null;
     }
 };
