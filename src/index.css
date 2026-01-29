@@ -1,52 +1,46 @@
 @import "tailwindcss";
 
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800&family=Varela+Round&display=swap');
+
 @theme {
-  /* Vibrant Ice Palette */
-  --color-ice-white: #F2F5F7;
-  --color-vibrant-orange: #FF5C00;
-  --color-vibrant-coral: #FF7A45;
-  --color-deep-charcoal: #1A1A1A;
-  --color-soft-gray: #94A3B8;
-  --color-peach-puff: #FFF5ED;
+  /* Premium Soft Palette */
+  --color-brand-primary: #3B82F6;
+  --color-brand-secondary: #60A5FA;
+  --color-brand-accent: #F97316;
+  /* Ecoordina Orange */
 
-  /* Brand Bindings */
-  --color-brand-primary: var(--color-vibrant-orange);
-  --color-brand-secondary: var(--color-vibrant-coral);
-  --color-bg-dark: var(--color-deep-charcoal);
+  --color-app-bg: #F8FAFC;
+  --color-app-card: #FFFFFF;
+  --color-app-text: #1E293B;
+  --color-app-text-muted: #64748B;
+  --color-app-border: #E2E8F0;
 
-  /* Glo Palette (Orange Refresh) */
-  --color-brand-orange: #FF5C00;
-  --color-glo-bg: #F8FAFB;
-  --color-glo-card: #FFFFFF;
-  --color-glo-text-main: #0F172A;
-  --color-glo-text-sub: #64748B;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
 
-  /* App Semantic Colors (Orange Mode) */
-  --color-app-bg: var(--color-glo-bg);
-  --color-app-card: var(--color-glo-card);
-  --color-app-border: rgba(15, 23, 42, 0.04);
-  --color-app-text: var(--color-glo-text-main);
-  --color-app-text-secondary: var(--color-glo-text-sub);
-  --color-app-notch: #000000;
-  --color-app-indicator: var(--color-brand-orange);
-  --color-app-glow: rgba(255, 92, 0, 0.12);
+  --font-sans: 'Nunito Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Varela Round', sans-serif;
 
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  /* Geometry & Shadows */
+  --radius-xl: 32px;
+  --radius-lg: 24px;
+  --radius-md: 16px;
 
-  /* Glo Geometry Tokens */
-  --radius-glo: 32px;
-  --radius-glo-sm: 24px;
-  --shadow-soft: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-  --shadow-premium: 0 10px 15px -3px rgb(0 0 0 / 0.04), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+  /* Soft Floating Shadows */
+  --shadow-floating: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+  --shadow-card: 0 4px 6px -1px rgb(0 0 0 / 0.02), 0 2px 4px -2px rgb(0 0 0 / 0.02);
+  --shadow-premium: 0 20px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04);
 }
 
 :root {
   font-family: var(--font-sans);
   line-height: 1.5;
-  font-weight: 500;
+  font-weight: 400;
   color-scheme: light;
   background-color: var(--color-app-bg);
+  color: var(--color-app-text);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -62,15 +56,15 @@ body {
 
 @layer components {
   .btn-primary {
-    @apply bg-brand-orange text-white font-bold py-5 px-10 rounded-full shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:scale-[1.02] transition-all active:scale-95 uppercase tracking-widest text-sm flex items-center justify-center gap-2;
+    @apply bg-brand-accent text-white font-bold py-4 px-8 rounded-2xl shadow-xl shadow-orange-500/20 hover:shadow-orange-500/40 hover:scale-[1.02] transition-all active:scale-95 text-base flex items-center justify-center gap-2 font-display;
+  }
+
+  .card-floating {
+    @apply bg-app-card border border-app-border p-6 rounded-[var(--radius-lg)] shadow-card transition-all hover:shadow-floating hover:-translate-y-1;
   }
 
   .nav-input {
-    @apply bg-white border border-app-border rounded-3xl py-4 px-6 outline-none focus:border-brand-orange transition-all text-sm text-app-text font-sans shadow-soft;
-  }
-
-  .menu-block {
-    @apply bg-app-card border border-app-border p-8 rounded-[var(--radius-glo)] flex flex-col justify-between aspect-square transition-all active:scale-95 hover:shadow-premium relative overflow-hidden;
+    @apply bg-white border border-app-border rounded-xl py-3 px-5 outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-sm text-app-text font-sans;
   }
 }
 
@@ -84,19 +78,26 @@ body {
   scrollbar-width: none;
 }
 
-/* Simple Animations */
-@keyframes popIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
+/* Typography Helpers */
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Animations */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
   }
 
-  to {
-    opacity: 1;
-    transform: scale(1);
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
   }
 }
 
-.animate-pop {
-  animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+.animate-float {
+  animation: float 4s ease-in-out infinite;
 }
