@@ -1137,6 +1137,16 @@ const LiberationView: React.FC = () => {
           <div className="border-t border-slate-50 pt-6 space-y-4">
             <div className="flex gap-2 w-full overflow-x-auto pb-2 scrollbar-hide">
               <select
+                value={roleFilter}
+                onChange={(e) => setRoleFilter(e.target.value)}
+                className="bg-slate-50 border border-slate-100 rounded-full px-4 py-2 text-[10px] font-bold text-app-text outline-none focus:border-brand-orange transition-all whitespace-nowrap min-w-max"
+              >
+                <option value="ALL">FUNÇÃO: TODAS</option>
+                {uniqueRoles.map(role => (
+                  <option key={role} value={role}>{role ? role.toUpperCase() : 'SEM FUNÇÃO'}</option>
+                ))}
+              </select>
+              <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="bg-slate-50 border border-slate-100 rounded-full px-4 py-2 text-[10px] font-bold text-app-text outline-none focus:border-brand-orange transition-all whitespace-nowrap min-w-max"
@@ -1153,16 +1163,6 @@ const LiberationView: React.FC = () => {
                 <option value="ALL">MÊS: TODOS</option>
                 <option value="DEC">DEZEMBRO</option>
                 <option value="JAN">JANEIRO</option>
-              </select>
-              <select
-                value={roleFilter}
-                onChange={(e) => setRoleFilter(e.target.value)}
-                className="bg-slate-50 border border-slate-100 rounded-full px-4 py-2 text-[10px] font-bold text-app-text outline-none focus:border-brand-orange transition-all whitespace-nowrap min-w-max"
-              >
-                <option value="ALL">FUNÇÃO: TODAS</option>
-                {uniqueRoles.map(role => (
-                  <option key={role} value={role}>{role ? role.toUpperCase() : 'SEM FUNÇÃO'}</option>
-                ))}
               </select>
             </div>
 
