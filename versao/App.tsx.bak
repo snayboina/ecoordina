@@ -113,11 +113,11 @@ const WelcomeView: React.FC<{ onNext: () => void }> = ({ onNext }) => (
         animate={{ y: 0, opacity: 1 }}
         className="flex items-center gap-2 mb-4 mt-6 sm:mt-12 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-2xl border border-white/50 shadow-sm"
       >
-        <div className="w-8 h-8 bg-brand-primary rounded-lg flex items-center justify-center shadow-lg shadow-brand-primary/20">
+        <div className="w-8 h-8 bg-brand-accent rounded-lg flex items-center justify-center shadow-lg shadow-orange-500/20">
           <Zap className="text-white" size={16} fill="currentColor" />
         </div>
         <span className="font-display font-black text-xs uppercase tracking-widest text-app-text">
-          {BRAND_CONFIG.APP_NAME.split(' ')[0]}<span className="text-brand-primary">{BRAND_CONFIG.APP_NAME.split(' ')[1] || ''}</span>
+          Ecoordina<span className="text-brand-accent">Smart</span>
         </span>
       </motion.div>
 
@@ -128,10 +128,7 @@ const WelcomeView: React.FC<{ onNext: () => void }> = ({ onNext }) => (
           transition={{ delay: 0.2 }}
           className="space-y-4"
         >
-          <h1
-            className="font-black text-app-text tracking-tight font-display leading-[1.05]"
-            style={{ fontSize: 'var(--text-hero)' }}
-          >
+          <h1 className="text-4xl md:text-5xl font-black text-app-text tracking-tight font-display leading-[1.1]">
             Sua jornada <br />
             operacional <br />
             começa <span className="text-brand-primary">aqui.</span>
@@ -161,8 +158,8 @@ const WelcomeView: React.FC<{ onNext: () => void }> = ({ onNext }) => (
           className="relative z-10 w-full h-full animate-float"
         >
           <img
-            src={BRAND_CONFIG.LOGOS.MAIN}
-            className="w-full h-full object-cover rounded-[var(--radius-card)] border-4 border-white shadow-floating"
+            src="https://res.cloudinary.com/duyb5dsw0/image/upload/v1769556456/Whisk_d93805c8624cb73b747439948d305d92eg_plg0wt.png"
+            className="w-full h-full object-cover rounded-[40px] border-4 border-white shadow-floating"
             alt="Welcome"
           />
         </motion.div>
@@ -308,7 +305,8 @@ const DashboardCard: React.FC<{ title: string, value: string | number, icon: Rea
   </motion.div>
 );
 
-import { BRAND_CONFIG } from './arquitetura/brand.config';
+
+
 
 const App: React.FC = () => {
   const [view, setView] = useState<'welcome' | 'login' | 'content'>('welcome');
@@ -318,17 +316,6 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('TODOS');
-
-  // Injeção Dinâmica de Cores (Customização Ultra-Rápida)
-  useEffect(() => {
-    document.documentElement.style.setProperty('--brand-color', BRAND_CONFIG.PRIMARY_COLOR);
-    document.documentElement.style.setProperty('--bg-color', BRAND_CONFIG.BG_COLOR);
-    document.documentElement.style.setProperty('--radius-main', BRAND_CONFIG.RADIUS.MAIN);
-    document.documentElement.style.setProperty('--radius-card', BRAND_CONFIG.RADIUS.CARD);
-    document.documentElement.style.setProperty('--text-hero', BRAND_CONFIG.FONT_SIZE.HERO);
-    document.documentElement.style.setProperty('--text-title', BRAND_CONFIG.FONT_SIZE.TITLE);
-    document.documentElement.style.setProperty('--text-body', BRAND_CONFIG.FONT_SIZE.BODY);
-  }, []);
 
   /* Restaurando sessão */
   const [session, setSession] = useState<RequesterSession | null>(() => {
