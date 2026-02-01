@@ -1,4 +1,4 @@
-# Versão v1.1 - Variáveis Globais
+![alt text](image.png)# Versão v1.1 - Variáveis Globais
 
 **Data:** 31/01/2026  
 **Legenda:** Variáveis Globais

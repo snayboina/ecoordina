@@ -23,7 +23,7 @@ export const BRAND_CONFIG = {
   
   // --- Tipografia ---
   FONT_SIZE: {
-    HERO: "16px",   // Títulos gigantes
+    HERO: "56px",   // Títulos gigantes
     TITLE: "24px",  // Títulos de seção
     BODY: "16px"    // Texto padrão
   },
