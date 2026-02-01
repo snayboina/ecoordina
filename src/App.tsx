@@ -113,11 +113,11 @@ const WelcomeView: React.FC<{ onNext: () => void }> = ({ onNext }) => (
         animate={{ y: 0, opacity: 1 }}
         className="flex items-center gap-2 mb-4 mt-6 sm:mt-12 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-2xl border border-white/50 shadow-sm"
       >
-        <div className="w-8 h-8 bg-brand-primary rounded-lg flex items-center justify-center shadow-lg shadow-brand-primary/20">
+        <div className="w-8 h-8 bg-brand-primary rounded-full flex items-center justify-center shadow-lg shadow-brand-primary/20">
           <Zap className="text-white" size={16} fill="currentColor" />
         </div>
         <span className="font-display font-black text-xs uppercase tracking-widest text-app-text">
-          {BRAND_CONFIG.APP_NAME.split(' ')[0]}<span className="text-brand-primary">{BRAND_CONFIG.APP_NAME.split(' ')[1] || ''}</span>
+          {BRAND_CONFIG.APP_NAME.split(' ')[0]}<span className="text-brand-primary"> {BRAND_CONFIG.APP_NAME.split(' ')[1] || ''}</span>
         </span>
       </motion.div>
 
@@ -218,11 +218,11 @@ const LoginView: React.FC<{ onLogin: (session: RequesterSession) => void, onBack
       >
         <div className="flex flex-col items-center text-center space-y-6">
           <div className="flex items-center gap-3 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-2xl border border-white shadow-sm">
-            <div className="w-8 h-8 bg-brand-accent rounded-lg flex items-center justify-center shadow-lg shadow-orange-500/20">
+            <div className="w-8 h-8 bg-brand-primary rounded-full flex items-center justify-center shadow-lg shadow-brand-primary/20">
               <Zap className="text-white" size={16} fill="currentColor" />
             </div>
             <span className="font-display font-black text-xs uppercase tracking-widest text-app-text">
-              Ecoordina<span className="text-brand-accent">Smart</span>
+              {BRAND_CONFIG.APP_NAME.split(' ')[0]}<span className="text-brand-primary"> {BRAND_CONFIG.APP_NAME.split(' ')[1] || ''}</span>
             </span>
           </div>
           <div className="space-y-2">

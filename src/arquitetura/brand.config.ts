@@ -6,8 +6,8 @@
 
 export const BRAND_CONFIG = {
     // --- Identidade Visual ---
-    APP_NAME: "FRANCIS DEVELOPER",
-    COMPANY_NAME: "Francis Vieira Tech",
+    APP_NAME: "ECOORDINA SMART",
+    COMPANY_NAME: "Ecoordina Smart Tech",
     SLOGAN: "Transform repetitve processes into solutions",
 
     // --- Cores (Utilizadas em componentes React e estilos dinâmicos) ---
