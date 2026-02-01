@@ -27,7 +27,6 @@ export const generateEmailTemplate = (content: string) => {
 };
 
 export const sendWelcomeEmail = async (userEmail: string) => {
-  const html = generateEmailTemplate(`Bem-vindo ao ${BRAND_CONFIG.APP_NAME}! Estamos felizes em ter você conosco.`);
   console.log(`[Simulação] Enviando email para ${userEmail}...`);
   // Lógica real de envio aqui (ex: SendGrid, Resend, etc)
 };
