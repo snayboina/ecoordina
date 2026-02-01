@@ -111,7 +111,7 @@ const InitialView: React.FC<{ onNext: () => void }> = ({ onNext }) => (
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
     onClick={onNext}
-    className="fixed inset-0 z-[200] flex flex-col items-center justify-center cursor-pointer overflow-hidden p-0"
+    className="absolute inset-0 z-[200] flex flex-col items-center justify-center cursor-pointer overflow-hidden p-0"
     style={{ backgroundColor: BRAND_CONFIG.BG_COLOR }}
   >
     <motion.div
@@ -550,9 +550,12 @@ const App: React.FC = () => {
 
   if (view === 'initial') {
     return (
-      <AnimatePresence>
-        <InitialView onNext={() => setView('welcome')} />
-      </AnimatePresence>
+      <>
+        <ModernMobileSimulator variant={frameStyle}>
+          <InitialView onNext={() => setView('welcome')} />
+        </ModernMobileSimulator>
+        {frameSelector}
+      </>
     );
   }
 
