@@ -105,6 +105,52 @@ const ModernMobileSimulator: React.FC<{
   );
 };
 
+const InitialView: React.FC<{ onNext: () => void }> = ({ onNext }) => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    onClick={onNext}
+    className="fixed inset-0 z-[200] flex flex-col items-center justify-center cursor-pointer overflow-hidden p-0"
+    style={{ backgroundColor: BRAND_CONFIG.PRIMARY_COLOR }}
+  >
+    <motion.div
+      initial={{ scale: 0.8, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ type: "spring", stiffness: 200, damping: 20 }}
+      className="flex flex-col items-center gap-6"
+    >
+      <div className="w-24 h-24 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-2xl border border-white/30">
+        <Zap className="text-white fill-white" size={48} />
+      </div>
+      <div className="flex flex-col items-center gap-1">
+        <span className="font-display font-black text-2xl uppercase tracking-[0.3em] text-white">
+          {BRAND_CONFIG.APP_NAME.split(' ')[0]}
+        </span>
+        <span className="font-display font-bold text-xs uppercase tracking-[0.4em] text-white/60">
+          {BRAND_CONFIG.APP_NAME.split(' ')[1] || ''}
+        </span>
+      </div>
+    </motion.div>
+
+    {/* Subtle floating particles for premium feel */}
+    <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-white/20 rounded-full animate-pulse" />
+      <div className="absolute bottom-1/4 right-1/4 w-3 h-3 bg-white/10 rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
+      <div className="absolute top-3/4 left-1/2 w-1.5 h-1.5 bg-white/30 rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
+    </div>
+
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 1.5 }}
+      className="absolute bottom-12 text-white/40 text-[10px] font-black uppercase tracking-[0.3em]"
+    >
+      Toque para iniciar
+    </motion.div>
+  </motion.div>
+);
+
 const WelcomeView: React.FC<{ onNext: () => void }> = ({ onNext }) => (
   <div className="relative h-full flex flex-col overflow-hidden">
     <div className="flex-1 flex flex-col items-center text-center px-6 md:px-10 max-w-4xl mx-auto w-full">
@@ -311,7 +357,7 @@ const DashboardCard: React.FC<{ title: string, value: string | number, icon: Rea
 import { BRAND_CONFIG } from './arquitetura/brand.config';
 
 const App: React.FC = () => {
-  const [view, setView] = useState<'welcome' | 'login' | 'content'>('welcome');
+  const [view, setView] = useState<'initial' | 'welcome' | 'login' | 'content'>('initial');
   const [activeTab, setActiveTab] = useState<'lib' | 'lead' | 'list' | 'dash'>('lib');
   const [frameStyle, setFrameStyle] = useState<'midnight' | 'silver' | 'gold'>('midnight');
   const [data, setData] = useState<Collaborator[]>([]);
@@ -501,6 +547,14 @@ const App: React.FC = () => {
       </div>
     </div>
   );
+
+  if (view === 'initial') {
+    return (
+      <AnimatePresence>
+        <InitialView onNext={() => setView('welcome')} />
+      </AnimatePresence>
+    );
+  }
 
   if (view === 'welcome') {
     return (
