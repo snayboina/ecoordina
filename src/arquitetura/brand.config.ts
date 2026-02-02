@@ -11,8 +11,8 @@ export const BRAND_CONFIG = {
     SLOGAN: "Transform repetitve processes into solutions",
 
     // --- Cores (Utilizadas em componentes React e estilos dinâmicos) ---
-    PRIMARY_COLOR: "#b040dcff", // Laranja Francis
-    ACCENT_COLOR: "#3B82F6",  // Azul complementar
+    PRIMARY_COLOR: "#00f3ff", // Teal Neon
+    ACCENT_COLOR: "#10b981",  // Emerald/Cyan técnico
     BG_COLOR: "#e2e4e7",      // Cinza Background
 
     // --- Contatos & Social ---
