@@ -13,8 +13,7 @@ import {
     X,
     CheckCircle2,
     Download,
-    Columns as KanbanIcon,
-    ArrowRight
+    Columns as KanbanIcon
 } from 'lucide-react';
 import WelcomeHero from './components/WelcomeHero';
 import { motion, AnimatePresence } from 'framer-motion';
