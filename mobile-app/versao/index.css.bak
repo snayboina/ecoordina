@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800&family=Varela+Round&display=swap');
+
+@theme {
+  /* Premium Soft Palette */
+  --color-brand-primary: #3B82F6;
+  --color-brand-secondary: #60A5FA;
+  --color-brand-accent: #F97316;
+  /* Ecoordina Orange */
+
+  --color-app-bg: #F8FAFC;
+  --color-app-card: #FFFFFF;
+  --color-app-text: #1E293B;
+  --color-app-text-muted: #64748B;
+  --color-app-border: #E2E8F0;
+
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+
+  --font-sans: 'Nunito Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Varela Round', sans-serif;
+
+  /* Geometry & Shadows */
+  --radius-xl: 32px;
+  --radius-lg: 24px;
+  --radius-md: 16px;
+
+  /* Soft Floating Shadows */
+  --shadow-floating: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+  --shadow-card: 0 4px 6px -1px rgb(0 0 0 / 0.02), 0 2px 4px -2px rgb(0 0 0 / 0.02);
+  --shadow-premium: 0 20px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04);
+}
+
+:root {
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light;
+  background-color: var(--color-app-bg);
+  color: var(--color-app-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--color-app-bg);
+}
+
+#root {
+  width: 100%;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-brand-accent text-white font-bold py-4 px-8 rounded-2xl shadow-xl shadow-orange-500/20 hover:shadow-orange-500/40 hover:scale-[1.02] transition-all active:scale-95 text-base flex items-center justify-center gap-2 font-display;
+  }
+
+  .card-floating {
+    @apply bg-app-card border border-app-border p-6 rounded-[var(--radius-lg)] shadow-card transition-all hover:shadow-floating hover:-translate-y-1;
+  }
+
+  .nav-input {
+    @apply bg-white border border-app-border rounded-xl py-3 px-5 outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-sm text-app-text font-sans;
+  }
+}
+
+/* Scrollbar Tweaks */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Typography Helpers */
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Animations */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}

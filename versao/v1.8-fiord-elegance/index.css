@@ -1,0 +1,122 @@
+@import "tailwindcss";
+@import "./components.css";
+
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800&family=Varela+Round&display=swap');
+
+@theme {
+  /* ECOORDINA SMART SaaS - FIORD ELEGANCE THEME */
+  --color-brand-primary: #47536f;
+  /* Fiord - Azul acinzentado escuro */
+  --color-brand-secondary: #b05d75;
+  /* Tapestry - Rosa terroso */
+  --color-brand-accent: #aaa0c0;
+  /* Amethyst Smoke - Lavanda suave */
+
+  /* Neutral Surface Palette */
+  --color-saas-bg: #f5f5f4;
+  /* Warm gray 100 */
+  --color-saas-surface: #FFFFFF;
+  --color-saas-sidebar: #47536f;
+  /* Fiord */
+  --color-saas-border: #e7e8e7;
+  /* Gray Nurse */
+
+  --color-text-main: #1c1917;
+  /* Stone 900 */
+  --color-text-muted: #78716c;
+  /* Stone 500 */
+  --color-text-on-dark: #f5f5f4;
+  /* Warm gray 100 */
+
+  --font-sans: "Nunito Sans", system-ui, sans-serif;
+  --font-display: "Varela Round", sans-serif;
+
+  /* Modern Radius */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+
+  /* Premium Shadows & Glows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-floating: 0 20px 40px -10px rgba(71, 83, 111, 0.15);
+  /* Fiord shadow */
+  --shadow-glow: 0 0 20px rgba(170, 160, 192, 0.2);
+  /* Amethyst glow */
+
+  /* Status Colors */
+  --color-status-liberado: #47536f;
+  /* Fiord */
+  --color-status-pendente: #b05d75;
+  /* Tapestry */
+  --color-status-danger: #dc2626;
+  /* Red 600 */
+}
+
+:root {
+  font-family: var(--font-sans);
+  background-color: var(--color-saas-bg);
+  color: var(--color-text-main);
+}
+
+/* Custom Components & Utilities */
+@layer components {
+  .saas-card {
+    @apply bg-white border border-saas-border rounded-xl shadow-card p-6 transition-all hover:shadow-floating hover:-translate-y-1;
+  }
+
+  .saas-btn-primary {
+    @apply bg-brand-primary text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:bg-brand-accent transition-all active:scale-95 flex items-center gap-2;
+  }
+
+  .saas-sidebar-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-white/70 hover:text-white hover:bg-white/10 cursor-pointer;
+  }
+
+  .saas-sidebar-item.active {
+    @apply text-white bg-white/10 border-l-4 border-brand-secondary;
+  }
+
+  .status-badge {
+    @apply px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider;
+  }
+
+  .status-liberado {
+    @apply bg-slate-100 text-slate-700 border border-slate-200;
+  }
+
+  .status-pendente {
+    @apply bg-rose-100 text-rose-700 border border-rose-200;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: .7;
+  }
+}
