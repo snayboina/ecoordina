@@ -13,8 +13,10 @@ import {
     X,
     CheckCircle2,
     Download,
-    Columns as KanbanIcon
+    Columns as KanbanIcon,
+    ArrowRight
 } from 'lucide-react';
+import WelcomeHero from './components/WelcomeHero';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fetchCollaborators, subscribeToSyncLogs, calculateBusinessDays } from './services/api';
 import type { Collaborator } from './types';
@@ -69,9 +71,13 @@ const App: React.FC = () => {
     const [showPreview, setShowPreview] = useState(false);
     const [selectedCollab, setSelectedCollab] = useState<Collaborator | null>(null);
     const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+    const [showHero, setShowHero] = useState(true);
 
     const handleLogin = (email: string, password: string) => {
-        if (email && password) setIsAuthenticated(true);
+        if (email && password) {
+            setIsAuthenticated(true);
+            setShowHero(false);
+        }
     };
 
     const handleLogout = () => setIsAuthenticated(false);
@@ -219,7 +225,12 @@ const App: React.FC = () => {
         doc.save(`liberacao_${dayjs().format('YYYYMMDD')}.pdf`);
     };
 
-    if (!isAuthenticated) return <Login onLogin={handleLogin} />;
+    if (!isAuthenticated) {
+        if (showHero) {
+            return <WelcomeHero onEnter={() => setShowHero(false)} />;
+        }
+        return <Login onLogin={handleLogin} />;
+    }
 
     return (
         <div className="flex h-screen w-screen bg-saas-bg overflow-hidden font-sans selection:bg-brand-primary/10">
