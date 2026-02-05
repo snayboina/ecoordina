@@ -628,7 +628,7 @@ const App: React.FC = () => {
                                                 value={roleFilter}
                                                 onChange={(e) => setRoleFilter(e.target.value)}
                                             >
-                                                <option value="">Todas as Funções</option>
+                                                <option value="">Função</option>
                                                 {uniqueRoles.map(role => (
                                                     <option key={role} value={role}>{role}</option>
                                                 ))}
@@ -641,7 +641,7 @@ const App: React.FC = () => {
                                                 value={statusFilter}
                                                 onChange={(e) => setStatusFilter(e.target.value as any)}
                                             >
-                                                <option value="TODOS">Todos os Status</option>
+                                                <option value="TODOS">Status</option>
                                                 <option value="LIBERADO">Liberado</option>
                                                 <option value="PENDENTE">Pendente</option>
                                             </select>
