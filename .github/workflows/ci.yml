@@ -1,0 +1,36 @@
+name: CI - Build Verification
+
+on:
+  push:
+    branches: [ "main", "teste" ]
+  pull_request:
+    branches: [ "main", "teste" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    # Setup Node.js
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: './admin-dashboard/package-lock.json'
+
+    # Install Dependencies (Admin Dashboard)
+    - name: Install Dependencies
+      working-directory: ./admin-dashboard
+      run: npm ci
+
+    # Build Project
+    - name: Build Project
+      working-directory: ./admin-dashboard
+      run: npm run build

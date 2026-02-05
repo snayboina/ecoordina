@@ -1,0 +1,143 @@
+import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, FileText, CheckCircle2, Download } from 'lucide-react';
+import type { Collaborator } from '../types';
+import dayjs from 'dayjs';
+
+interface RoleSpreadsheetModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    roleName: string;
+    collaborators: Collaborator[];
+}
+
+const RoleSpreadsheetModal: React.FC<RoleSpreadsheetModalProps> = ({ isOpen, onClose, roleName, collaborators }) => {
+    const getEffectiveStatus = (c: Collaborator) => {
+        if (c.grd && c.grd.trim().toUpperCase() === 'OK') return 'LIBERADO';
+        return c.status;
+    };
+
+    const sortedCollabs = [...collaborators].sort((a, b) => {
+        const statusA = getEffectiveStatus(a);
+        const statusB = getEffectiveStatus(b);
+        if (statusA === statusB) return a.name.localeCompare(b.name);
+        return statusA === 'PENDENTE' ? -1 : 1;
+    });
+
+    return (
+        <AnimatePresence>
+            {isOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={onClose}
+                        className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+                    />
+
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                        className="relative w-full max-w-6xl bg-white rounded-[32px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+                    >
+                        {/* Header */}
+                        <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-10">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-brand-primary/10 rounded-2xl text-brand-primary">
+                                    <FileText size={24} />
+                                </div>
+                                <div>
+                                    <h2 className="text-2xl font-black text-slate-900 tracking-tight leading-none mb-1">
+                                        {roleName}
+                                    </h2>
+                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                                        Visualização em Planilha • {collaborators.length} Total
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                                <button className="flex items-center gap-2 px-4 py-2 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl text-xs font-black transition-all border border-slate-200">
+                                    <Download size={14} />
+                                    EXPORTAR
+                                </button>
+                                <button
+                                    onClick={onClose}
+                                    className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600"
+                                >
+                                    <X size={24} />
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Content */}
+                        <div className="flex-1 overflow-auto px-8 pb-8 custom-scrollbar">
+                            <table className="w-full text-left border-separate border-spacing-0">
+                                <thead>
+                                    <tr>
+                                        <th className="sticky top-0 bg-white z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Chapa</th>
+                                        <th className="sticky top-0 bg-white z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Nome</th>
+                                        <th className="sticky top-0 bg-white z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-center">Admissão</th>
+                                        <th className="sticky top-0 bg-white z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-center">Status</th>
+                                        <th className="sticky top-0 bg-white z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-center">RH</th>
+                                        <th className="sticky top-0 bg-white z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-center">Saúde</th>
+                                        <th className="sticky top-0 bg-white z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-center">Seguridade</th>
+                                        <th className="sticky top-0 bg-white z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-center">GRD</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {sortedCollabs.map((c, idx) => {
+                                        const status = getEffectiveStatus(c);
+                                        const isEven = idx % 2 === 0;
+
+                                        const StepIndicator = ({ val }: { val: string | undefined }) => (
+                                            <div className="flex justify-center">
+                                                {val === 'OK' ? (
+                                                    <div className="w-6 h-6 rounded-md bg-emerald-50 text-emerald-500 flex items-center justify-center border border-emerald-100/50">
+                                                        <CheckCircle2 size={14} />
+                                                    </div>
+                                                ) : (
+                                                    <div className="w-6 h-6 rounded-md bg-rose-50 text-rose-400 flex items-center justify-center border border-rose-100/50 opacity-40">
+                                                        <X size={12} strokeWidth={3} />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+
+                                        return (
+                                            <tr key={c.chapa} className={`${isEven ? 'bg-slate-50/30' : 'bg-transparent'} hover:bg-brand-primary/5 transition-colors group`}>
+                                                <td className="py-3 px-4 text-xs font-black text-slate-400 border-b border-slate-100/50">#{c.chapa}</td>
+                                                <td className="py-3 px-4 text-xs font-black text-slate-700 border-b border-slate-100/50 group-hover:text-brand-primary transition-colors">{c.name}</td>
+                                                <td className="py-3 px-4 text-xs font-bold text-slate-500 text-center border-b border-slate-100/50">
+                                                    {c.admissionDate ? dayjs(c.admissionDate).format('DD/MM/YYYY') : '-'}
+                                                </td>
+                                                <td className="py-3 px-4 border-b border-slate-100/50">
+                                                    <div className="flex justify-center">
+                                                        <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest border ${status === 'LIBERADO'
+                                                            ? 'bg-emerald-50 border-emerald-100 text-emerald-600'
+                                                            : 'bg-rose-50 border-rose-100 text-rose-600'
+                                                            }`}>
+                                                            {status}
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td className="py-3 px-4 border-b border-slate-100/50"><StepIndicator val={c.rh} /></td>
+                                                <td className="py-3 px-4 border-b border-slate-100/50"><StepIndicator val={c.saude} /></td>
+                                                <td className="py-3 px-4 border-b border-slate-100/50"><StepIndicator val={c.seguranca} /></td>
+                                                <td className="py-3 px-4 border-b border-slate-100/50"><StepIndicator val={c.grd} /></td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
+        </AnimatePresence>
+    );
+};
+
+export default RoleSpreadsheetModal;
