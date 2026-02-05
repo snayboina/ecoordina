@@ -811,16 +811,18 @@ const App: React.FC = () => {
                                 >
                                     <div className="h-full flex flex-col pt-0 relative">
                                         <div className="flex justify-between items-center mb-2 shrink-0 sticky top-0 bg-saas-bg z-20 pt-1 pb-4 px-8 -mt-2 border-b border-slate-100 shadow-sm">
-                                            <div>
-                                                <div className="flex items-baseline gap-4 mb-0.5">
-                                                    <h1 className="text-4xl font-black tracking-tighter text-slate-900 leading-none">
-                                                        {selectedRole || 'Funções & Equipes'}
-                                                    </h1>
+                                            {!selectedRole ? (
+                                                <div>
+                                                    <div className="flex items-baseline gap-4 mb-0.5">
+                                                        <h1 className="text-4xl font-black tracking-tighter text-slate-900 leading-none">
+                                                            Funções & Equipes
+                                                        </h1>
+                                                    </div>
+                                                    <p className="text-text-muted font-bold text-xs uppercase tracking-widest opacity-60">
+                                                        Gerenciamento detalhado por função.
+                                                    </p>
                                                 </div>
-                                                <p className="text-text-muted font-bold text-xs uppercase tracking-widest opacity-60">
-                                                    {selectedRole ? 'Quadro de Gestão' : 'Gerenciamento detalhado por função.'}
-                                                </p>
-                                            </div>
+                                            ) : <div />}
 
                                             {activeRoleStats && (
                                                 <div className="flex items-center gap-6">
