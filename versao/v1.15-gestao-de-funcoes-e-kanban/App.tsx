@@ -397,8 +397,10 @@ const App: React.FC = () => {
                         </div>
                     )}
 
+                    <div className="flex-1" />
+
                     {activeTab === 'functions' && (
-                        <div className="flex items-center gap-3 ml-8">
+                        <div className="flex items-center gap-3">
                             <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 shadow-inner">
                                 <div className="flex flex-col">
                                     <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Início</span>
@@ -421,7 +423,7 @@ const App: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 pr-6">
                                 <button
                                     onClick={() => setIsSpreadsheetOpen(true)}
                                     disabled={!selectedRole}
@@ -448,8 +450,6 @@ const App: React.FC = () => {
                             </div>
                         </div>
                     )}
-
-                    <div className="flex-1" />
 
                     {/* User Profile */}
                     <div className="flex items-center gap-6">
