@@ -370,24 +370,28 @@ const App: React.FC = () => {
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-sm font-black text-slate-700 leading-none">
+                                    <span className={`${selectedRole ? 'text-xl' : 'text-sm'} font-black text-slate-700 leading-none tracking-tight`}>
                                         {selectedRole ? selectedRole : dayjs(lastUpdate).format('DD/MM/YYYY')}
                                     </span>
                                 </div>
                             </div>
 
-                            <div className="w-px h-8 bg-slate-200" />
+                            {!selectedRole && (
+                                <>
+                                    <div className="w-px h-8 bg-slate-200" />
 
-                            <div className="flex items-center gap-2">
-                                <div className="flex flex-col items-center">
-                                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Liberados</span>
-                                    <span className="text-xs font-black text-brand-primary">{stats.liberated}</span>
-                                </div>
-                                <div className="flex flex-col items-center">
-                                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Pendentes</span>
-                                    <span className="text-xs font-black text-rose-500">{stats.pending}</span>
-                                </div>
-                            </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex flex-col items-center">
+                                            <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Liberados</span>
+                                            <span className="text-xs font-black text-brand-primary">{stats.liberated}</span>
+                                        </div>
+                                        <div className="flex flex-col items-center">
+                                            <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Pendentes</span>
+                                            <span className="text-xs font-black text-rose-500">{stats.pending}</span>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     )}
 
