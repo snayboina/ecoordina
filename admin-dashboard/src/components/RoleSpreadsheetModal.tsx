@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, FileText, CheckCircle2, Download } from 'lucide-react';
+import { X, FileText, CheckCircle2, FileDown, FileSpreadsheet } from 'lucide-react';
 import type { Collaborator } from '../types';
 import dayjs from 'dayjs';
 
@@ -43,13 +43,13 @@ const RoleSpreadsheetModal: React.FC<RoleSpreadsheetModalProps> = ({ isOpen, onC
                         className="relative w-full max-w-6xl bg-white rounded-[32px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
                     >
                         {/* Header */}
-                        <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-10">
+                        <div className="p-8 border-b border-slate-800 flex justify-between items-center bg-slate-900 sticky top-0 z-10 shadow-lg">
                             <div className="flex items-center gap-4">
-                                <div className="p-3 bg-brand-primary/10 rounded-2xl text-brand-primary">
+                                <div className="p-3 bg-white/10 rounded-2xl text-white">
                                     <FileText size={24} />
                                 </div>
                                 <div>
-                                    <h2 className="text-2xl font-black text-slate-900 tracking-tight leading-none mb-1">
+                                    <h2 className="text-2xl font-black text-white tracking-tight leading-none mb-1">
                                         {roleName}
                                     </h2>
                                     <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
@@ -59,13 +59,17 @@ const RoleSpreadsheetModal: React.FC<RoleSpreadsheetModalProps> = ({ isOpen, onC
                             </div>
 
                             <div className="flex items-center gap-3">
-                                <button className="flex items-center gap-2 px-4 py-2 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl text-xs font-black transition-all border border-slate-200">
-                                    <Download size={14} />
-                                    EXPORTAR
+                                <button className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-lg text-[10px] font-black transition-all border border-emerald-500/20">
+                                    <FileSpreadsheet size={14} />
+                                    EXCEL
+                                </button>
+                                <button className="flex items-center gap-2 px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg text-[10px] font-black transition-all border border-rose-500/20">
+                                    <FileDown size={14} />
+                                    PDF
                                 </button>
                                 <button
                                     onClick={onClose}
-                                    className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600"
+                                    className="p-2 hover:bg-white/10 rounded-full transition-colors text-slate-400 hover:text-white ml-2"
                                 >
                                     <X size={24} />
                                 </button>
@@ -77,14 +81,14 @@ const RoleSpreadsheetModal: React.FC<RoleSpreadsheetModalProps> = ({ isOpen, onC
                             <table className="w-full text-left border-separate border-spacing-0">
                                 <thead>
                                     <tr>
-                                        <th className="sticky top-0 bg-white z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Chapa</th>
-                                        <th className="sticky top-0 bg-white z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Nome</th>
-                                        <th className="sticky top-0 bg-white z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-center">Admissão</th>
-                                        <th className="sticky top-0 bg-white z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-center">Status</th>
-                                        <th className="sticky top-0 bg-white z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-center">RH</th>
-                                        <th className="sticky top-0 bg-white z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-center">Saúde</th>
-                                        <th className="sticky top-0 bg-white z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-center">Seguridade</th>
-                                        <th className="sticky top-0 bg-white z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-center">GRD</th>
+                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-800">Chapa</th>
+                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-800">Nome</th>
+                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-800 text-center">Admissão</th>
+                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-800 text-center">Status</th>
+                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-800 text-center">RH</th>
+                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-800 text-center">Saúde</th>
+                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-800 text-center">Seguridade</th>
+                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-800 text-center">GRD</th>
                                     </tr>
                                 </thead>
                                 <tbody>

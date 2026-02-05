@@ -6,7 +6,7 @@ Esta versão foca na otimização da visualização por funções, introduzindo 
 ### 🚀 Principais Mudanças
 1.  **Quadro Kanban por Função:** Nova visualização `FunctionsView` que organiza os colaboradores de uma função específica em colunas (Pendente vs Liberado).
 2.  **Análise de Gargalos (Bottleneck):** Implementação de lógica de LeadTime por departamento (RH, Saúde, Seguridade) para identificar onde as liberações estão retidas.
-3.  **Modal de Planilha (Spreadsheet View):** Visualização tabular premium de todos os colaboradores de uma função, facilitando a auditoria rápida.
+3.  **Modal de Planilha (Spreadsheet View):** Visualização tabular premium com cabeçalho de seção e de colunas em tema escuro (`slate-900`). Agora inclui botões dedicados para exportação em **EXCEL** e **PDF**.
 4.  **Refactor de Layout (App.tsx):**
     *   Cabeçalho agora é fixo (sticky) para manter contexto.
     *   Informações de status e data de atualização movidas para a esquerda para melhor fluxo de leitura.
