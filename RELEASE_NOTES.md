@@ -12,6 +12,10 @@ Esta versão foca na otimização da visualização por funções, introduzindo 
     *   Informações de status e data de atualização movidas para a esquerda para melhor fluxo de leitura.
     *   Remoção de elementos desnecessários (sino de notificação) para um design mais focado.
 5.  **Cálculo de Dias Úteis:** LeadTime agora ignora fins de semana para métricas de eficiência mais precisas.
+6.  **Cabeçalho Contextual Inteligente:**
+    *   Exibição do nome da função em destaque (ex: PINTOR INDUSTRIAL) apenas na aba de Funções.
+    *   Filtros de data (Início/Fim) e botões de ação ("Visualizar" e "Limpar") migrados para o lado direito do cabeçalho superior para máxima eficiência.
+    *   Remoção de títulos redundantes no corpo da página para foco total nos dados.
 
 ## 📊 Fluxo de Navegação
 ```mermaid
