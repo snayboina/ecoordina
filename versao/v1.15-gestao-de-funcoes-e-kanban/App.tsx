@@ -365,10 +365,14 @@ const App: React.FC = () => {
                             <div className="flex flex-col items-end">
                                 <div className="flex items-center gap-1.5 mb-0.5">
                                     <div className="w-1.5 h-1.5 rounded-full bg-brand-secondary animate-pulse" />
-                                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Atualizado</span>
+                                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">
+                                        {selectedRole ? 'Função' : 'Atualizado'}
+                                    </span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-sm font-black text-slate-700 leading-none">{dayjs(lastUpdate).format('DD/MM/YYYY')}</span>
+                                    <span className="text-sm font-black text-slate-700 leading-none">
+                                        {selectedRole ? selectedRole : dayjs(lastUpdate).format('DD/MM/YYYY')}
+                                    </span>
                                 </div>
                             </div>
 
