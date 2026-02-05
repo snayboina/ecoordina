@@ -103,7 +103,7 @@ export default function Login({ onLogin }: LoginProps) {
                         >
                             <div className="flex items-center gap-2 text-white/60 text-sm font-bold">
                                 <CheckCircle size={16} className="text-emerald-400" />
-                                <span>Monitoramento 24/7</span>
+                                <span>Projeto Azulão AM</span>
                             </div>
                             <div className="flex items-center gap-2 text-white/60 text-sm font-bold">
                                 <CheckCircle size={16} className="text-emerald-400" />
