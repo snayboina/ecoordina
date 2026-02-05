@@ -366,17 +366,17 @@ const App: React.FC = () => {
                                 <div className="flex items-center gap-1.5 mb-0.5">
                                     <div className="w-1.5 h-1.5 rounded-full bg-brand-secondary animate-pulse" />
                                     <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">
-                                        {selectedRole ? 'Função' : 'Atualizado'}
+                                        {(selectedRole && activeTab === 'functions') ? 'Função' : 'Atualizado'}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className={`${selectedRole ? 'text-xl' : 'text-sm'} font-black text-slate-700 leading-none tracking-tight`}>
-                                        {selectedRole ? selectedRole : dayjs(lastUpdate).format('DD/MM/YYYY')}
+                                    <span className={`${(selectedRole && activeTab === 'functions') ? 'text-xl' : 'text-sm'} font-black text-slate-700 leading-none tracking-tight`}>
+                                        {(selectedRole && activeTab === 'functions') ? selectedRole : dayjs(lastUpdate).format('DD/MM/YYYY')}
                                     </span>
                                 </div>
                             </div>
 
-                            {!selectedRole && (
+                            {!(selectedRole && activeTab === 'functions') && (
                                 <>
                                     <div className="w-px h-8 bg-slate-200" />
 
