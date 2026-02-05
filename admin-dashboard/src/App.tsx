@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 // import WelcomeHero from './components/WelcomeHero';
 import FunctionsView from './components/FunctionsView';
+import RoleSpreadsheetModal from './components/RoleSpreadsheetModal';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fetchCollaborators, subscribeToSyncLogs, calculateBusinessDays } from './services/api';
 import type { Collaborator } from './types';
@@ -76,6 +77,7 @@ const App: React.FC = () => {
     const [startDate, setStartDate] = useState('2026-01-01');
     const [endDate, setEndDate] = useState('2026-02-28');
     const [selectedRole, setSelectedRole] = useState<string | null>(null);
+    const [isSpreadsheetOpen, setIsSpreadsheetOpen] = useState(false);
 
     const SESSION_TIMEOUT = 10 * 60 * 1000; // 10 minutos em ms
 
@@ -392,6 +394,58 @@ const App: React.FC = () => {
                                     </div>
                                 </>
                             )}
+                        </div>
+                    )}
+
+                    {activeTab === 'functions' && (
+                        <div className="flex items-center gap-3 ml-8">
+                            <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 shadow-inner">
+                                <div className="flex flex-col">
+                                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Início</span>
+                                    <input
+                                        type="date"
+                                        value={startDate}
+                                        onChange={(e) => setStartDate(e.target.value)}
+                                        className="bg-transparent border-none outline-none text-[10px] font-black text-slate-700 uppercase p-0 h-3 cursor-pointer"
+                                    />
+                                </div>
+                                <div className="w-px h-4 bg-slate-200 mx-1" />
+                                <div className="flex flex-col">
+                                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Fim</span>
+                                    <input
+                                        type="date"
+                                        value={endDate}
+                                        onChange={(e) => setEndDate(e.target.value)}
+                                        className="bg-transparent border-none outline-none text-[10px] font-black text-slate-700 uppercase p-0 h-3 cursor-pointer"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => setIsSpreadsheetOpen(true)}
+                                    disabled={!selectedRole}
+                                    className={`text-[9px] font-black flex items-center gap-1.5 uppercase tracking-widest transition-all px-3 py-2 rounded-xl border ${!selectedRole
+                                        ? 'bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed'
+                                        : 'bg-brand-primary/10 text-brand-primary border-brand-primary/20 hover:bg-brand-primary hover:text-white'
+                                        }`}
+                                >
+                                    <Download size={12} strokeWidth={3} />
+                                    Visualizar
+                                </button>
+
+                                <button
+                                    onClick={() => {
+                                        setStartDate('2026-01-01');
+                                        setEndDate('2026-02-28');
+                                        setSelectedRole(null);
+                                    }}
+                                    className="text-[9px] font-black text-rose-500 hover:text-rose-600 flex items-center gap-1.5 uppercase tracking-widest transition-colors bg-rose-50 px-3 py-2 rounded-xl border border-rose-100"
+                                >
+                                    <X size={12} strokeWidth={4} />
+                                    Limpar
+                                </button>
+                            </div>
                         </div>
                     )}
 
@@ -851,6 +905,8 @@ const App: React.FC = () => {
                                                 collaborators={collaborators}
                                                 selectedRole={selectedRole}
                                                 onRoleSelect={setSelectedRole}
+                                                startDate={startDate}
+                                                endDate={endDate}
                                             />
                                         </div>
                                     </div>
@@ -859,6 +915,26 @@ const App: React.FC = () => {
                         </AnimatePresence>
                     </div >
                 </div >
+
+                {/* Global Spreadsheet Modal */}
+                <RoleSpreadsheetModal
+                    isOpen={isSpreadsheetOpen}
+                    onClose={() => setIsSpreadsheetOpen(false)}
+                    roleName={selectedRole || ''}
+                    collaborators={(() => {
+                        if (!selectedRole) return [];
+                        const roleCollabs = collaborators.filter(c => c.role === selectedRole);
+                        return roleCollabs.filter(c => {
+                            const admission = c.admissionDate ? dayjs(c.admissionDate) : null;
+                            const start = startDate ? dayjs(startDate) : null;
+                            const end = endDate ? dayjs(endDate) : null;
+                            if (!admission) return false;
+                            if (start && admission.isBefore(start, 'day')) return false;
+                            if (end && admission.isAfter(end, 'day')) return false;
+                            return true;
+                        });
+                    })()}
+                />
             </main >
 
             {/* --- DETALHES MODAL --- */}

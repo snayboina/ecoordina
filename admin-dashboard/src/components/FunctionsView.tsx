@@ -1,15 +1,16 @@
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Search, X, FileText } from 'lucide-react';
+import { Users, Search } from 'lucide-react';
 import type { Collaborator } from '../types';
 import dayjs from 'dayjs';
 import CollaboratorModal from './CollaboratorModal';
-import RoleSpreadsheetModal from './RoleSpreadsheetModal';
 
 interface FunctionsViewProps {
     collaborators: Collaborator[];
     selectedRole: string | null;
-    onRoleSelect: (role: string) => void;
+    onRoleSelect: (role: string | null) => void;
+    startDate: string;
+    endDate: string;
 }
 
 interface RoleStats {
@@ -25,15 +26,9 @@ const getEffectiveStatus = (c: Collaborator) => {
     return c.status;
 };
 
-const FunctionsView: React.FC<FunctionsViewProps> = ({ collaborators, selectedRole, onRoleSelect }) => {
-    const DEFAULT_START_DATE = '2026-01-01';
-    const DEFAULT_END_DATE = '2026-02-28';
-
+const FunctionsView: React.FC<FunctionsViewProps> = ({ collaborators, selectedRole, onRoleSelect, startDate, endDate }) => {
     const [selectedCollaborator, setSelectedCollaborator] = useState<Collaborator | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
-    const [startDate, setStartDate] = useState<string>(DEFAULT_START_DATE);
-    const [endDate, setEndDate] = useState<string>(DEFAULT_END_DATE);
-    const [isSpreadsheetOpen, setIsSpreadsheetOpen] = useState(false);
 
     // Filter collaborators by Date Range
     const dateFilteredCollaborators = useMemo(() => {
@@ -115,59 +110,6 @@ const FunctionsView: React.FC<FunctionsViewProps> = ({ collaborators, selectedRo
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3">
-                        <div className="bg-slate-50 rounded-xl px-3 py-2 border border-slate-100 flex flex-col justify-center">
-                            <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-0.5">Início</span>
-                            <input
-                                type="date"
-                                value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
-                                className="bg-transparent border-none outline-none text-xs font-black text-slate-800 uppercase cursor-pointer p-0"
-                            />
-                        </div>
-                        <div className="bg-slate-50 rounded-xl px-3 py-2 border border-slate-100 flex flex-col justify-center">
-                            <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-0.5">Fim</span>
-                            <input
-                                type="date"
-                                value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
-                                className="bg-transparent border-none outline-none text-xs font-black text-slate-800 uppercase cursor-pointer p-0"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="flex items-center justify-between px-1 h-5">
-                        {(startDate || endDate) && (
-                            <p className="text-[10px] font-bold text-slate-400">
-                                {startDate ? dayjs(startDate).format('DD/MM') : 'Inicio'} até {endDate ? dayjs(endDate).format('DD/MM') : 'Hoje'}
-                            </p>
-                        )}
-                        <button
-                            onClick={() => setIsSpreadsheetOpen(true)}
-                            disabled={!selectedRole}
-                            className={`ml-auto text-[10px] font-black flex items-center gap-1.5 uppercase tracking-widest transition-all px-3 py-1.5 rounded-xl border ${!selectedRole
-                                ? 'bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed'
-                                : 'bg-brand-primary/10 text-brand-primary border-brand-primary/20 hover:bg-brand-primary hover:text-white'
-                                }`}
-                        >
-                            <FileText size={12} strokeWidth={3} />
-                            Visualizar
-                        </button>
-
-                        <button
-                            onClick={() => {
-                                setSearchTerm('');
-                                setStartDate(DEFAULT_START_DATE);
-                                setEndDate(DEFAULT_END_DATE);
-                                onRoleSelect('');
-                            }}
-                            className="text-[10px] font-black text-rose-500 hover:text-rose-600 flex items-center gap-1 uppercase tracking-widest transition-colors bg-rose-50 px-3 py-1.5 rounded-xl border border-rose-100"
-                        >
-                            <X size={12} strokeWidth={4} />
-                            Limpar
-                        </button>
                     </div>
                 </div>
 
@@ -343,14 +285,6 @@ const FunctionsView: React.FC<FunctionsViewProps> = ({ collaborators, selectedRo
                     collaborator={selectedCollaborator}
                 />
             )}
-
-            {/* Role Spreadsheet Modal */}
-            <RoleSpreadsheetModal
-                isOpen={isSpreadsheetOpen}
-                onClose={() => setIsSpreadsheetOpen(false)}
-                roleName={selectedRole || ''}
-                collaborators={activeRoleData?.collaborators || []}
-            />
         </div>
     );
 };
