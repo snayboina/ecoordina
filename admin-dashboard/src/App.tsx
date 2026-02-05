@@ -186,23 +186,6 @@ const App: React.FC = () => {
         return { total, liberated, pending, percentLiberated };
     }, [filteredCollabs]);
 
-    const groupedColumns = useMemo(() => {
-        const groups = {
-            pendente: [] as Collaborator[],
-            liberado: [] as Collaborator[]
-        };
-
-        filteredCollabs.forEach(c => {
-            const status = getEffectiveStatus(c);
-            if (status === 'LIBERADO') {
-                groups.liberado.push(c);
-            } else {
-                groups.pendente.push(c);
-            }
-        });
-
-        return groups;
-    }, [filteredCollabs]);
 
     const handleExportExcel = async () => {
         const workbook = new ExcelJS.Workbook();
