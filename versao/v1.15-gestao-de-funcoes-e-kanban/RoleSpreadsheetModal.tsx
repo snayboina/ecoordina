@@ -3,6 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, FileText, CheckCircle2, FileDown, FileSpreadsheet } from 'lucide-react';
 import type { Collaborator } from '../types';
 import dayjs from 'dayjs';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface RoleSpreadsheetModalProps {
     isOpen: boolean;
@@ -23,6 +26,59 @@ const RoleSpreadsheetModal: React.FC<RoleSpreadsheetModalProps> = ({ isOpen, onC
         if (statusA === statusB) return a.name.localeCompare(b.name);
         return statusA === 'PENDENTE' ? -1 : 1;
     });
+
+    const handleExportExcel = () => {
+        const data = sortedCollabs.map(c => ({
+            'CHAPA': c.chapa,
+            'NOME': c.name,
+            'ADMISSÃO': c.admissionDate ? dayjs(c.admissionDate).format('DD/MM/YYYY') : '-',
+            'STATUS': getEffectiveStatus(c),
+            'RH': c.rh || '-',
+            'SAÚDE': c.saude || '-',
+            'SEGURIDADE': c.seguranca || '-',
+            'GRD': c.grd || '-'
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Colaboradores');
+        XLSX.writeFile(wb, `Ecoordina_${roleName.replace(/\s+/g, '_')}_${dayjs().format('YYYY-MM-DD')}.xlsx`);
+    };
+
+    const handleExportPDF = () => {
+        const doc = new jsPDF();
+
+        doc.setFontSize(18);
+        doc.text(`Relatório de Função: ${roleName}`, 14, 20);
+
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text(`Gerado em: ${dayjs().format('DD/MM/YYYY HH:mm')}`, 14, 28);
+        doc.text(`Total de Colaboradores: ${collaborators.length}`, 14, 34);
+
+        const tableData = sortedCollabs.map(c => [
+            c.chapa,
+            c.name,
+            c.admissionDate ? dayjs(c.admissionDate).format('DD/MM/YYYY') : '-',
+            getEffectiveStatus(c),
+            c.rh || '-',
+            c.saude || '-',
+            c.seguranca || '-',
+            c.grd || '-'
+        ]);
+
+        autoTable(doc, {
+            startY: 40,
+            head: [['Chapa', 'Nome', 'Admissão', 'Status', 'RH', 'Saúde', 'Seguridade', 'GRD']],
+            body: tableData,
+            theme: 'grid',
+            headStyles: { fillColor: [15, 23, 42], textColor: [255, 255, 255] },
+            alternateRowStyles: { fillColor: [248, 250, 252] },
+            styles: { fontSize: 8, cellPadding: 3 }
+        });
+
+        doc.save(`Ecoordina_${roleName.replace(/\s+/g, '_')}_${dayjs().format('YYYY-MM-DD')}.pdf`);
+    };
 
     return (
         <AnimatePresence>
@@ -59,11 +115,17 @@ const RoleSpreadsheetModal: React.FC<RoleSpreadsheetModalProps> = ({ isOpen, onC
                             </div>
 
                             <div className="flex items-center gap-3">
-                                <button className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-lg text-[10px] font-black transition-all border border-emerald-500/20">
+                                <button
+                                    onClick={handleExportExcel}
+                                    className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-lg text-[10px] font-black transition-all border border-emerald-500/20"
+                                >
                                     <FileSpreadsheet size={14} />
                                     EXCEL
                                 </button>
-                                <button className="flex items-center gap-2 px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg text-[10px] font-black transition-all border border-rose-500/20">
+                                <button
+                                    onClick={handleExportPDF}
+                                    className="flex items-center gap-2 px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg text-[10px] font-black transition-all border border-rose-500/20"
+                                >
                                     <FileDown size={14} />
                                     PDF
                                 </button>
