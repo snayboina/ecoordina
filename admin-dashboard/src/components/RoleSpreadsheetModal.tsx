@@ -143,14 +143,14 @@ const RoleSpreadsheetModal: React.FC<RoleSpreadsheetModalProps> = ({ isOpen, onC
                             <table className="w-full text-left border-separate border-spacing-0">
                                 <thead>
                                     <tr>
-                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-800">Chapa</th>
-                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-800">Nome</th>
-                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-800 text-center">Admissão</th>
-                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-800 text-center">Status</th>
-                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-800 text-center">RH</th>
-                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-800 text-center">Saúde</th>
-                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-800 text-center">Seguridade</th>
-                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-800 text-center">GRD</th>
+                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border border-slate-800">Chapa</th>
+                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border border-slate-800">Nome</th>
+                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border border-slate-800 text-center">Admissão</th>
+                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border border-slate-800 text-center">Status</th>
+                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border border-slate-800 text-center">RH</th>
+                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border border-slate-800 text-center">Saúde</th>
+                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border border-slate-800 text-center">Seguridade</th>
+                                        <th className="sticky top-0 bg-slate-900 z-20 pb-4 pt-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border border-slate-800 text-center">GRD</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -174,12 +174,12 @@ const RoleSpreadsheetModal: React.FC<RoleSpreadsheetModalProps> = ({ isOpen, onC
 
                                         return (
                                             <tr key={c.chapa} className={`${isEven ? 'bg-slate-50/30' : 'bg-transparent'} hover:bg-brand-primary/5 transition-colors group`}>
-                                                <td className="py-3 px-4 text-xs font-black text-slate-400 border-b border-slate-100/50">#{c.chapa}</td>
-                                                <td className="py-3 px-4 text-xs font-black text-slate-700 border-b border-slate-100/50 group-hover:text-brand-primary transition-colors">{c.name}</td>
-                                                <td className="py-3 px-4 text-xs font-bold text-slate-500 text-center border-b border-slate-100/50">
+                                                <td className="py-3 px-4 text-xs font-black text-slate-400 border border-slate-100">#{c.chapa}</td>
+                                                <td className="py-3 px-4 text-xs font-black text-slate-700 border border-slate-100 group-hover:text-brand-primary transition-colors">{c.name}</td>
+                                                <td className="py-3 px-4 text-xs font-bold text-slate-500 text-center border border-slate-100">
                                                     {c.admissionDate ? dayjs(c.admissionDate).format('DD/MM/YYYY') : '-'}
                                                 </td>
-                                                <td className="py-3 px-4 border-b border-slate-100/50">
+                                                <td className="py-3 px-4 border border-slate-100">
                                                     <div className="flex justify-center">
                                                         <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest border ${status === 'LIBERADO'
                                                             ? 'bg-emerald-50 border-emerald-100 text-emerald-600'
@@ -189,10 +189,10 @@ const RoleSpreadsheetModal: React.FC<RoleSpreadsheetModalProps> = ({ isOpen, onC
                                                         </span>
                                                     </div>
                                                 </td>
-                                                <td className="py-3 px-4 border-b border-slate-100/50"><StepIndicator val={c.rh} /></td>
-                                                <td className="py-3 px-4 border-b border-slate-100/50"><StepIndicator val={c.saude} /></td>
-                                                <td className="py-3 px-4 border-b border-slate-100/50"><StepIndicator val={c.seguranca} /></td>
-                                                <td className="py-3 px-4 border-b border-slate-100/50"><StepIndicator val={c.grd} /></td>
+                                                <td className="py-3 px-4 border border-slate-100"><StepIndicator val={c.rh} /></td>
+                                                <td className="py-3 px-4 border border-slate-100"><StepIndicator val={c.saude} /></td>
+                                                <td className="py-3 px-4 border border-slate-100"><StepIndicator val={c.seguranca} /></td>
+                                                <td className="py-3 px-4 border border-slate-100"><StepIndicator val={c.grd} /></td>
                                             </tr>
                                         );
                                     })}
