@@ -401,52 +401,28 @@ const App: React.FC = () => {
 
                     {activeTab === 'functions' && (
                         <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 shadow-inner">
-                                <div className="flex flex-col">
-                                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Início</span>
-                                    <input
-                                        type="date"
-                                        value={startDate}
-                                        onChange={(e) => setStartDate(e.target.value)}
-                                        className="bg-transparent border-none outline-none text-[10px] font-black text-slate-700 uppercase p-0 h-3 cursor-pointer"
-                                    />
+                            <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-2xl border border-slate-100 shadow-inner flex-nowrap">
+                                <div className="flex items-center gap-3 px-1">
+                                    <div className="flex flex-col">
+                                        <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Início</span>
+                                        <input
+                                            type="date"
+                                            value={startDate}
+                                            onChange={(e) => setStartDate(e.target.value)}
+                                            className="bg-transparent border-none outline-none text-[10px] font-black text-slate-700 uppercase p-0 h-3 cursor-pointer"
+                                        />
+                                    </div>
+                                    <div className="w-px h-6 bg-slate-200 mx-1" />
+                                    <div className="flex flex-col">
+                                        <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Fim</span>
+                                        <input
+                                            type="date"
+                                            value={endDate}
+                                            onChange={(e) => setEndDate(e.target.value)}
+                                            className="bg-transparent border-none outline-none text-[10px] font-black text-slate-700 uppercase p-0 h-3 cursor-pointer"
+                                        />
+                                    </div>
                                 </div>
-                                <div className="w-px h-4 bg-slate-200 mx-1" />
-                                <div className="flex flex-col">
-                                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Fim</span>
-                                    <input
-                                        type="date"
-                                        value={endDate}
-                                        onChange={(e) => setEndDate(e.target.value)}
-                                        className="bg-transparent border-none outline-none text-[10px] font-black text-slate-700 uppercase p-0 h-3 cursor-pointer"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="flex items-center gap-2 pr-6">
-                                <button
-                                    onClick={() => setIsSpreadsheetOpen(true)}
-                                    disabled={!selectedRole}
-                                    className={`text-[9px] font-black flex items-center gap-1.5 uppercase tracking-widest transition-all px-3 py-2 rounded-xl border ${!selectedRole
-                                        ? 'bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed'
-                                        : 'bg-brand-primary/10 text-brand-primary border-brand-primary/20 hover:bg-brand-primary hover:text-white'
-                                        }`}
-                                >
-                                    <Download size={12} strokeWidth={3} />
-                                    Visualizar
-                                </button>
-
-                                <button
-                                    onClick={() => {
-                                        setStartDate('2026-01-01');
-                                        setEndDate('2026-02-28');
-                                        setSelectedRole(null);
-                                    }}
-                                    className="text-[9px] font-black text-rose-500 hover:text-rose-600 flex items-center gap-1.5 uppercase tracking-widest transition-colors bg-rose-50 px-3 py-2 rounded-xl border border-rose-100"
-                                >
-                                    <X size={12} strokeWidth={4} />
-                                    Limpar
-                                </button>
                             </div>
                         </div>
                     )}
@@ -864,7 +840,7 @@ const App: React.FC = () => {
                                     className="h-full pb-20"
                                 >
                                     <div className="h-full flex flex-col pt-0 relative">
-                                        <div className={`flex ${selectedRole ? 'justify-start gap-12' : 'justify-between'} items-center mb-2 shrink-0 sticky top-0 bg-saas-bg z-20 pt-1 pb-4 px-8 -mt-2 border-b border-slate-100 shadow-sm`}>
+                                        <div className="flex justify-between items-center mb-2 shrink-0 sticky top-0 bg-saas-bg z-20 pt-1 pb-4 px-8 -mt-2 border-b border-slate-100 shadow-sm">
                                             {!selectedRole && (
                                                 <div>
                                                     <div className="flex items-baseline gap-4 mb-0.5">
@@ -879,22 +855,23 @@ const App: React.FC = () => {
                                             )}
 
                                             {activeRoleStats && (
-                                                <div className="flex items-center gap-6">
+                                                <div className="flex items-center gap-8 ml-auto">
                                                     <div className="flex flex-col items-end">
-                                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">LeadTime Médio</span>
-                                                        <div className="flex items-baseline gap-1">
-                                                            <span className="text-2xl font-black text-slate-900">{activeRoleStats.leadTimeAvg}</span>
-                                                            <span className="text-xs font-bold text-slate-400 uppercase">Dias</span>
+                                                        <span className="text-[11px] font-black text-indigo-500/50 uppercase tracking-[0.2em] mb-1">LeadTime Médio</span>
+                                                        <div className="flex items-baseline gap-2">
+                                                            <span className="text-4xl font-black text-slate-900 tracking-tighter">{activeRoleStats.leadTimeAvg}</span>
+                                                            <span className="text-sm font-black text-slate-400 uppercase tracking-widest">Dias</span>
                                                         </div>
                                                     </div>
-                                                    <div className="flex gap-2">
-                                                        <div className="flex flex-col items-center bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-xl shadow-sm">
-                                                            <span className="text-[8px] font-black text-emerald-600 uppercase tracking-widest mb-0.5">Liberados</span>
-                                                            <span className="text-sm font-black text-emerald-700">{activeRoleStats.liberated}</span>
+                                                    <div className="w-px h-10 bg-slate-200/60 mx-2" />
+                                                    <div className="flex gap-3">
+                                                        <div className="flex flex-col items-center bg-emerald-50/50 border border-emerald-100 px-4 py-2 rounded-2xl shadow-sm">
+                                                            <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1">Liberados</span>
+                                                            <span className="text-lg font-black text-emerald-700">{activeRoleStats.liberated}</span>
                                                         </div>
-                                                        <div className="flex flex-col items-center bg-rose-50 border border-rose-100 px-3 py-1.5 rounded-xl shadow-sm">
-                                                            <span className="text-[8px] font-black text-rose-600 uppercase tracking-widest mb-0.5">Pendentes</span>
-                                                            <span className="text-sm font-black text-rose-700">{activeRoleStats.pending}</span>
+                                                        <div className="flex flex-col items-center bg-rose-50/50 border border-rose-100 px-4 py-2 rounded-2xl shadow-sm">
+                                                            <span className="text-[9px] font-black text-rose-600 uppercase tracking-widest mb-1">Pendentes</span>
+                                                            <span className="text-lg font-black text-rose-700">{activeRoleStats.pending}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -907,6 +884,12 @@ const App: React.FC = () => {
                                                 onRoleSelect={setSelectedRole}
                                                 startDate={startDate}
                                                 endDate={endDate}
+                                                onSpreadsheetOpen={() => setIsSpreadsheetOpen(true)}
+                                                onClearAll={() => {
+                                                    setStartDate('2026-01-01');
+                                                    setEndDate('2026-02-28');
+                                                    setSelectedRole(null);
+                                                }}
                                             />
                                         </div>
                                     </div>

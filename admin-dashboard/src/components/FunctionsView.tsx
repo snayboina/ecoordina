@@ -11,6 +11,8 @@ interface FunctionsViewProps {
     onRoleSelect: (role: string | null) => void;
     startDate: string;
     endDate: string;
+    onSpreadsheetOpen: () => void;
+    onClearAll: () => void;
 }
 
 interface RoleStats {
@@ -26,7 +28,15 @@ const getEffectiveStatus = (c: Collaborator) => {
     return c.status;
 };
 
-const FunctionsView: React.FC<FunctionsViewProps> = ({ collaborators, selectedRole, onRoleSelect, startDate, endDate }) => {
+const FunctionsView: React.FC<FunctionsViewProps> = ({
+    collaborators,
+    selectedRole,
+    onRoleSelect,
+    startDate,
+    endDate,
+    onSpreadsheetOpen,
+    onClearAll
+}) => {
     const [selectedCollaborator, setSelectedCollaborator] = useState<Collaborator | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -110,6 +120,26 @@ const FunctionsView: React.FC<FunctionsViewProps> = ({ collaborators, selectedRo
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 mt-2">
+                        <button
+                            onClick={onSpreadsheetOpen}
+                            disabled={!selectedRole}
+                            className={`text-[10px] font-black flex items-center justify-center gap-2 uppercase tracking-widest transition-all px-4 py-3 rounded-2xl border ${!selectedRole
+                                ? 'bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed'
+                                : 'bg-brand-primary/10 text-brand-primary border-brand-primary/20 hover:bg-brand-primary hover:text-white shadow-sm'
+                                }`}
+                        >
+                            <span className="shrink-0 leading-none">Visualizar</span>
+                        </button>
+
+                        <button
+                            onClick={onClearAll}
+                            className="text-[10px] font-black text-rose-500 hover:text-white hover:bg-rose-500 flex items-center justify-center gap-2 uppercase tracking-widest transition-all bg-rose-50 px-4 py-3 rounded-2xl border border-rose-100 shadow-sm"
+                        >
+                            <span className="shrink-0 leading-none">Limpar</span>
+                        </button>
                     </div>
                 </div>
 
