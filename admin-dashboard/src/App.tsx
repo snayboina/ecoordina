@@ -857,7 +857,7 @@ const App: React.FC = () => {
                                             {activeRoleStats && (
                                                 <div className="flex items-center gap-8 ml-auto">
                                                     <div className="flex flex-col items-end">
-                                                        <span className="text-[11px] font-black text-indigo-500/50 uppercase tracking-[0.2em] mb-1">LeadTime Médio</span>
+                                                        <span className="text-[11px] font-black text-slate-900 uppercase tracking-[0.2em] mb-1">LeadTime Médio</span>
                                                         <div className="flex items-baseline gap-2">
                                                             <span className="text-4xl font-black text-slate-900 tracking-tighter">{activeRoleStats.leadTimeAvg}</span>
                                                             <span className="text-sm font-black text-slate-400 uppercase tracking-widest">Dias</span>
