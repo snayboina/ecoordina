@@ -8,21 +8,36 @@
   --brand-color: #47536f;
   --secondary-color: #b05d75;
   --bg-color: #f5f5f4;
-  --radius-main: 48px;
-  --radius-card: 32px;
+  --radius-main: 32px;
+  /* Reduzido de 48px para mobile */
+  --radius-card: 24px;
+  /* Reduzido de 32px para mobile */
 
-  --text-hero: 56px;
-  --text-title: 24px;
+  --text-hero: clamp(32px, 8vw, 56px);
+  /* Responsivo */
+  --text-title: clamp(20px, 5vw, 24px);
   --text-body: 16px;
 
-  --gap-section: 32px;
-  --gap-element: 16px;
-  --margin-logo-top: 48px;
-  --padding-container: 24px;
+  --gap-section: 24px;
+  --gap-element: 12px;
+  --margin-logo-top: 32px;
+  --padding-container: 16px;
 
   --font-sans: 'Nunito Sans', system-ui, -apple-system, sans-serif;
   --font-display: 'Varela Round', sans-serif;
 }
+
+@media (min-width: 768px) {
+  :root {
+    --radius-main: 48px;
+    --radius-card: 32px;
+    --gap-section: 32px;
+    --gap-element: 16px;
+    --margin-logo-top: 48px;
+    --padding-container: 24px;
+  }
+}
+
 
 @theme {
   /* Premium Soft Palette */
