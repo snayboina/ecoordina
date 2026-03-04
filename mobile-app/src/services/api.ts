@@ -192,14 +192,18 @@ export const fetchLiberationData = async (): Promise<LiberationData[]> => {
         if (error) throw error;
 
         // Mapeia os nomes das colunas do Supabase para o que o app espera
-        return (data || []).map(row => ({
-            ...row,
-            mat: String(row.chapa || '').trim(),
-            nome: String(row.nome || row.chapa || '').trim(), // Usa chapa se nome não existir
-            funcao: row.funcao || 'Sem Função',
-            data_liberacao_ecoordin: row.liberacao_ecoordin || row.data_liberacao_ecoordin,
-            updated_at: row.updated_at || new Date().toISOString()
-        })) as LiberationData[];
+        return (data || []).map(row => {
+            const dataAdmissao = row.data_admissao || row.admissao || row.admission_date;
+            return {
+                ...row,
+                mat: String(row.chapa || '').trim(),
+                nome: String(row.nome || row.chapa || '').trim(),
+                funcao: row.funcao || 'Sem Função',
+                data_admissao: dataAdmissao,
+                data_liberacao_ecoordin: row.liberacao_ecoordin || row.data_liberacao_ecoordin,
+                updated_at: row.updated_at || new Date().toISOString()
+            };
+        }) as LiberationData[];
     } catch (error) {
         console.error('Error fetching liberation data from Supabase:', error);
         return [];

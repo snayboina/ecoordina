@@ -11,6 +11,7 @@ import {
   Timer,
   ListTodo,
   Clock,
+  Calendar,
   LogIn as LogInIcon
 } from 'lucide-react';
 
@@ -1021,6 +1022,8 @@ const LiberationView: React.FC = () => {
   const [monthFilter, setMonthFilter] = useState('ALL');
   const [roleFilter, setRoleFilter] = useState('ALL');
   const [statusFilter, setStatusFilter] = useState('ALL');
+  const [admissionStart, setAdmissionStart] = useState('2026-01-01');
+  const [admissionEnd, setAdmissionEnd] = useState('2026-03-31');
 
 
 
@@ -1073,6 +1076,8 @@ const LiberationView: React.FC = () => {
     setRoleFilter('ALL');
     setMonthFilter('ALL');
     setStatusFilter('ALL');
+    setAdmissionStart('2026-01-01');
+    setAdmissionEnd('2026-03-31');
   };
 
   const normalize = (str: string) =>
@@ -1131,13 +1136,28 @@ const LiberationView: React.FC = () => {
     setLoading(false);
   };
 
-  const isReleased = (date?: string) => {
-    return date && date.length > 5;
+  const isReleased = (item: LiberationData) => {
+    return (item.rh || '').trim().toUpperCase() === 'OK' &&
+      (item.saude || '').trim().toUpperCase() === 'OK' &&
+      (item.seguranca || '').trim().toUpperCase() === 'OK' &&
+      (item.grd || '').trim().toUpperCase() === 'OK';
+  };
+
+  const parseFlexibleDate = (d?: string) => {
+    if (!d) return null;
+    const formats = ['DD/MM/YYYY', 'YYYY-MM-DD', 'DD/MM/YY'];
+    for (const f of formats) {
+      const m = dayjs(d, f, true);
+      if (m.isValid()) return m;
+    }
+    // Fallback para qualquer formato que o dayjs entenda
+    const fallback = dayjs(d);
+    return fallback.isValid() ? fallback : null;
   };
 
   const filteredList = allData.filter(item => {
     // 1. Filtro de Status
-    const itemIsReleased = isReleased(item.data_liberacao_ecoordin);
+    const itemIsReleased = isReleased(item);
     if (statusFilter === 'LIBERADO' && !itemIsReleased) return false;
     if (statusFilter === 'NAO_LIBERADO' && itemIsReleased) return false;
 
@@ -1145,13 +1165,32 @@ const LiberationView: React.FC = () => {
     const matchesRole = roleFilter === 'ALL' || item.funcao === roleFilter;
     if (!matchesRole) return false;
 
-    // 3. Filtro de Mês (Apenas para liberados ou se o filtro for ALL)
+    // 3. Filtro de Mês
     if (monthFilter !== 'ALL') {
-      if (!itemIsReleased) return false; // Se não está liberado, não tem mês para filtrar
-      const date = dayjs(item.data_liberacao_ecoordin, 'DD/MM/YYYY');
-      if (!date.isValid()) return false;
+      const dateStr = item.data_liberacao_ecoordin || item.updated_at;
+      if (!dateStr) return false;
+      const date = parseFlexibleDate(dateStr);
+      if (!date || !date.isValid()) return false;
       const matchesMonth = (monthFilter === 'DEC' ? date.month() === 11 : monthFilter === 'JAN' ? date.month() === 0 : true);
       if (!matchesMonth) return false;
+    }
+
+    // 4. Filtro de Data de Admissão
+    if (admissionStart || admissionEnd) {
+      const itemDate = parseFlexibleDate(item.data_admissao);
+      if (itemDate && itemDate.isValid()) {
+        if (admissionStart) {
+          const start = dayjs(admissionStart);
+          if (itemDate.isBefore(start, 'day')) return false;
+        }
+        if (admissionEnd) {
+          const end = dayjs(admissionEnd);
+          if (itemDate.isAfter(end, 'day')) return false;
+        }
+      } else {
+        // Se a data de admissão não existe ou é inválida e tem filtro ativo, oculta
+        return false;
+      }
     }
 
     return true;
@@ -1159,7 +1198,7 @@ const LiberationView: React.FC = () => {
 
   const uniqueRoles = Array.from(new Set(allData.map(d => d.funcao).filter(Boolean))).sort();
 
-  const releasedCount = filteredList.filter(d => isReleased(d.data_liberacao_ecoordin)).length;
+  const releasedCount = filteredList.filter(d => isReleased(d)).length;
   const pendingCount = filteredList.length - releasedCount;
 
   return (
@@ -1234,7 +1273,38 @@ const LiberationView: React.FC = () => {
                 </div>
               </div>
 
-              {(roleFilter !== 'ALL' || monthFilter !== 'ALL' || statusFilter !== 'ALL') && (
+              {/* [NOVO] Grid de Datas de Admissão */}
+              <div className="grid grid-cols-2 gap-3">
+                {/* Filter: Início Admissão */}
+                <div className="space-y-1.5 flex-1 p-4 bg-white border border-app-border rounded-[24px] shadow-sm relative group transition-all hover:border-brand-primary/30">
+                  <label className="text-[9px] font-black text-brand-primary/60 uppercase tracking-[0.15em] font-display block ml-1">Início Admissão</label>
+                  <div className="flex items-center justify-between">
+                    <input
+                      type="date"
+                      value={admissionStart}
+                      onChange={(e) => setAdmissionStart(e.target.value)}
+                      className="w-full bg-transparent text-sm font-black text-app-text outline-none appearance-none cursor-pointer"
+                    />
+                    <Calendar size={14} className="text-app-text-muted opacity-40 group-hover:text-brand-primary transition-colors shrink-0" />
+                  </div>
+                </div>
+
+                {/* Filter: Fim Admissão */}
+                <div className="space-y-1.5 flex-1 p-4 bg-white border border-app-border rounded-[24px] shadow-sm relative group transition-all hover:border-brand-primary/30">
+                  <label className="text-[9px] font-black text-brand-primary/60 uppercase tracking-[0.15em] font-display block ml-1">Fim Admissão</label>
+                  <div className="flex items-center justify-between">
+                    <input
+                      type="date"
+                      value={admissionEnd}
+                      onChange={(e) => setAdmissionEnd(e.target.value)}
+                      className="w-full bg-transparent text-sm font-black text-app-text outline-none appearance-none cursor-pointer"
+                    />
+                    <Calendar size={14} className="text-app-text-muted opacity-40 group-hover:text-brand-primary transition-colors shrink-0" />
+                  </div>
+                </div>
+              </div>
+
+              {(roleFilter !== 'ALL' || monthFilter !== 'ALL' || statusFilter !== 'ALL' || admissionStart !== '2026-01-01' || admissionEnd !== '2026-03-31') && (
                 <button
                   onClick={handleClear}
                   className="w-full py-2.5 bg-white border border-dashed border-app-border rounded-xl text-[10px] font-bold text-app-text-muted uppercase tracking-widest active:scale-95 transition-all flex items-center justify-center gap-2 hover:text-brand-primary hover:border-brand-primary/50"
@@ -1313,18 +1383,18 @@ const LiberationView: React.FC = () => {
 
         {result && !loading ? (
           <motion.div key="result" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9 }} className="space-y-6">
-            <div className={`p-8 rounded-[40px] border-2 ${isReleased(result.data_liberacao_ecoordin) ? 'bg-white border-success/20' : 'bg-white border-danger/20'} shadow-floating relative overflow-hidden`}>
+            <div className={`p-8 rounded-[40px] border-2 ${isReleased(result!) ? 'bg-white border-success/20' : 'bg-white border-danger/20'} shadow-floating relative overflow-hidden`}>
               <div className="relative z-10 flex flex-col gap-8">
                 <div className="flex justify-between items-start">
                   <div className="space-y-2">
                     <span className="text-[10px] font-black text-app-text-muted uppercase tracking-[0.2em] bg-app-bg px-3 py-1 rounded-full border border-app-border font-display">Matrícula {result.mat}</span>
-                    <h2 className={`text-3xl font-black uppercase tracking-tight leading-tight font-display ${isReleased(result.data_liberacao_ecoordin) ? 'text-app-text' : 'text-danger'}`}>
+                    <h2 className={`text-3xl font-black uppercase tracking-tight leading-tight font-display ${isReleased(result!) ? 'text-app-text' : 'text-danger'}`}>
                       {result.nome}
                     </h2>
                     <p className="text-app-text-muted text-sm font-bold uppercase tracking-widest opacity-60 font-display">{result.funcao}</p>
                   </div>
-                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg ${isReleased(result.data_liberacao_ecoordin) ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'}`}>
-                    {isReleased(result.data_liberacao_ecoordin) ? (
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg ${isReleased(result!) ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'}`}>
+                    {isReleased(result!) ? (
                       <Zap size={28} fill="currentColor" />
                     ) : (
                       <Lock size={28} />
@@ -1334,8 +1404,8 @@ const LiberationView: React.FC = () => {
 
                 <div className="p-6 bg-app-bg rounded-3xl border border-app-border flex flex-col gap-1 shadow-inner">
                   <span className="text-[10px] font-black text-app-text-muted uppercase tracking-widest font-display">Status de Liberação</span>
-                  <span className={`text-xl font-black font-display ${isReleased(result.data_liberacao_ecoordin) ? 'text-success' : 'text-danger'}`}>
-                    {isReleased(result.data_liberacao_ecoordin) ? '✓ LIBERADO NO SISTEMA' : '× PENDENTE DE LIBERAÇÃO'}
+                  <span className={`text-xl font-black font-display ${isReleased(result!) ? 'text-success' : 'text-danger'}`}>
+                    {isReleased(result!) ? '✓ LIBERADO NO SISTEMA' : '× PENDENTE DE LIBERAÇÃO'}
                   </span>
                   <span className="text-[10px] font-bold text-app-text-muted mt-2 opacity-50">Processado em: {result.data_liberacao_ecoordin || 'N/A'}</span>
                 </div>
@@ -1392,8 +1462,8 @@ const LiberationView: React.FC = () => {
                       className="card-floating flex justify-between items-center active:scale-[0.98] transition-all text-left group gap-4 border-none"
                     >
                       <div className="flex items-center gap-4 flex-1 truncate">
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${isReleased(item.data_liberacao_ecoordin) ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'}`}>
-                          {isReleased(item.data_liberacao_ecoordin) ? (
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${isReleased(item) ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'}`}>
+                          {isReleased(item) ? (
                             <Zap size={20} fill="currentColor" />
                           ) : (
                             <Lock size={20} />

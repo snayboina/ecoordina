@@ -1,36 +1,46 @@
-# Release Notes - v1.15
+# Release Notes - v1.18
 
-## 🏆 Novidades da Versão
-Esta versão foca na otimização da visualização por funções, introduzindo um quadro Kanban interativo, análise de gargalos e uma visão em planilha detalhada para cada função.
+## 🚀 Novidades
 
-### 🚀 Principais Mudanças
-1.  **Quadro Kanban por Função:** Nova visualização `FunctionsView` que organiza os colaboradores de uma função específica em colunas (Pendente vs Liberado).
-2.  **Análise de Gargalos (Bottleneck):** Implementação de lógica de LeadTime por departamento (RH, Saúde, Seguridade) para identificar onde as liberações estão retidas.
-3.  **Modal de Planilha (Spreadsheet View):** Visualização tabular premium com cabeçalho escuro (`slate-900`) e bordas em grade para máxima organização visual. Agora inclui exportação totalmente funcional para **EXCEL** e **PDF**.
-4.  **Refactor de Layout (App.tsx):**
-    *   Cabeçalho agora é fixo (sticky) para manter contexto.
-    *   Informações de status e data de atualização movidas para a esquerda para melhor fluxo de leitura.
-    *   Remoção de elementos desnecessários (sino de notificação) para um design mais focado.
-5.  **Cálculo de Dias Úteis:** LeadTime agora ignora fins de semana para métricas de eficiência mais precisas.
-6.  **Cabeçalho Contextual Inteligente:**
-    *   Exibição do nome da função em destaque (ex: PINTOR INDUSTRIAL) apenas na aba de Funções.
-    *   Filtros de data (Início/Fim) e botões de ação ("Visualizar" e "Limpar") migrados para o lado direito do cabeçalho superior para máxima eficiência.
-    *   Remoção de títulos redundantes no corpo da página para foco total nos dados.
+### 📱 Mobile App
+- **Filtros de Data de Admissão:** Adicionados campos de "Início Admissão" e "Fim Admissão" com interface premium e funcionalidade em tempo real.
+- **Paridade com Web:** Lógica de status unificada (necessário 4 "OK" para liberação).
+- **Novo Ícone:** Substituição do ícone padrão por uma identidade visual exclusiva EcoordinaSmart.
+- **Parsing de Datas:** Implementada lógica robusta para entender múltiplos formatos de data (ISO e PT-BR).
 
-## 📊 Fluxo de Navegação
+### 🛠️ Correções e Melhorias
+- Correção de bug de tela em branco no Mobile causado por mapeamento de campos.
+- Atualização do período padrão de visualização até 31/03/2026.
+
+## 📊 Arquitetura Atualizada
+
 ```mermaid
 graph TD
-    A[Dashboard] -->|Selecionar Função| B(FunctionsView)
-    B -->|Visualizar| C{Kanban Board}
-    C -->|Card Click| D[Modal Detalhes Colaborador]
-    B -->|Botão Visualizar| E[Modal Planilha de Função]
-    B -->|Filtro de Data| F[Recalcula LeadTime e Gargalos]
+    subgraph "Fontes de Dados"
+        S[(Supabase)]
+        G[Google Sheets]
+    end
+
+    subgraph "Aplicações"
+        M[Mobile App]
+        D[Admin Dashboard]
+    end
+
+    G -- "Sync Automatizado" --> S
+    S -- "Lógica de 4 OKs" --> M
+    S -- "Lógica de 4 OKs" --> D
+    
+    subgraph "Filtros Mobile"
+        F1[Função]
+        F2[Status]
+        F3[Data Admissão]
+    end
+    
+    M --- F1
+    M --- F2
+    M --- F3
 ```
 
-## 🛠️ Detalhes Técnicos
-- **Novos Componentes:** `FunctionsView.tsx`, `RoleSpreadsheetModal.tsx`.
-- **Lógica Central:** Lógica de agregação no frontend otimizada para datasets complexos.
-- **Design:** Uso intenso de `framer-motion` para transições suaves e `Tailwind CSS` para layout responsivo.
+## 📸 Demonstração do Novo Ícone
 
----
-*Release gerada automaticamente pelo sistema de CI/CD Google Antigravity.*
+![Ícone v1.18](file:///c:/Users/Adm/Downloads/eoorddinasmart/mobile-app/public/app-icon.png)
