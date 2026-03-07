@@ -1,3 +1,29 @@
+# Release Notes - v1.8 (Fix Autenticação Login)
+
+## 📋 Resumo
+Correção crítica no fluxo de autenticação do Admin Dashboard. Senhas cadastradas no banco com caractere invisível `\n` no final impediam o login mesmo com credenciais corretas.
+
+## 🐛 Bug Corrigido
+- **Login falhando com credenciais válidas:** A query `.eq('senha', password)` comparava a senha digitada com a senha do banco literal (ex: `"242526\n"`), causando sempre retorno de `null`.
+
+## 🔧 Solução Aplicada
+- A função `checkUserAccess` em `api.ts` foi refatorada para buscar o usuário apenas pelo **email** e comparar a senha em JavaScript usando `.trim()` em ambos os lados, eliminando qualquer espaço ou quebra de linha extra.
+
+## 📊 Fluxo de Autenticação Atualizado
+```mermaid
+graph TD
+    A[Login Form] --> B[checkUserAccess]
+    B --> C{Busca por email no Supabase}
+    C -->|Não encontrado| D[Retorna null - Erro]
+    C -->|Encontrado| E{Compara senha com .trim()}
+    E -->|Inválida| D
+    E -->|Válida| F[Retorna userData - Acesso Liberado]
+```
+
+---
+**Versão Física:** `/versao/v1.8-fix-autenticacao-trim`
+**Tag Git:** `v1.8`
+
 # Release Notes - v1.7 (Overview Redesign Refinement)
 
 ## 📋 Resumo
