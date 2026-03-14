@@ -14,7 +14,7 @@ Redesenhamos o fluxo do n8n para ser cirúrgico e veloz.
 - **Tráfego Reduzido**: Apenas as colunas necessárias para a visualização no App são baixadas e comparadas.
 
 ### 2. Filtro de Admissão (Foco 2026)
-Implementamos um filtro automático no n8n que ignora registros de admissão anteriores a **01/01/2026**. Isso mantém o banco de dados limpo e focado no ciclo atual.
+Implementamos um filtro automático no n8n que ignora registros de admissão fora do per�odo de **01/01/2026 a Ontem**. Isso mantém o banco de dados limpo e focado no ciclo atual.
 
 ### 3. Mapeamento Inteligente de Colunas
 O sistema agora é resiliente a variações nos títulos das colunas da planilha:

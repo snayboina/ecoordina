@@ -33,7 +33,7 @@ O nó `Transformar_Dados` no n8n normaliza os campos para garantir que o Supabas
 
 ## 🔒 Regras de Negócio e Filtros
 
-1. **Filtro Temporal**: Registros com `DATA ADMISSÃO` anterior a **01/01/2026** são descartados automaticamente para evitar poluição visual.
+1. **Filtro Temporal**: Registros com `DATA ADMISSÃO` fora do per�odo de **01/01/2026 a Ontem** são descartados automaticamente para evitar poluição visual.
 2. **Normalização de Chapa**: O sistema remove espaços em branco e garante que a Chapa seja tratada como string para comparação exata.
 3. **Lógica de UPSERT**: 
     - Se a **Chapa** não existe no banco -> **INSERT**.

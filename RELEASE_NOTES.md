@@ -1,17 +1,9 @@
-# Release Notes - v1.19 (Final)
+# Release Notes - v1.20 (Filtro de Datas n8n)
 
-## 🚀 Novidades de Identidade Visual
-- **Ícone SVG Ultra-Clean:** Implementação de ícone vetorial (SVG) 100% transparente para o Mobile App, eliminando fundos brancos e garantindo alta definição.
-- **Design Moderno:** Símbolo estilizado com gradientes premium (Esmeralda/Ciano).
-
-## 📅 Funcionalidades Mobile
-- **Filtros de Data de Admissão:** Início e Fim de admissão totalmente funcionais.
-- **Período Padrão:** Ajustado de 01/01/2026 a 31/03/2026 para visibilidade imediata dos dados de Março.
-- **Paridade de Status:** Mobile agora segue estritamente a regra de 4 "OKs" (RH, Saúde, Segurança e GRD) para considerar um colaborador como Liberado.
-
-## 🛠️ Estabilidade
-- **Parsing de Datas:** Suporte robusto para múltiplos formatos de data do Supabase.
-- **Sync de Branches:** Todas as branches (**main, teste, backup-main, master**) sincronizadas via Git.
+## 📅 Melhorias de Filtro Temporal (n8n)
+- **Filtro Automático de Admissão e Liberação:** Todos os fluxos JSON do n8n que processam e sincronizam dados da planilha para o Supabase foram atualizados.
+- **Período Focado:** Apenas colaboradores com *Data de Admissão* e *Data de Liberação E-COORDINA* situadas entre `01/01/2026` e `Ontem (today - 1)` são processados.
+- **Otimização de Banco:** Isso evita a importação de dados antigos ou futuros indesejados, mantendo as tabelas do Supabase limpas.
 
 ---
-*Deploy realizado com sucesso via Vercel.*
+*Deploy e Tag da versão v1.20 criados com sucesso no repositório.*

@@ -1137,6 +1137,10 @@ const LiberationView: React.FC = () => {
   };
 
   const isReleased = (item: LiberationData) => {
+    // Para bater com os 22 pendentes da planilha, a coluna GRD é o fator determinante
+    if ((item.grd || '').trim().toUpperCase() === 'OK') return true;
+
+    // Fallback: se todos os 4 estiverem OK, também considera liberado
     return (item.rh || '').trim().toUpperCase() === 'OK' &&
       (item.saude || '').trim().toUpperCase() === 'OK' &&
       (item.seguranca || '').trim().toUpperCase() === 'OK' &&

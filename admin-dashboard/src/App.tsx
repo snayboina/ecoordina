@@ -41,6 +41,17 @@ import {
     LabelList
 } from 'recharts';
 
+const parseFlexibleDate = (d?: string) => {
+    if (!d) return null;
+    const formats = ['DD/MM/YYYY', 'YYYY-MM-DD', 'DD/MM/YY', 'D/M/YYYY'];
+    for (const f of formats) {
+        const m = dayjs(d, f, true);
+        if (m.isValid()) return m;
+    }
+    const fallback = dayjs(d);
+    return fallback.isValid() ? fallback : null;
+};
+
 const getEffectiveStatus = (c: Collaborator) => {
     if (c.grd && c.grd.trim().toUpperCase() === 'OK') return 'LIBERADO';
     return c.status;
@@ -75,7 +86,7 @@ const App: React.FC = () => {
     const [selectedCollab, setSelectedCollab] = useState<Collaborator | null>(null);
     const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
     const [startDate, setStartDate] = useState('2026-01-01');
-    const [endDate, setEndDate] = useState('2026-02-28');
+    const [endDate, setEndDate] = useState('2026-03-31');
     const [selectedRole, setSelectedRole] = useState<string | null>(null);
     const [isSpreadsheetOpen, setIsSpreadsheetOpen] = useState(false);
 
@@ -156,11 +167,11 @@ const App: React.FC = () => {
                 const matchesStatus = statusFilter === 'TODOS' || getEffectiveStatus(c) === statusFilter;
 
                 // Filtro de Data
-                let matchesDate = true;
+                let matchesDate = false;
                 if (c.admissionDate) {
-                    const date = dayjs(c.admissionDate, ['YYYY-MM-DD', 'DD/MM/YYYY', 'D/M/YYYY']);
-                    const isoDate = date.isValid() ? date.format('YYYY-MM-DD') : null;
-                    if (isoDate) {
+                    const date = parseFlexibleDate(c.admissionDate);
+                    if (date && date.isValid()) {
+                        const isoDate = date.format('YYYY-MM-DD');
                         const start = startDate || '0000-00-00';
                         const end = endDate || '9999-99-99';
                         matchesDate = isoDate >= start && isoDate <= end;
@@ -171,10 +182,8 @@ const App: React.FC = () => {
             })
             .sort((a, b) => {
                 const getTimestamp = (d?: string) => {
-                    if (!d) return 0;
-                    // Use dayjs with strict parsing for consistency, fallback to 0
-                    const date = dayjs(d, ['YYYY-MM-DD', 'DD/MM/YYYY', 'D/M/YYYY']);
-                    return date.isValid() ? date.valueOf() : 0;
+                    const date = parseFlexibleDate(d);
+                    return date && date.isValid() ? date.valueOf() : 0;
                 };
                 // Sort descending (most recent first)
                 return getTimestamp(b.admissionDate) - getTimestamp(a.admissionDate);
